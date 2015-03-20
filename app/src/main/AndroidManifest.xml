@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="aad.finalproject.jhoregatta" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".BoatMenu"
+            android:label="@string/title_activity_boat_menu" >
+        </activity>
+        <activity
+            android:name=".ListTemplateBoats"
+            android:label="@string/title_activity_list_template_boats" >
+        </activity>
+        <activity
+            android:name=".BoatAddForm"
+            android:label="@string/title_activity_boat_add_form" >
+        </activity>
+        <activity
+            android:name=".RaceMenu"
+            android:label="@string/title_activity_race_menu" >
+        </activity>
+        <activity
+            android:name=".RaceAddForm"
+            android:label="@string/title_activity_race_add_form" >
+        </activity>
+        <activity
+            android:name=".SelectBoats"
+            android:label="@string/title_activity_select_boats" >
+        </activity>
+        <activity
+            android:name=".ListTemplateRaces"
+            android:label="@string/title_activity_list_template_races" >
+        </activity>
+        <activity
+            android:name=".RegattaTimer"
+            android:label="@string/title_activity_regatta_timer" >
+        </activity>
+    </application>
+
+</manifest>

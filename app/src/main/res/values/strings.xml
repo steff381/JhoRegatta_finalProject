@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Jho Regatta</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_boat_menu">Boat Menu</string>
+    <string name="title_activity_list_template_boats">ListTemplateBoats</string>
+    <string name="title_activity_boat_add_form">Add Boat</string>
+    <string-array name="class_options_array">
+        <item>Please Select a Class</item>
+        <item>Red</item>
+        <item>Green</item>
+        <item>Yellow</item>
+        <item>Purple</item>
+        <item>Blue</item>
+        <item>_TBD_</item>
+    </string-array>
+    <string name="title_activity_race_menu">Race Menu</string>
+    <string name="title_activity_race_add_form">Add Race</string>
+    <string name="title_activity_select_boats">Select Boats</string>
+    <string name="title_activity_list_template_races">List Template Races</string>
+    <string name="title_activity_regatta_timer">Race Timer</string>
+
+    
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+</resources>
