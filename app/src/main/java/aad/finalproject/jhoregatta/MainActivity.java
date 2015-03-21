@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void navigateToSettings(View view){
-        Intent intent = new Intent(this, MainActivity.class); //TODO: wire to settings activity
+        Intent intent = new Intent(this, RegattaTimer.class); //TODO: wire to settings activity
         startActivity(intent);
 
 

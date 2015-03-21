@@ -9,7 +9,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="navigateToSettings"
+        android:text="Settings"
         android:id="@+id/btn_nav_Settings"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
@@ -18,7 +18,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="navigateToRaceMenu"
+        android:text="Races"
         android:id="@+id/btn_nav_RaceMenu"
         android:layout_above="@+id/btn_nav_Settings"
         android:onClick="navigateToRaceMenu"/>
@@ -26,7 +26,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="navigateToBoatMenu"
+        android:text="Boats"
         android:id="@+id/btn_nav_BoatMenu"
         android:layout_above="@+id/btn_nav_RaceMenu"
         android:onClick="navigateToBoatMenu"/>
