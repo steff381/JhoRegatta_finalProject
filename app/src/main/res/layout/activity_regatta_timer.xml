@@ -28,7 +28,7 @@
                 <TextClock
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textClock"
+                    android:id="@+id/txtclkMasterTime"
                     android:layout_gravity="center_horizontal|top"
                     android:layout_margin="5dp"
                     android:paddingTop="5dp"
@@ -52,6 +52,15 @@
                     android:layout_height="wrap_content"
                     android:text="Master Start"
                     android:id="@+id/btnMasterStart"
+                    android:onClick="onClickMasterStart"
+                    android:layout_gravity="center_horizontal|bottom" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Master Pause"
+                    android:onClick="onClickMasterPause"
+                    android:id="@+id/btnMasterPause"
                     android:layout_gravity="center_horizontal|bottom" />
             </FrameLayout>
         </TableRow>
