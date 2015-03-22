@@ -1,5 +1,13 @@
 <resources>
-
+    <color name="RegRED">#FF0800</color>
+    <color name="Reg_TBD_">#FF00FC</color>
+    <color name="RegYELLOW">#EBD600</color>
+    <color name="RegGREEN">#11BD00</color>
+    <color name="RegBLUE">#1F24A3</color>
+    <color name="RegPURPLE">#A000FF</color>
+    <color name="RegORANGE">#FF8700</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->

@@ -63,18 +63,6 @@ public class MainActivity extends ActionBarActivity {
         Log.i("Main Menu ", " GotoSettings ");
     }
 
-    public static boolean isNumeric(String str)
-    {
-        try
-    {
-            double d = Double.parseDouble(str);
-        }
-        catch(NumberFormatException nfe)
-        {
-            return false;
-        }
-        return true;
-    }
 
     public void onClickCancel(View view) {
         finish();

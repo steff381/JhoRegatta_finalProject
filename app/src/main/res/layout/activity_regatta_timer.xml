@@ -21,48 +21,176 @@
             android:layout_weight=".2555">
 
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
 
-                <TextClock
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtclkMasterTime"
-                    android:layout_gravity="center_horizontal|top"
-                    android:layout_margin="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="5dp"
-                    android:textColor="#ffffff"
-                    android:background="#000000"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="ex"
-                    android:id="@+id/txtMasterStartTime"
-                    android:layout_gravity="center" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Master Start"
-                    android:id="@+id/btnMasterStart"
-                    android:onClick="onClickMasterStart"
-                    android:layout_gravity="center_horizontal|bottom" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Master Pause"
-                    android:onClick="onClickMasterPause"
-                    android:id="@+id/btnMasterPause"
-                    android:layout_gravity="center_horizontal|bottom" />
             </FrameLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"></TableRow>
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" />
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" >
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" >
+
+                            <FrameLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:background="#000000">
+
+                                <TextClock
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="15sp"
+                                    android:id="@+id/txtclkMasterTime"
+                                    android:layout_margin="5dp"
+                                    android:paddingTop="5dp"
+                                    android:paddingLeft="10dp"
+                                    android:paddingRight="10dp"
+                                    android:paddingBottom="5dp"
+                                    android:textColor="#ffffff"
+                                    android:background="#000000"
+                                    android:textStyle="bold"
+                                    android:textIsSelectable="false"
+                                    android:layout_gravity="center_horizontal|center" />
+                            </FrameLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" >
+
+                            <FrameLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"
+                                    android:id="@+id/txtMasterStartTime"
+                                    android:layout_gravity="center" />
+                            </FrameLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" >
+
+                            <FrameLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                                <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/btnMasterStart"
+                                    android:onClick="onClickMasterStart"
+                                    android:layout_gravity="center_horizontal|top" />
+                            </FrameLayout>
+                        </TableRow>
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" >
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" >
+
+                            <FrameLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceMedium"
+                                    android:text="Next Event:"
+                                    android:id="@+id/txtlblNextEvent"
+                                    android:layout_gravity="center_horizontal|bottom" />
+                            </FrameLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" >
+
+                            <FrameLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"
+                                    android:text="test"
+                                    android:id="@+id/txtCountDown"
+                                    android:layout_gravity="center_horizontal|top" />
+                            </FrameLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                </TableRow>
+            </LinearLayout>
         </TableRow>
 
         <TableRow
@@ -90,14 +218,19 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_weight=".2">
+                            android:layout_weight=".2"
+                            android:visibility="visible"
+                            android:transitionGroup="false"
+                            android:id="@+id/tblrowPurple"
+                            android:focusableInTouchMode="false">
 
                             <LinearLayout
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="5dp"
-                                android:layout_marginTop="5dp">
+                                android:layout_marginTop="5dp"
+                                android:visibility="visible">
 
                                 <FrameLayout
                                     android:layout_width="0dp"
@@ -125,8 +258,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:textColor="#000000"
-                                        android:text="12:45:21 PM"
-                                        android:id="@+id/txtClassPurpleStartTime"
+                                        android:id="@+id/txtClass1StartTime"
                                         android:layout_gravity="left|center_vertical"
                                         android:layout_marginLeft="10dp" />
 
@@ -146,7 +278,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_weight=".2">
+                            android:layout_weight=".2"
+                            android:id="@+id/tblrowBlue"
+                            android:visibility="visible">
 
                             <LinearLayout
                                 android:orientation="horizontal"
@@ -184,8 +318,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:textColor="#000000"
-                                            android:text="12:45:21 PM"
-                                            android:id="@+id/txtClassBlueStartTime"
+                                            android:id="@+id/txtClass2StartTime"
                                             android:layout_gravity="left|center_vertical"
                                             android:layout_marginLeft="10dp" />
 
@@ -204,7 +337,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_weight=".2">
+                            android:layout_weight=".2"
+                            android:id="@+id/tblrowRed"
+                            android:visibility="visible">
                             <LinearLayout
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
@@ -239,8 +374,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:textColor="#000000"
-                                        android:text="12:45:21 PM"
-                                        android:id="@+id/txtClassRedStartTime"
+                                        android:id="@+id/txtClass3StartTime"
                                         android:layout_gravity="left|center_vertical"
                                         android:layout_marginLeft="10dp" />
 
@@ -259,7 +393,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_weight=".2">
+                            android:layout_weight=".2"
+                            android:id="@+id/tblrowGreen"
+                            android:visibility="visible">
                             <LinearLayout
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
@@ -294,8 +430,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:textColor="#000000"
-                                        android:text="12:45:21 PM"
-                                        android:id="@+id/txtClassGreenStartTime"
+                                        android:id="@+id/txtClass4StartTime"
                                         android:layout_gravity="left|center_vertical"
                                         android:layout_marginLeft="10dp" />
 
@@ -315,7 +450,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_weight=".2">
+                            android:layout_weight=".2"
+                            android:id="@+id/tblrowYellow"
+                            android:visibility="visible">
                             <LinearLayout
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
@@ -350,8 +487,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:textColor="#000000"
-                                        android:text="12:45:21 PM"
-                                        android:id="@+id/txtClassYellowStartTime"
+                                        android:id="@+id/txtClass5StartTime"
                                         android:layout_gravity="left|center_vertical"
                                         android:layout_marginLeft="10dp" />
 
@@ -371,7 +507,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_weight=".2">
+                            android:layout_weight=".2"
+                            android:id="@+id/tblrow_TBD_"
+                            android:visibility="visible">
                             <LinearLayout
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
@@ -406,8 +544,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:textColor="#000000"
-                                        android:text="12:45:21 PM"
-                                        android:id="@+id/txtClass_TBD_StartTime"
+                                        android:id="@+id/txtClass6StartTime"
                                         android:layout_gravity="left|center_vertical"
                                         android:layout_marginLeft="10dp" />
 
@@ -431,21 +568,141 @@
                     android:layout_weight=".4"
                     android:weightSum="1">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Flag Area"
-                        android:id="@+id/txtEXAMPLEFLAG" />
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Flag Area"
-                        android:id="@+id/textView2"
-                        android:layout_gravity="bottom" />
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal">
 
+                            <FrameLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"
+                                    android:text="Current Class"
+                                    android:id="@+id/txtlblCurrentClass"
+                                    android:layout_gravity="center" />
+                            </FrameLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_weight="1" />
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_weight=".2"
+                                    android:id="@+id/tblrowCurrentClass">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:id="@+id/imgCurrentClass"
+                                        android:layout_gravity="center_vertical" />
+                                </TableRow>
+
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_weight="1" />
+                            </LinearLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"
+                                    android:text="Flag"
+                                    android:id="@+id/txtlblFlag"
+                                    android:layout_gravity="center" />
+                            </FrameLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/imgCurrentFlag" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"
+                                    android:text="Next Flag"
+                                    android:id="@+id/txtlblNextFlag"
+                                    android:layout_gravity="center" />
+                            </FrameLayout>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1"
+                            android:id="@+id/tblrowNextFlag">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/imgNextFlag" />
+
+                        </TableRow>
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
                 </TableRow>
             </LinearLayout>
         </TableRow>
