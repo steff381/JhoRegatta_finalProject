@@ -1,10 +1,16 @@
 <resources>
     <color name="RegRED">#FF0800</color>
+    <color name="RegREDalpha60">#3cff0800</color>
     <color name="Reg_TBD_">#FF00FC</color>
+    <color name="Reg_TBD_alpha60">#3CFF00FC</color>
     <color name="RegYELLOW">#EBD600</color>
+    <color name="RegYELLOWalpha60">#3CEBD600</color>
     <color name="RegGREEN">#11BD00</color>
+    <color name="RegGREENalpha60">#3C11BD00</color>
     <color name="RegBLUE">#1F24A3</color>
+    <color name="RegBLUEalpha60">#3c1f24a3</color>
     <color name="RegPURPLE">#A000FF</color>
+    <color name="RegPURPLEalpha60">#3ca000ff</color>
     <color name="RegORANGE">#FF8700</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>

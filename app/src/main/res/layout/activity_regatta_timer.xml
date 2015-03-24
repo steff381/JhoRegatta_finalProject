@@ -46,7 +46,7 @@
                         <TableRow
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:layout_weight="1"></TableRow>
+                            android:layout_weight="1"/>
 
                         <TableRow
                             android:layout_width="fill_parent"
@@ -178,7 +178,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textAppearance="?android:attr/textAppearanceLarge"
-                                    android:text="test"
                                     android:id="@+id/txtCountDown"
                                     android:layout_gravity="center_horizontal|top" />
                             </FrameLayout>
@@ -219,26 +218,26 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_weight=".2"
-                            android:visibility="visible"
                             android:transitionGroup="false"
-                            android:id="@+id/tblrowPurple"
-                            android:focusableInTouchMode="false">
+                            android:id="@+id/tblrow1">
 
                             <LinearLayout
+                                android:id="@+id/linlay1"
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="5dp"
-                                android:layout_marginTop="5dp"
-                                android:visibility="visible">
+                                android:layout_marginTop="5dp">
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayColorFrame1"
                                     android:layout_width="0dp"
                                     android:layout_height="fill_parent"
                                     android:layout_weight=".15"
                                     android:background="#A000FF"/>
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayContentFrame1"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight=".85"
@@ -249,7 +248,7 @@
                                         android:layout_height="wrap_content"
                                         android:textSize="20sp"
                                         android:text="Purple"
-                                        android:id="@+id/txtClassNamePurple"
+                                        android:id="@+id/txtClassName1"
                                         android:textColor="#000000"
                                         android:layout_gravity="left|top"
                                         android:layout_marginLeft="10dp"/>
@@ -267,7 +266,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Start"
-                                        android:id="@+id/btnPurpleStart"
+                                        android:id="@+id/btn1Start"
                                         android:layout_gravity="right|center_vertical" />
 
                                 </FrameLayout>
@@ -279,18 +278,19 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_weight=".2"
-                            android:id="@+id/tblrowBlue"
+                            android:id="@+id/tblrow2"
                             android:visibility="visible">
 
                             <LinearLayout
+                                android:id="@+id/linlay2"
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_marginTop="5dp">
 
                                     <FrameLayout
+                                        android:id="@+id/frmlayColorFrame2"
                                         android:layout_width="0dp"
                                         android:layout_height="fill_parent"
                                         android:layout_weight=".15"
@@ -299,6 +299,7 @@
                                     </FrameLayout>
 
                                     <FrameLayout
+                                        android:id="@+id/frmlayContentFrame2"
                                         android:layout_width="0dp"
                                         android:layout_height="match_parent"
                                         android:layout_weight=".85"
@@ -309,7 +310,7 @@
                                             android:layout_height="wrap_content"
                                             android:textSize="20sp"
                                             android:text="Blue"
-                                            android:id="@+id/txtClassNameBlue"
+                                            android:id="@+id/txtClassName2"
                                             android:textColor="#000000"
                                             android:layout_gravity="left|top"
                                             android:layout_marginLeft="10dp"/>
@@ -327,7 +328,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:text="Start"
-                                            android:id="@+id/btnBlueStart"
+                                            android:id="@+id/btn2Start"
                                             android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
@@ -338,23 +339,26 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_weight=".2"
-                            android:id="@+id/tblrowRed"
+                            android:id="@+id/tblrow3"
                             android:visibility="visible">
+
                             <LinearLayout
+                                android:id="@+id/linlay3"
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp">
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayColorFrame3"
                                     android:layout_width="0dp"
                                     android:layout_height="fill_parent"
                                     android:layout_weight=".15"
                                     android:background="#ffff0800"/>
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayContentFrame3"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight=".85"
@@ -365,7 +369,7 @@
                                         android:layout_height="wrap_content"
                                         android:textSize="20sp"
                                         android:text="Red"
-                                        android:id="@+id/txtClassNameRed"
+                                        android:id="@+id/txtClassName3"
                                         android:textColor="#000000"
                                         android:layout_gravity="left|top"
                                         android:layout_marginLeft="10dp"/>
@@ -383,7 +387,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Start"
-                                        android:id="@+id/btnRedStart"
+                                        android:id="@+id/btn3Start"
                                         android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
@@ -394,23 +398,26 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_weight=".2"
-                            android:id="@+id/tblrowGreen"
+                            android:id="@+id/tblrow4"
                             android:visibility="visible">
+
                             <LinearLayout
+                                android:id="@+id/linlay4"
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp">
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayColorFrame4"
                                     android:layout_width="0dp"
                                     android:layout_height="fill_parent"
                                     android:layout_weight=".15"
                                     android:background="#11BD00"/>
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayContentFrame4"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight=".85"
@@ -421,7 +428,7 @@
                                         android:layout_height="wrap_content"
                                         android:textSize="20sp"
                                         android:text="Green"
-                                        android:id="@+id/txtClassNameGreen"
+                                        android:id="@+id/txtClassName4"
                                         android:textColor="#000000"
                                         android:layout_gravity="left|top"
                                         android:layout_marginLeft="10dp"/>
@@ -439,7 +446,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Start"
-                                        android:id="@+id/btnGreenStart"
+                                        android:id="@+id/btn4Start"
                                         android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
@@ -451,23 +458,26 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_weight=".2"
-                            android:id="@+id/tblrowYellow"
+                            android:id="@+id/tblrow5"
                             android:visibility="visible">
+
                             <LinearLayout
+                                android:id="@+id/linlay5"
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp">
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayColorFrame5"
                                     android:layout_width="0dp"
                                     android:layout_height="fill_parent"
                                     android:layout_weight=".15"
-                                    android:background="#EBD600"/>
+                                    android:background="@color/RegYELLOW" />
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayContentFrame5"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight=".85"
@@ -478,7 +488,7 @@
                                         android:layout_height="wrap_content"
                                         android:textSize="20sp"
                                         android:text="Yellow"
-                                        android:id="@+id/txtClassNameYellow"
+                                        android:id="@+id/txtClassName5"
                                         android:textColor="#000000"
                                         android:layout_gravity="left|top"
                                         android:layout_marginLeft="10dp"/>
@@ -496,7 +506,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Start"
-                                        android:id="@+id/btnYellowStart"
+                                        android:id="@+id/btn5Start"
                                         android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
@@ -508,23 +518,26 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_weight=".2"
-                            android:id="@+id/tblrow_TBD_"
+                            android:id="@+id/tblrow6"
                             android:visibility="visible">
+
                             <LinearLayout
+                                android:id="@+id/linlay6"
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginTop="5dp"
-                                android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp">
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayColorFrame6"
                                     android:layout_width="0dp"
                                     android:layout_height="fill_parent"
                                     android:layout_weight=".15"
                                     android:background="#FF00FC"/>
 
                                 <FrameLayout
+                                    android:id="@+id/frmlayContentFrame6"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight=".85"
@@ -535,7 +548,7 @@
                                         android:layout_height="wrap_content"
                                         android:textSize="20sp"
                                         android:text="_TBD_"
-                                        android:id="@+id/txtClassName_TBD_"
+                                        android:id="@+id/txtClassName6"
                                         android:textColor="#000000"
                                         android:layout_gravity="left|top"
                                         android:layout_marginLeft="10dp"/>
@@ -553,7 +566,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Start"
-                                        android:id="@+id/btn_TBD_Start"
+                                        android:id="@+id/btn6Start"
                                         android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
