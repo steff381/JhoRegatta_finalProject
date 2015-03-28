@@ -8,28 +8,55 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="30dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Id"
+            android:id="@+id/txt_hd_ID"
+            android:layout_weight="0"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="PHRF"
+            android:id="@+id/txt_hd_PHRF"
+            android:layout_weight="0"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Visible"
+            android:id="@+id/txt_hd_Visible"
+            android:layout_weight="0"
+            android:visibility="invisible" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Class"
             android:id="@+id/txt_hd_Class"
-            android:layout_weight="1" />
+            android:layout_weight="1.5"
+            android:layout_gravity="center_vertical" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Name"
             android:id="@+id/txt_hd_Name"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:layout_gravity="center_vertical" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Sail Num"
             android:id="@+id/txt_hd_SailNum"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:layout_gravity="center_vertical" />
     </TableRow>
 
 </RelativeLayout>

@@ -62,21 +62,27 @@
                 android:layout_height="wrap_content"
                 android:text="Class"
                 android:id="@+id/txt_hd_Class"
-                android:layout_weight="1" />
+                android:layout_weight="1.5"
+                android:textColor="#ff000000"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Name"
                 android:id="@+id/txt_hd_Name"
-                android:layout_weight="3" />
+                android:layout_weight="3"
+                android:textStyle="bold"
+                android:textColor="#000000" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Sail Num"
                 android:id="@+id/txt_hd_SailNum"
-                android:layout_weight="3" />
+                android:layout_weight="3"
+                android:textStyle="bold"
+                android:textColor="#000000" />
         </TableRow>
 
         <ListView
