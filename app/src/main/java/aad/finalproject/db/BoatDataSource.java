@@ -113,6 +113,13 @@ public class BoatDataSource {
 
     }
 
+    public boolean psudoDelete(long id) {
+        String whereClause = DBAdapter.KEY_ID + " = " + id;
+        ContentValues newValues = new ContentValues();
+        newValues.put(DBAdapter.KEY_BOAT_VISIBLE, 0);
+        return db.update(DBAdapter.TABLE_BOATS, newValues, whereClause, null) != 0;
+    }
+
        public Cursor getRow(long id) {
            String whereClause = DBAdapter.KEY_ID + " = " + id;
            Cursor cursor = db.query(true, DBAdapter.TABLE_BOATS, ALL_BOAT_COLUMNS, whereClause,
@@ -122,5 +129,36 @@ public class BoatDataSource {
            }
            return cursor;
        }
+
+    public static int getClassColorPosition(String classColor) {
+        int colorPosition;
+        switch (classColor) {
+            case "Red":
+                colorPosition = 1;
+                break;
+            case "Purple":
+                colorPosition = 2;
+                break;
+            case "Yellow":
+                colorPosition = 3;
+                break;
+            case "_TBD_":
+                colorPosition = 4;
+                break;
+            case "Blue":
+                colorPosition = 5;
+                break;
+            case "Green":
+                colorPosition = 6;
+                break;
+            default:
+                Log.i(LOG, "No color position found");
+                colorPosition = 0;
+                break;
+        }
+
+        return colorPosition;
+    }
+
 
 }

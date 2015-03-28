@@ -1,5 +1,7 @@
 package aad.finalproject.jhoregatta;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,49 +14,79 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import aad.finalproject.db.Boat;
+import aad.finalproject.db.BoatDataSource;
+import aad.finalproject.db.DBAdapter;
 
 
 public class BoatAddForm extends BoatMenu {
 
-    private static String LOG;
+    private static String LOG; // create a log tag that changes based on activity mode
 
+    // initialize instances of text and spinner widgets
     Spinner boatClassSpn;
     EditText boatName;
     EditText boatSailNum;
     EditText boatPHRF;
 
+    // initialize button widgets
     Button createBoat;
     Button updateBoat;
     Button deleteBoat;
+
+    // initialize strings for use by other methods
+    String strBoatClassSpn;
+    String strBoatName;
+    String strBoatSailNum;
+    String strBoatPHRF;
+
+    Cursor updateRowFromCursor; // create a cursor to hold single row info for updates
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boat_add_form);
 
-
-        createBoat = (Button) findViewById(R.id.btn_add_current_boat);
-        updateBoat = (Button) findViewById(R.id.btn_update_current_boat);
-        deleteBoat = (Button) findViewById(R.id.btn_delete_current_boat);
-
-        if (childActivityTypeSwitcher.equals("CREATE")) {
-            createBoat.setVisibility(View.VISIBLE);
-            updateBoat.setVisibility(View.GONE);
-            deleteBoat.setVisibility(View.GONE);
-            LOG = "Boat ADD form";
-        } else if (childActivityTypeSwitcher.equals("EDIT")) {
-            createBoat.setVisibility(View.GONE);
-            updateBoat.setVisibility(View.VISIBLE);
-            deleteBoat.setVisibility(View.VISIBLE);
-            LOG = "Boat UPDATE form";
-
-        }
-
+        //load up text and spinner instances with their corresponding widgets
         boatClassSpn = (Spinner) findViewById(R.id.spn_BoatClass);
         boatName = (EditText) findViewById(R.id.txt_inpt_BoatName);
         boatSailNum = (EditText) findViewById(R.id.txt_inpt_SailNum);
         boatPHRF = (EditText) findViewById(R.id.txt_inpt_PHRF);
 
+        //load up buttons with widget instances
+        createBoat = (Button) findViewById(R.id.btn_add_current_boat);
+        updateBoat = (Button) findViewById(R.id.btn_update_current_boat);
+        deleteBoat = (Button) findViewById(R.id.btn_delete_current_boat);
+
+        //change the button's shown based on if form is in create or edit mode.
+        // instructions for CREATE mode
+        if ("CREATE".equals(BoatMenu.CHILD_ACTIVITY_TYPE_SWITCHER)) {
+            createBoat.setVisibility(View.VISIBLE);
+            updateBoat.setVisibility(View.GONE);
+            deleteBoat.setVisibility(View.GONE);
+            LOG = "Boat ADD form";
+
+            // instructions for EDIT mode
+        } else if (BoatMenu.CHILD_ACTIVITY_TYPE_SWITCHER.equals("EDIT")) {
+            createBoat.setVisibility(View.GONE);
+            updateBoat.setVisibility(View.VISIBLE);
+            deleteBoat.setVisibility(View.VISIBLE);
+            boatDataSource.getRow(BoatMenu.ROW_ID);
+            LOG = "Boat UPDATE form";
+
+            // if in update mode assign cursor to initialized cursor field
+            updateRowFromCursor = boatDataSource.getRow(BoatMenu.ROW_ID);
+
+            // populate the form with data for the row selected by the user in the boatMenu
+            boatClassSpn.setSelection(BoatDataSource.getClassColorPosition(
+                    updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
+                            DBAdapter.KEY_BOAT_CLASS))));
+            boatName.setText(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
+                    DBAdapter.KEY_BOAT_NAME)));
+            boatSailNum.setText(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
+                    DBAdapter.KEY_BOAT_SAIL_NUM)));
+            boatPHRF.setText(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
+                    DBAdapter.KEY_BOAT_PHRF)));
+        }
     }
 
 
@@ -85,77 +117,116 @@ public class BoatAddForm extends BoatMenu {
         finish();
     }
 
-    public void onClickAddBoat(View view){
-
-        String strBoatClassSpn = boatClassSpn.getSelectedItem().toString();
-        String strBoatName = boatName.getText().toString();
-        String strBoatSailNum = boatSailNum.getText().toString();
-        String strBoatPHRF = boatPHRF.getText().toString();
-
-        if (strBoatName.length() != 0
-                && strBoatPHRF.length() != 0
-                && strBoatSailNum.length() != 0) {
-            if(!strBoatClassSpn.equals("Please Select a Class")){
-
-                Boat newBoat = new Boat();
-                newBoat.setBoatClass(strBoatClassSpn);
-                newBoat.setBoatName(strBoatName);
-                newBoat.setBoatSailNum(strBoatSailNum);
-                newBoat.setBoatPHRF(Integer.parseInt(strBoatPHRF));
-                boatDataSource.create(newBoat);
-
-                Log.i(LOG,"Validated add entry" );
-                this.finish();
-            } else {
-                Toast.makeText(getApplicationContext(),"Please select a Boat Class",
-                        Toast.LENGTH_LONG).show();
-                Log.i(LOG,"No class selected" );
-            }
-        } else {
-            Toast.makeText(BoatAddForm.this,"All fields are required", Toast.LENGTH_LONG).show();
-            Log.i(LOG,"Missing fields" );
+    // create a new boat entry in SQLite db
+    public void onClickAddBoat(View view) {
+        //check if form is valid
+        if (validateForm()) {
+            Boat newBoat = new Boat(); // create new boat instance
+            //assign text data to the new boat instance
+            newBoat.setBoatClass(strBoatClassSpn);
+            newBoat.setBoatName(strBoatName);
+            newBoat.setBoatSailNum(strBoatSailNum);
+            newBoat.setBoatPHRF(Integer.parseInt(strBoatPHRF));
+            boatDataSource.create(newBoat); // push the loaded boat instance to the SQL table
+            Log.i(LOG, "Validated add entry");
+            this.finish(); // close out activity
         }
     }
 
-    private void UpdateBoat(long id) {
-        Cursor cursor = boatDataSource.getRow(id); // create cursor
-
+    private void loadTextFieldsToStrings() {
         //pass values from data entry fields and spinner to String variables
-        String strBoatClassSpn = boatClassSpn.getSelectedItem().toString();
-        String strBoatName = boatName.getText().toString();
-        String strBoatSailNum = boatSailNum.getText().toString();
-        String strBoatPHRF = boatPHRF.getText().toString();
+        strBoatClassSpn = boatClassSpn.getSelectedItem().toString();
+        strBoatName = boatName.getText().toString();
+        strBoatSailNum = boatSailNum.getText().toString();
+        strBoatPHRF = boatPHRF.getText().toString();
+    }
 
+    private boolean validateForm(){
+        boolean isValid; // declare return vallue
+        loadTextFieldsToStrings(); // repopulate text strings to field values
         // Ensure fields are not null or class a class has been selected prior to data input
         if (strBoatName.length() != 0
                 && strBoatPHRF.length() != 0
                 && strBoatSailNum.length() != 0) {
             if (!strBoatClassSpn.equals("Please Select a Class")) {
-                if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
-                    boatDataSource.update(id, strBoatClassSpn, strBoatName, strBoatSailNum,
-                            Integer.parseInt(strBoatPHRF));
-                    Log.i(LOG, "Validated UPDATE entry");
-                    this.finish(); // close out of the current activity. Back to boatmenu
-                } else {
-                    Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
-                            Toast.LENGTH_LONG).show();
-                    Log.i(LOG, "CURSOR ERROR>> BAD ID");
-                }
+                isValid = true; // change to valid
             } else {
                 Toast.makeText(getApplicationContext(), "Please select a Boat Class",
                         Toast.LENGTH_LONG).show();
                 Log.i(LOG, "No class selected");
+                isValid = false; // not valid
             }
         } else {
             Toast.makeText(BoatAddForm.this, "All fields are required", Toast.LENGTH_LONG).show();
             Log.i(LOG, "Missing fields");
-
+            isValid = false; // not valid
         }
-        cursor.close();
+       return isValid;
+    }
+
+
+    private void UpdateBoat(long id) {
+        Cursor cursor = boatDataSource.getRow(id); // create cursor
+        if (validateForm()) {
+            if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
+                boatDataSource.update(id, strBoatClassSpn, strBoatName, strBoatSailNum,
+                        Integer.parseInt(strBoatPHRF));
+                Log.i(LOG, "Validated UPDATE entry");
+
+                this.finish(); // close out of the current activity. Back to boatmenu
+            } else {
+                Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
+                        Toast.LENGTH_LONG).show();
+                Log.i(LOG, "CURSOR ERROR>> BAD ID");
+            }
+            cursor.close();
+        }
     }
 
     public void onClickUpdateBoat(View view){
-        UpdateBoat(rowID);
+        UpdateBoat(ROW_ID);
+    }
+
+    long accessibleID;
+    private void delete(long id) {
+        accessibleID = id;
+        Cursor cursor = boatDataSource.getRow(id);
+        if (validateForm()) {
+
+            if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("WARNING!!!! CANNOT UNDO A DELETION!");
+                builder.setMessage("Warning:\n" +
+                        "You are about to delete this boat. You cannot undo this event");
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        boatDataSource.psudoDelete(accessibleID);
+                        Log.i(LOG, "Validated UPDATE entry");
+
+                        finish(); // close out of the current activity. Back to boatmenu
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+            } else {
+                Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
+                        Toast.LENGTH_LONG).show();
+                Log.i(LOG, "CURSOR ERROR>> BAD ID");
+            }
+            cursor.close();
+        }
+    }
+
+    public void onClickDelete(View view) {
+        delete(Long.parseLong(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
+                DBAdapter.KEY_ID))));
     }
 
 }

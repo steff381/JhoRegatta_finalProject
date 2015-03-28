@@ -23,13 +23,13 @@ public class BoatMenu extends MainActivity {
 
     // parameters for methods using sql quiery parameters
     private String whereClauseIsVisible = "visible = 1";
-    private String orderByClause = "boat_name, boat_class";
+    private String orderByClause = "boat_name DESC, boat_class";
     private String havingClause = null;
 
     // tells all child activities how they should be displayed. i.e. edit vs add menu items
-    public String childActivityTypeSwitcher; // EDIT or CREATE
+    public static String CHILD_ACTIVITY_TYPE_SWITCHER; // EDIT or CREATE
 
-    public long rowID; // a public row id that passes info to other activities
+    public static long ROW_ID; // a public row id that passes info to other activities
     ListView myList; // initialize the listview
 
 
@@ -44,11 +44,23 @@ public class BoatMenu extends MainActivity {
         boatDataSource = new BoatDataSource(this);
         boatDataSource.open();
 
+//        listViewItemClicked(); // tell activity to start listening for onClicks of list items
         myList = (ListView) findViewById(R.id.lvBoatList); // set the lv to the current listview
 
+        myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ROW_ID = id;
+                CHILD_ACTIVITY_TYPE_SWITCHER = "EDIT";
+                Intent gotoBoatForm = new Intent(view.getContext(), BoatAddForm.class);
+                startActivity(gotoBoatForm);
+
+
+            }
+        });
         Cursor boats = boatDataSource.getAllBoatsCursor(whereClauseIsVisible,
                 orderByClause, havingClause);
-        //check if the cursor is empty. If not populate with dummy data
+
         //TODO: FOR TESTING ONLY, REMOVE IF STATEMENT PRIOR TO COMPLETION
         if (boats.getCount()>0) {
             populateListView();
@@ -82,11 +94,12 @@ public class BoatMenu extends MainActivity {
     }
 
     public void navigateToAddBoatForm(View view) {
-        childActivityTypeSwitcher = "CREATE";
+        CHILD_ACTIVITY_TYPE_SWITCHER = "CREATE";
         Intent intent = new Intent(this, BoatAddForm.class);
         startActivity(intent);
     }
     public void navigateToMainMenu(View view){
+        boatDataSource.close();
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
     }
@@ -95,12 +108,13 @@ public class BoatMenu extends MainActivity {
     protected void onResume() {
         super.onResume();
         boatDataSource.open();
+        populateListView();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        boatDataSource.close();
+        boatDataSource.close();
     }
 
     public void createData() {
@@ -160,16 +174,6 @@ public class BoatMenu extends MainActivity {
         myCursorAdaptor = new SimpleCursorAdapter(getBaseContext(),
                 R.layout.activity_list_template_boats, cursor, fromFieldNames, toViewIDs,0);
         myList.setAdapter(myCursorAdaptor);
-    }
-
-    private void listViewItemClicked() {
-        myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               rowID = id;
-                childActivityTypeSwitcher = "EDIT";
-            }
-        });
     }
 
 }
