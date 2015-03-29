@@ -1,11 +1,15 @@
 package aad.finalproject.db;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -59,6 +63,18 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_RACE_CLASS_TBD = "cl_tbd";
     public static final String KEY_RACE_VISIBLE = "visible";
 
+    public static final String[] RACES_ALL_FIELDS = new String[]{
+            KEY_RACE_NAME,
+            KEY_RACE_DATE,
+            KEY_RACE_DISTANCE,
+            KEY_RACE_CLASS_BLUE,
+            KEY_RACE_CLASS_GREEN,
+            KEY_RACE_CLASS_PURPLE,
+            KEY_RACE_CLASS_YELLOW,
+            KEY_RACE_CLASS_RED,
+            KEY_RACE_CLASS_TBD,
+            KEY_RACE_VISIBLE
+    };
 
 
     //RESULTS table
@@ -72,16 +88,16 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_RESULTS_VISIBLE = "visible";
 
     // call all results
-    public static final String[] RACES_ALL_FIELDS = new String[] {
+    public static final String[] RESULTS_ALL_FIELDS = new String[] {
             KEY_RACES_ID,
             KEY_BOATS_ID,
             KEY_RESULTS_DURATION,
             KEY_RESULTS_ADJ_DURATION,
             KEY_RESULTS_PENALTY,
             KEY_RESULTS_NOTE,
-            KEY_RESULTS_PLACE
+            KEY_RESULTS_PLACE,
+            KEY_RESULTS_VISIBLE
     } ;
-
 
     // build table statements
 
@@ -92,7 +108,8 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_BOAT_SAIL_NUM + " TEXT NOT NULL,"
             + KEY_BOAT_CLASS + " TEXT NOT NULL,"
             + KEY_BOAT_PHRF + " INTEGER NOT NULL,"
-            + KEY_BOAT_VISIBLE + " INTEGER NOT NULL"
+            + KEY_BOAT_VISIBLE + " INTEGER NOT NULL,"
+            + KEY_CREATED_AT + " INTEGER NOT NULL"
             + ")";
 
     //races table create
@@ -101,12 +118,12 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_RACE_NAME + " TEXT NOT NULL,"
             + KEY_RACE_DATE + " TEXT NOT NULL,"
             + KEY_RACE_DISTANCE + " DOUBLE NOT NULL,"
-            + KEY_RACE_CLASS_BLUE + " BOOLEAN NOT NULL,"
-            + KEY_RACE_CLASS_GREEN + " BOOLEAN NOT NULL,"
-            + KEY_RACE_CLASS_PURPLE + " BOOLEAN NOT NULL,"
-            + KEY_RACE_CLASS_YELLOW + " BOOLEAN NOT NULL,"
-            + KEY_RACE_CLASS_RED + " BOOLEAN NOT NULL,"
-            + KEY_RACE_CLASS_TBD + " BOOLEAN NOT NULL,"
+            + KEY_RACE_CLASS_BLUE + " INTEGER NOT NULL,"
+            + KEY_RACE_CLASS_GREEN + " INTEGER NOT NULL,"
+            + KEY_RACE_CLASS_PURPLE + " INTEGER NOT NULL,"
+            + KEY_RACE_CLASS_YELLOW + " INTEGER NOT NULL,"
+            + KEY_RACE_CLASS_RED + " INTEGER NOT NULL,"
+            + KEY_RACE_CLASS_TBD + " INTEGER NOT NULL,"
             + KEY_RACE_VISIBLE + " INTEGER NOT NULL,"
             + KEY_CREATED_AT + " TEXT"
             + ")";
@@ -162,4 +179,57 @@ public class DBAdapter extends SQLiteOpenHelper{
         Date date = new Date();
         return dateFormat.format(date);
     }
+
+
+
+
+///////////////////////////BEGIN DB MANAGER SECTION
+    public ArrayList<Cursor> getData(String Query){
+        //get writable database
+        SQLiteDatabase sqlDB = this.getWritableDatabase();
+        String[] columns = new String[] { "mesage" };
+        //an array list of cursor to save two cursors one has results from the query
+        //other cursor stores error message if any errors are triggered
+        ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
+        MatrixCursor Cursor2= new MatrixCursor(columns);
+        alc.add(null);
+        alc.add(null);
+
+
+        try{
+            String maxQuery = Query ;
+            //execute the query results will be save in Cursor c
+            Cursor c = sqlDB.rawQuery(maxQuery, null);
+
+
+            //add value to cursor2
+            Cursor2.addRow(new Object[] { "Success" });
+
+            alc.set(1,Cursor2);
+            if (null != c && c.getCount() > 0) {
+
+
+                alc.set(0,c);
+                c.moveToFirst();
+
+                return alc ;
+            }
+            return alc;
+        } catch(SQLException sqlEx){
+            Log.d("printing exception", sqlEx.getMessage());
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
+            alc.set(1,Cursor2);
+            return alc;
+        } catch(Exception ex){
+
+            Log.d("printing exception", ex.getMessage());
+
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[] { ""+ex.getMessage() });
+            alc.set(1,Cursor2);
+            return alc;
+        }
+    }
+/////////////////////END DB MANAGER SECTION
 }

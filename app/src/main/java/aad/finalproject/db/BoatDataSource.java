@@ -56,6 +56,7 @@ public class BoatDataSource {
         values.put(DBAdapter.KEY_BOAT_SAIL_NUM, boat.getBoatSailNum());
         values.put(DBAdapter.KEY_BOAT_CLASS, boat.getBoatClass());
         values.put(DBAdapter.KEY_BOAT_PHRF, boat.getBoatPHRF());
+        values.put(DBAdapter.KEY_CREATED_AT, DBAdapter.getDateTime());
         values.put(DBAdapter.KEY_BOAT_VISIBLE, 1);
         long insertId = db.insert(DBAdapter.TABLE_BOATS, null, values);
         boat.setId(insertId);
@@ -136,13 +137,13 @@ public class BoatDataSource {
             case "Red":
                 colorPosition = 1;
                 break;
-            case "Purple":
+            case "_TBD_":
                 colorPosition = 2;
                 break;
             case "Yellow":
                 colorPosition = 3;
                 break;
-            case "_TBD_":
+            case "Purple":
                 colorPosition = 4;
                 break;
             case "Blue":

@@ -98,6 +98,7 @@ public class BoatMenu extends MainActivity {
         Intent intent = new Intent(this, BoatAddForm.class);
         startActivity(intent);
     }
+
     public void navigateToMainMenu(View view){
         boatDataSource.close();
         Intent intent = new Intent(this,MainActivity.class);
@@ -107,8 +108,9 @@ public class BoatMenu extends MainActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        boatDataSource.open();
         populateListView();
+        boatDataSource.open();
+
     }
 
     @Override

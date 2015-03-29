@@ -8,21 +8,77 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="30dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="ID"
+            android:id="@+id/txt_raceId"
+            android:layout_weight="0.0" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Race Title"
-            android:id="@+id/txt_hd_raceTitle"
-            android:layout_weight="2" />
+            android:id="@+id/txt_raceName"
+            android:layout_weight="0.45" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Date"
-            android:id="@+id/txt_hd_raceDate"
-            android:layout_weight="2" />
+            android:id="@+id/txt_raceDate"
+            android:layout_weight="0.45" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Dist."
+            android:id="@+id/txt_raceDistance"
+            android:layout_weight="0.1" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Blue"
+            android:id="@+id/txt_raceBlue"
+            android:layout_weight="0" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Green"
+            android:id="@+id/txt_raceGreen"
+            android:layout_weight="0" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Purple"
+            android:id="@+id/txt_racePurple"
+            android:layout_weight="0" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Yellow"
+            android:id="@+id/txt_raceYellow"
+            android:layout_weight="0" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Red"
+            android:id="@+id/txt_raceRed"
+            android:layout_weight="0" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="_TBD_"
+            android:id="@+id/txt_race_TBD_"
+            android:layout_weight="0" />
     </TableRow>
 
 </RelativeLayout>
