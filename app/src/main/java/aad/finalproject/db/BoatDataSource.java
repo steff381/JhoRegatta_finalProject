@@ -88,11 +88,11 @@ public class BoatDataSource {
     }
 
     public Cursor getAllBoatsCursor(String where, String orderBy, String having){
-        String sortBy = DBAdapter.KEY_BOAT_CLASS;
+//        orderBy = DBAdapter.KEY_BOAT_CLASS;
 
 
         Cursor cursor = db.query(DBAdapter.TABLE_BOATS, ALL_BOAT_COLUMNS, where,
-                null, null, null, sortBy);
+                null, null, null, orderBy);
 
         Log.i(LOG, "Returned " + cursor.getCount() + " Rows");
         if (cursor.getCount() > 0) {

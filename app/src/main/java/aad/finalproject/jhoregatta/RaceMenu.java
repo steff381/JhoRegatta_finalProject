@@ -21,9 +21,11 @@ public class RaceMenu extends MainActivity {
     // log cat tagging
     private static final String LOG = "LogTag: RaceMenu";
 
+
+
     // parameters for methods using sql quiery parameters
-    private String whereClauseIsVisible = null;
-    private String orderByClause = null;
+    private String whereClauseIsVisible = DBAdapter.KEY_RACE_VISIBLE + " = 1";
+    private String orderByClause = DBAdapter.KEY_RACE_DATE+ " ASC";
     private String havingClause = null;
 
     // tells all child activities how they should be displayed. i.e. edit vs add menu items
@@ -116,7 +118,6 @@ public class RaceMenu extends MainActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        raceDataSource.close();
     }
 
     public void createData() {
@@ -148,11 +149,11 @@ public class RaceMenu extends MainActivity {
             race.setDate(raceString[i][1]);
             race.setDistance(Double.parseDouble(raceString[i][2]));
             race.setClsBlue(Integer.parseInt(raceString[i][3]));
-            race.setClsGreen(Integer.parseInt(raceString[i][5]));
-            race.setClsPurple(Integer.parseInt(raceString[i][6]));
-            race.setClsYellow(Integer.parseInt(raceString[i][7]));
-            race.setClsRed(Integer.parseInt(raceString[i][8]));
-            race.setCls_TBD_(Integer.parseInt(raceString[i][9]));
+            race.setClsGreen(Integer.parseInt(raceString[i][4]));
+            race.setClsPurple(Integer.parseInt(raceString[i][5]));
+            race.setClsYellow(Integer.parseInt(raceString[i][6]));
+            race.setClsRed(Integer.parseInt(raceString[i][7]));
+            race.setCls_TBD_(Integer.parseInt(raceString[i][8]));
             race = raceDataSource.create(race);
             Log.i(LOG,"Race created with the id of: " + race.getId() );
         }
@@ -160,7 +161,7 @@ public class RaceMenu extends MainActivity {
 
     public void populateListView(){
 
-        Cursor cursor = raceDataSource.getAllRacesCursor("visible = 1", orderByClause, havingClause);
+        Cursor cursor = raceDataSource.getAllRacesCursor("visible = 1", null, null);
         //arrays to work with adapter
         String[] fromFieldNames = new String[] { //names of columns
                 DBAdapter.KEY_ID,
@@ -188,9 +189,10 @@ public class RaceMenu extends MainActivity {
                 R.id.txt_race_TBD_
         };
 
-        SimpleCursorAdapter myCursorAdaptor;
+        SimpleCursorAdapter myCursorAdaptor; // create an adapter
+        // Wire the template and to the sql table
         myCursorAdaptor = new SimpleCursorAdapter(getBaseContext(),
                 R.layout.activity_list_template_races, cursor, fromFieldNames, toViewIDs,0);
-        myListRace.setAdapter(myCursorAdaptor);
+        myListRace.setAdapter(myCursorAdaptor); // wire the adapter to the listview
     }
 }

@@ -116,8 +116,9 @@ public class BoatMenu extends MainActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        boatDataSource.close();
+//        boatDataSource.close();
     }
+
 
     public void createData() {
         String[][] boatString = {

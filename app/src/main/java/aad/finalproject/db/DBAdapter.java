@@ -48,7 +48,8 @@ public class DBAdapter extends SQLiteOpenHelper{
             KEY_BOAT_NAME,
             KEY_BOAT_SAIL_NUM,
             KEY_BOAT_CLASS,
-            KEY_BOAT_PHRF
+            KEY_BOAT_PHRF,
+            KEY_BOAT_VISIBLE
     };
 
     //RACES table
@@ -64,6 +65,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_RACE_VISIBLE = "visible";
 
     public static final String[] RACES_ALL_FIELDS = new String[]{
+            KEY_ID,
             KEY_RACE_NAME,
             KEY_RACE_DATE,
             KEY_RACE_DISTANCE,
@@ -89,6 +91,7 @@ public class DBAdapter extends SQLiteOpenHelper{
 
     // call all results
     public static final String[] RESULTS_ALL_FIELDS = new String[] {
+            KEY_ID,
             KEY_RACES_ID,
             KEY_BOATS_ID,
             KEY_RESULTS_DURATION,

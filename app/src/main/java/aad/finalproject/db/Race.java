@@ -15,6 +15,7 @@ public class Race {
     int clsYellow;
     int clsRed;
     int cls_TBD_;
+    int raceVisible = 1;
 
     public long getId() {
         return id;

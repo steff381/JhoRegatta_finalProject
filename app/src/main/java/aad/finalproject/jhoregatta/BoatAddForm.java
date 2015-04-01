@@ -29,9 +29,9 @@ public class BoatAddForm extends BoatMenu {
     EditText boatPHRF;
 
     // initialize button widgets
-    Button createBoat;
-    Button updateBoat;
-    Button deleteBoat;
+    Button create;
+    Button update;
+    Button delete;
 
     // initialize strings for use by other methods
     String strBoatClassSpn;
@@ -46,6 +46,8 @@ public class BoatAddForm extends BoatMenu {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boat_add_form);
 
+//        boatDataSource.open();
+
         //load up text and spinner instances with their corresponding widgets
         boatClassSpn = (Spinner) findViewById(R.id.spn_BoatClass);
         boatName = (EditText) findViewById(R.id.txt_inpt_BoatName);
@@ -53,23 +55,23 @@ public class BoatAddForm extends BoatMenu {
         boatPHRF = (EditText) findViewById(R.id.txt_inpt_PHRF);
 
         //load up buttons with widget instances
-        createBoat = (Button) findViewById(R.id.btn_add_current_boat);
-        updateBoat = (Button) findViewById(R.id.btn_update_current_boat);
-        deleteBoat = (Button) findViewById(R.id.btn_delete_current_boat);
+        create = (Button) findViewById(R.id.btn_add_current_boat);
+        update = (Button) findViewById(R.id.btn_update_current_boat);
+        delete = (Button) findViewById(R.id.btn_delete_current_boat);
 
         //change the button's shown based on if form is in create or edit mode.
         // instructions for CREATE mode
         if ("CREATE".equals(BoatMenu.CHILD_ACTIVITY_TYPE_SWITCHER)) {
-            createBoat.setVisibility(View.VISIBLE);
-            updateBoat.setVisibility(View.GONE);
-            deleteBoat.setVisibility(View.GONE);
+            create.setVisibility(View.VISIBLE);
+            update.setVisibility(View.GONE);
+            delete.setVisibility(View.GONE);
             LOG = "Boat ADD form";
 
             // instructions for EDIT mode
         } else if (BoatMenu.CHILD_ACTIVITY_TYPE_SWITCHER.equals("EDIT")) {
-            createBoat.setVisibility(View.GONE);
-            updateBoat.setVisibility(View.VISIBLE);
-            deleteBoat.setVisibility(View.VISIBLE);
+            create.setVisibility(View.GONE);
+            update.setVisibility(View.VISIBLE);
+            delete.setVisibility(View.VISIBLE);
             boatDataSource.getRow(BoatMenu.ROW_ID);
             LOG = "Boat UPDATE form";
 
@@ -114,6 +116,7 @@ public class BoatAddForm extends BoatMenu {
 
     @Override
     public void onClickCancel(View view){
+//        boatDataSource.close();
         finish();
     }
 
@@ -129,6 +132,7 @@ public class BoatAddForm extends BoatMenu {
             newBoat.setBoatPHRF(Integer.parseInt(strBoatPHRF));
             boatDataSource.create(newBoat); // push the loaded boat instance to the SQL table
             Log.i(LOG, "Validated add entry");
+//            boatDataSource.close();
             this.finish(); // close out activity
         }
     }
@@ -173,7 +177,6 @@ public class BoatAddForm extends BoatMenu {
                         Integer.parseInt(strBoatPHRF));
                 Log.i(LOG, "Validated UPDATE entry");
 
-                this.finish(); // close out of the current activity. Back to boatmenu
             } else {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
                         Toast.LENGTH_LONG).show();
@@ -185,9 +188,12 @@ public class BoatAddForm extends BoatMenu {
 
     public void onClickUpdateBoat(View view){
         UpdateBoat(ROW_ID);
+//        boatDataSource.close();
+        this.finish(); // close out of the current activity. Back to boatmenu
     }
 
-    long accessibleID;
+    long accessibleID; //TODO move to declarations
+
     private void delete(long id) {
         accessibleID = id;
         Cursor cursor = boatDataSource.getRow(id);
@@ -203,7 +209,6 @@ public class BoatAddForm extends BoatMenu {
                         boatDataSource.psudoDelete(accessibleID);
                         Log.i(LOG, "Validated UPDATE entry");
 
-                        finish(); // close out of the current activity. Back to boatmenu
                         dialog.dismiss();
                     }
                 });
@@ -225,8 +230,10 @@ public class BoatAddForm extends BoatMenu {
     }
 
     public void onClickDelete(View view) {
-        delete(Long.parseLong(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
-                DBAdapter.KEY_ID))));
+//        delete(Long.parseLong(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
+//                DBAdapter.KEY_ID))));
+        delete(ROW_ID);
+//        boatDataSource.close();
+        finish(); // close out of the current activity. Back to boatmenu
     }
-
 }
