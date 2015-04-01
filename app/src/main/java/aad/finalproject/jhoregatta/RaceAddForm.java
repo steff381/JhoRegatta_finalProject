@@ -95,6 +95,7 @@ public class RaceAddForm extends RaceMenu {
             raceDistance.setText(updateRowFromCursor.getString(updateRowFromCursor
                     .getColumnIndex(DBAdapter.KEY_RACE_DISTANCE)));
 
+
             //check if the variable in SQLite is 1 or 0, if one set the checkbox to checked
             if (Integer.parseInt(updateRowFromCursor.getString(updateRowFromCursor
                     .getColumnIndex(DBAdapter.KEY_RACE_CLASS_RED))) == 1) {
