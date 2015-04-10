@@ -85,7 +85,4 @@ public class MainActivity extends ActionBarActivity {
         startActivity(dbmanager);
     }
 
-    public void onClickCancel(View view) {
-        finish();
-    }
 }

@@ -81,7 +81,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:onClick="onClickAddBoat"
+                android:onClick="onClickCreate"
                 android:visibility="visible" />
 
             <Button
@@ -93,7 +93,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:onClick="onClickUpdateBoat"/>
+                android:onClick="onClickUpdate"/>
 
             <Button
                 android:layout_width="wrap_content"

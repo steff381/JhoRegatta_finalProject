@@ -31,20 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Race Title"
-            android:id="@+id/txt_form_RACEDATEPKR"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/txt_inpt_RACEDATEPKR"
-            android:layout_gravity="center_horizontal"
-            android:inputType="date" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Date (mm/dd/yyyy)"
             android:id="@+id/txt_form_RaceDate" />
 
@@ -52,7 +38,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false">
+            android:baselineAligned="false"
+            android:id="@+id/linlay_MultiTextLineDate">
 
             <EditText
                 android:layout_width="50dp"
@@ -61,7 +48,7 @@
                 android:maxLength="2"
                 android:ems="10"
                 android:id="@+id/txt_inpt_RaceDateMM"
-                />
+                android:hint="mm" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +63,7 @@
                 android:maxLength="2"
                 android:ems="10"
                 android:id="@+id/txt_inpt_RaceDateDD"
-                />
+                android:hint="dd" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,9 +78,10 @@
                 android:inputType="date"
                 android:ems="10"
                 android:id="@+id/txt_inpt_RaceDateYYYY"
-                />
+                android:hint="yyyy" />
 
         </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -186,7 +174,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:onClick="onClickAddRace"
+                android:onClick="onClickCreate"
                 android:visibility="visible" />
 
             <Button
@@ -198,7 +186,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:onClick="onClickUpdateRace"/>
+                android:onClick="onClickUpdate"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -209,7 +197,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:onClick="onClickDeleteRace"/>
+                android:onClick="onClickDelete"/>
 
             <Button
                 android:layout_width="wrap_content"

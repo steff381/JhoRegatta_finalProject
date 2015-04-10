@@ -21,6 +21,8 @@ public class RaceMenu extends MainActivity {
     // log cat tagging
     private static final String LOG = "LogTag: RaceMenu";
 
+    //TODO: Move this to List class
+    public static String ACCESS_METHOD_KEY = "Key";
 
 
     // parameters for methods using sql quiery parameters
@@ -31,7 +33,7 @@ public class RaceMenu extends MainActivity {
     // tells all child activities how they should be displayed. i.e. edit vs add menu items
     public static String CHILD_ACTIVITY_TYPE_SWITCHER; // EDIT or CREATE
 
-    public static long ROW_ID; // a public row id that passes info to other activities
+//    public static long ROW_ID; // a public row id that passes info to other activities
     ListView myListRace; // initialize the listview
 
 
@@ -52,9 +54,10 @@ public class RaceMenu extends MainActivity {
         myListRace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ROW_ID = id;
-                CHILD_ACTIVITY_TYPE_SWITCHER = "EDIT";
+                Form.setROW_ID(id);
+//                CHILD_ACTIVITY_TYPE_SWITCHER = "EDIT";
                 Intent navigateToAddRaceForm = new Intent(view.getContext(), RaceAddForm.class);
+                navigateToAddRaceForm.putExtra(ACCESS_METHOD_KEY, "EDIT");
                 startActivity(navigateToAddRaceForm);
 
 
@@ -96,28 +99,31 @@ public class RaceMenu extends MainActivity {
     }
 
     public void navigateToAddRaceForm(View view){
-        CHILD_ACTIVITY_TYPE_SWITCHER = "CREATE";
+//        CHILD_ACTIVITY_TYPE_SWITCHER = "CREATE";
         Intent intent = new Intent(this,RaceAddForm.class);
+        intent.putExtra(ACCESS_METHOD_KEY, "CREATE");
         startActivity(intent);
     }
 
     public void navigateToMainMenu(View view){
-        raceDataSource.close();
+
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
+        raceDataSource.close();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        populateListView();
         raceDataSource.open();
+        populateListView();
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        raceDataSource.close();
     }
 
     public void createData() {

@@ -23,15 +23,16 @@ public class BoatMenu extends MainActivity {
 
     // parameters for methods using sql quiery parameters
     private String whereClauseIsVisible = "visible = 1";
-    private String orderByClause = "boat_name DESC, boat_class";
+    private String orderByClause = "boat_class, boat_name DESC";
     private String havingClause = null;
 
     // tells all child activities how they should be displayed. i.e. edit vs add menu items
     public static String CHILD_ACTIVITY_TYPE_SWITCHER; // EDIT or CREATE
 
-    public static long ROW_ID; // a public row id that passes info to other activities
+//    public static long ROW_ID; // a public row id that passes info to other activities
     ListView myList; // initialize the listview
 
+    public static String ACCESS_METHOD_KEY = "Key";
 
     BoatDataSource boatDataSource; // call the boat datasource
 
@@ -50,9 +51,12 @@ public class BoatMenu extends MainActivity {
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ROW_ID = id;
+//                ROW_ID = id;
+                Log.i(LOG, "Row id " + id);
+                Form.setROW_ID(id);
                 CHILD_ACTIVITY_TYPE_SWITCHER = "EDIT";
                 Intent gotoBoatForm = new Intent(view.getContext(), BoatAddForm.class);
+                gotoBoatForm.putExtra(ACCESS_METHOD_KEY, "EDIT");
                 startActivity(gotoBoatForm);
 
 
@@ -96,6 +100,7 @@ public class BoatMenu extends MainActivity {
     public void navigateToAddBoatForm(View view) {
         CHILD_ACTIVITY_TYPE_SWITCHER = "CREATE";
         Intent intent = new Intent(this, BoatAddForm.class);
+        intent.putExtra(ACCESS_METHOD_KEY, "CREATE");
         startActivity(intent);
     }
 
@@ -108,15 +113,15 @@ public class BoatMenu extends MainActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        populateListView();
         boatDataSource.open();
+        populateListView();
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        boatDataSource.close();
+        boatDataSource.close();
     }
 
 
