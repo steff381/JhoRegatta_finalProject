@@ -213,7 +213,7 @@ public class RaceAddForm extends Form  {
     public void onClickCreate(View view) {
         setTempDataFields();
         if (validateDataEntryFields()) {
-            //TODO Place insert into SQLite database Race statement here
+
             Race newRace = new Race(); // creae a new race instance
 
             // load new race instance with data from validated fields
@@ -229,7 +229,6 @@ public class RaceAddForm extends Form  {
             raceDataSource.create(newRace); //assign the race class to the db
 
 
-            //TODO: make a select boats class
             // open the select boats list
             Intent intent = new Intent(this, SelectBoats.class);
             startActivity(intent);

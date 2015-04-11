@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import static aad.finalproject.jhoregatta.R.id.imgNextFlag;
 
 
-public class RegattaTimer extends SelectBoats {
+public class RegattaTimer extends MainActivity {
 
     private static String LOGTAG = "LogTag: TimeTracker "; // default log tag
     private Button masterStart; // start button instance

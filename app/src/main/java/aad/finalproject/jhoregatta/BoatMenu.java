@@ -8,8 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import aad.finalproject.db.Boat;
 import aad.finalproject.db.BoatDataSource;
@@ -25,6 +27,10 @@ public class BoatMenu extends MainActivity {
     private String whereClauseIsVisible = "visible = 1";
     private String orderByClause = "boat_class, boat_name DESC";
     private String havingClause = null;
+
+    //get an instance of the checkbox from the listview and the text label
+    CheckBox ckboxSelectBoatsCheck;
+    TextView ckboxSelectBoatsCheckLabel;
 
     // tells all child activities how they should be displayed. i.e. edit vs add menu items
     public static String CHILD_ACTIVITY_TYPE_SWITCHER; // EDIT or CREATE
@@ -45,23 +51,28 @@ public class BoatMenu extends MainActivity {
         boatDataSource = new BoatDataSource(this);
         boatDataSource.open();
 
-//        listViewItemClicked(); // tell activity to start listening for onClicks of list items
+        /* get the checkbox and label so we can make it disapear */
+//        ckboxSelectBoatsCheck = (CheckBox) findViewById(R.id.ckboxSelectBoatCheck);
+        ckboxSelectBoatsCheckLabel = (TextView) findViewById(R.id.txt_hd_checkbox);
+//        ckboxSelectBoatsCheck.setVisibility(View.GONE);
+//        ckboxSelectBoatsCheckLabel.setVisibility(View.GONE);
+
+
         myList = (ListView) findViewById(R.id.lvBoatList); // set the lv to the current listview
 
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                ROW_ID = id;
                 Log.i(LOG, "Row id " + id);
                 Form.setROW_ID(id);
                 CHILD_ACTIVITY_TYPE_SWITCHER = "EDIT";
                 Intent gotoBoatForm = new Intent(view.getContext(), BoatAddForm.class);
                 gotoBoatForm.putExtra(ACCESS_METHOD_KEY, "EDIT");
                 startActivity(gotoBoatForm);
-
-
             }
         });
+
+
         Cursor boats = boatDataSource.getAllBoatsCursor(whereClauseIsVisible,
                 orderByClause, havingClause);
 

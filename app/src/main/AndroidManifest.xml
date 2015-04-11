@@ -8,7 +8,6 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity android:name="aad.finalproject.db.AndroidDatabaseManager" />
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -49,6 +48,10 @@
         <activity
             android:name=".RegattaTimer"
             android:label="@string/title_activity_regatta_timer" >
+        </activity>
+        <activity
+            android:name=".ResultsEditForm"
+            android:label="@string/title_activity_results_edit_form" >
         </activity>
     </application>
 

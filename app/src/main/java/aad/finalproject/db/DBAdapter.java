@@ -80,8 +80,8 @@ public class DBAdapter extends SQLiteOpenHelper{
 
 
     //RESULTS table
-    public static final String KEY_RACES_ID = "race_id";
-    public static final String KEY_BOATS_ID = "boat_id";
+    public static final String KEY_RACE_ID = "race_id";
+    public static final String KEY_BOAT_ID = "boat_id";
     public static final String KEY_RESULTS_DURATION = "duration";
     public static final String KEY_RESULTS_ADJ_DURATION = "adj_duration";
     public static final String KEY_RESULTS_PENALTY = "penalty";
@@ -89,18 +89,6 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_RESULTS_PLACE = "place";
     public static final String KEY_RESULTS_VISIBLE = "visible";
 
-    // call all results
-    public static final String[] RESULTS_ALL_FIELDS = new String[] {
-            KEY_ID,
-            KEY_RACES_ID,
-            KEY_BOATS_ID,
-            KEY_RESULTS_DURATION,
-            KEY_RESULTS_ADJ_DURATION,
-            KEY_RESULTS_PENALTY,
-            KEY_RESULTS_NOTE,
-            KEY_RESULTS_PLACE,
-            KEY_RESULTS_VISIBLE
-    } ;
 
     // build table statements
 
@@ -133,8 +121,15 @@ public class DBAdapter extends SQLiteOpenHelper{
 
     private static final String CREATE_TABLE_RESULTS = "CREATE TABLE " + TABLE_RESULTS + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + KEY_RACES_ID + " INTEGER,"
-            + KEY_BOATS_ID + " INTEGER,"
+            + KEY_RACE_ID + " INTEGER,"
+            + KEY_BOAT_ID + " INTEGER,"
+            + KEY_RACE_NAME + " TEXT,"
+            + KEY_RACE_DATE + " TEXT,"
+            + KEY_RACE_DISTANCE + " DOUBLE,"
+            + KEY_BOAT_NAME + " TEXT,"
+            + KEY_BOAT_SAIL_NUM + " TEXT,"
+            + KEY_BOAT_CLASS + " TEXT,"
+            + KEY_BOAT_PHRF + " INTEGER,"
             + KEY_RESULTS_DURATION + " TEXT,"
             + KEY_RESULTS_ADJ_DURATION + " TEXT,"
             + KEY_RESULTS_PENALTY + " REAL,"
@@ -144,6 +139,25 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_CREATED_AT + " TEXT"
             + ")";
 
+    // call all results
+    public static final String[] RESULTS_ALL_FIELDS = new String[] {
+            KEY_ID,
+            KEY_RACE_ID,
+            KEY_BOAT_ID,
+            KEY_RACE_NAME,
+            KEY_RACE_DATE,
+            KEY_RACE_DISTANCE,
+            KEY_BOAT_NAME,
+            KEY_BOAT_SAIL_NUM,
+            KEY_BOAT_CLASS,
+            KEY_BOAT_PHRF,
+            KEY_RESULTS_DURATION,
+            KEY_RESULTS_ADJ_DURATION,
+            KEY_RESULTS_PENALTY,
+            KEY_RESULTS_NOTE,
+            KEY_RESULTS_PLACE,
+            KEY_RESULTS_VISIBLE
+    } ;
     public DBAdapter(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         Log.i(LOG, "------------Database Created");

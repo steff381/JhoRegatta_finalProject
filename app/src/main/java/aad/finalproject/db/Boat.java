@@ -11,20 +11,24 @@ public class Boat {
     String boatClass;
     int boatPHRF;
     int boatVisible = 1;
+    private boolean selected;
+    String boatCreateDate = DBAdapter.getDateTime();
+
+    public int getBoatVisible() {
+        return boatVisible;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     public String getBoatCreateDate() {
         return boatCreateDate;
     }
-
-    String boatCreateDate = DBAdapter.getDateTime();
-
-//    public Boat(long id, String name, String sailNum, String boatClass, int phrf) {
-//
-//    }
-//
-//    public Boat(String name, String sailNum, String boatClass, int phrf) {
-//
-//    }
 
     public String getBoatSailNum() {
         return boatSailNum;
@@ -66,7 +70,7 @@ public class Boat {
         this.boatPHRF = boatPHRF;
     }
 
-    public int isBoatVisile() {
+    public int isBoatVisible() {
         return boatVisible;
     }
 
