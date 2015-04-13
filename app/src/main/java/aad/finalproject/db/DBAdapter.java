@@ -41,6 +41,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_BOAT_SAIL_NUM = "sail_num";
     public static final String KEY_BOAT_CLASS = "boat_class";
     public static final String KEY_BOAT_PHRF = "phrf";
+    public static final String KEY_BOAT_SELECTED = "isSelected";
     public static final String KEY_BOAT_VISIBLE = "visible";
 
     public static final String[] BOATS_ALL_FIELDS = new String[]{
@@ -49,7 +50,8 @@ public class DBAdapter extends SQLiteOpenHelper{
             KEY_BOAT_SAIL_NUM,
             KEY_BOAT_CLASS,
             KEY_BOAT_PHRF,
-            KEY_BOAT_VISIBLE
+            KEY_BOAT_VISIBLE,
+            KEY_BOAT_SELECTED
     };
 
     //RACES table
@@ -87,6 +89,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_RESULTS_PENALTY = "penalty";
     public static final String KEY_RESULTS_NOTE = "note";
     public static final String KEY_RESULTS_PLACE = "place";
+    public static final String KEY_RESULTS_NOT_FINISHED = "notFinished";
     public static final String KEY_RESULTS_VISIBLE = "visible";
 
 
@@ -116,6 +119,7 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_RACE_CLASS_RED + " INTEGER NOT NULL,"
             + KEY_RACE_CLASS_TBD + " INTEGER NOT NULL,"
             + KEY_RACE_VISIBLE + " INTEGER NOT NULL,"
+            + KEY_BOAT_SELECTED + " INTEGER,"
             + KEY_CREATED_AT + " TEXT"
             + ")";
 
@@ -135,6 +139,7 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_RESULTS_PENALTY + " REAL,"
             + KEY_RESULTS_NOTE + " TEXT,"
             + KEY_RESULTS_PLACE + " INTEGER,"
+            + KEY_RESULTS_NOT_FINISHED + " INTEGER,"
             + KEY_RESULTS_VISIBLE + " INTEGER NOT NULL,"
             + KEY_CREATED_AT + " TEXT"
             + ")";

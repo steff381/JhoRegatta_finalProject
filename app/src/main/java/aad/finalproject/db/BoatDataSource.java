@@ -102,6 +102,13 @@ public class BoatDataSource {
         return cursor;
     }
 
+    public boolean updateChecked(long id, boolean isChecked) {
+        String whereClause = DBAdapter.KEY_ID + " = " + id;
+        ContentValues newValues = new ContentValues();
+        newValues.put(DBAdapter.KEY_BOAT_SELECTED, isChecked);
+        return db.update(DBAdapter.TABLE_BOATS, newValues, whereClause, null) != 0;
+    }
+
     public boolean update(long id, String boatClass, String boatName, String boatSailNum,
                           int boatPHRF) {
         String whereClause = DBAdapter.KEY_ID + " = " + id;

@@ -1,6 +1,7 @@
 package aad.finalproject.db;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,41 +96,58 @@ public class BoatAdapter extends BaseAdapter{
     public View getView(final int position, View view, ViewGroup parent) {
         final ViewHolder holder;
         if (view == null) {
+
             holder = new ViewHolder();
-            view = inflater.inflate(R.layout.activity_list_template_boats, null);
+            view = inflater.inflate(R.layout.activity_list_template_select_boats, null);
             // check box indicating selection
             holder.checkBox = (CheckBox) view.findViewById(R.id.ckboxSelectBoatCheck);
             // fields in each row of the list
-            holder.id = (TextView) view.findViewById(R.id.txt_hd_ID); // Not visible in list
-            holder.boatPHRF = (TextView) view.findViewById(R.id.txt_hd_PHRF); // Not visible in list
-            holder.boatVisible = (TextView) view.findViewById(R.id.txt_hd_Visible); // Not visible in list
-            holder.boatClass = (TextView) view.findViewById(R.id.txt_hd_Class);
-            holder.boatName = (TextView) view.findViewById(R.id.txt_hd_Name);
-            holder.boatSailNum = (TextView) view.findViewById(R.id.txt_hd_SailNum);
+            holder.id = (TextView) view.findViewById(R.id.txt_hd_sb_ID); // Not visible in list
+            holder.boatPHRF = (TextView) view.findViewById(R.id.txt_hd_sb_PHRF); // Not visible in list
+            holder.boatVisible = (TextView) view.findViewById(R.id.txt_hd_sb_Visible); // Not visible in list
+            holder.boatClass = (TextView) view.findViewById(R.id.txt_hd_sb_Class);
+            holder.boatName = (TextView) view.findViewById(R.id.txt_hd_sb_Name);
+            holder.boatSailNum = (TextView) view.findViewById(R.id.txt_hd_sb_SailNum);
 
 
             view.setTag(holder);
-            view.setTag(R.id.txt_hd_ID, holder.id);
-            view.setTag(R.id.txt_hd_PHRF, holder.boatPHRF);
-            view.setTag(R.id.txt_hd_Visible, holder.boatVisible);
-            view.setTag(R.id.txt_hd_Class, holder.boatClass);
-            view.setTag(R.id.txt_hd_Name, holder.boatName);
-            view.setTag(R.id.txt_hd_SailNum, holder.boatSailNum);
+            view.setTag(R.id.txt_hd_sb_ID, holder.id);
+            view.setTag(R.id.txt_hd_sb_PHRF, holder.boatPHRF);
+            view.setTag(R.id.txt_hd_sb_Visible, holder.boatVisible);
+            view.setTag(R.id.txt_hd_sb_Class, holder.boatClass);
+            view.setTag(R.id.txt_hd_sb_Name, holder.boatName);
+            view.setTag(R.id.txt_hd_sb_SailNum, holder.boatSailNum);
             view.setTag(R.id.ckboxSelectBoatCheck, holder.checkBox);
 
             holder.checkBox
                     .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton vw, boolean isChecked) {
-
                             int getPosition = (Integer) vw.getTag();
+                            Log.i("BoatAdapter ", "OncheckChanged triggered for " +
+                                    mainDataList.get(getPosition).getBoatName());
                             mainDataList.get(getPosition).setSelected(
                                     vw.isChecked());
+                            Log.i("BoatAdapter ", " isSelected is now: " +
+                                    mainDataList.get(getPosition).isSelected());
+
+                            for (Boat boat : BoatListClass.boatList) {
+                                String listBoatId = boat.getId() + "";
+                                String mainBoatId = mainDataList.get(getPosition).getId() + "";
+                                if (listBoatId.equals(mainBoatId)) {
+                                    boat.setSelected(vw.isChecked());
+                                    Log.i("BoatAdapter ", " boatList entry: " +
+                                            boat.getBoatName() +
+                                            " was selected and changed to: " + vw.isChecked());
+                                }
+                            }
 
 
                         }
                     });
+
         } else {
+
             holder = (ViewHolder) view.getTag(); // get instance data for the whole view
         }
 
@@ -137,8 +155,6 @@ public class BoatAdapter extends BaseAdapter{
         holder.checkBox.setTag(position);
 
         holder.id.setText(String.valueOf(mainDataList.get(position).getId())); // pass a long as a string
-        holder.boatPHRF.setText(mainDataList.get(position).getBoatPHRF());
-        holder.boatVisible.setText(mainDataList.get(position).getBoatVisible());
         holder.boatClass.setText(mainDataList.get(position).getBoatClass());
         holder.boatName.setText(mainDataList.get(position).getBoatName());
         holder.boatSailNum.setText(mainDataList.get(position).getBoatSailNum());

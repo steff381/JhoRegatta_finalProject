@@ -63,20 +63,16 @@ public class ResultDataSource {
     }
 
     public boolean update(long id, String duration, String adjDuration, Double penalty,
-                          String note, int place) {
+                          String note, int place, int notFinished) {
         String whereClause = DBAdapter.KEY_ID + " = " + id;
         ContentValues newValues = new ContentValues();
-//        newValues.put(DBAdapter.KEY_, );
-//        newValues.put(DBAdapter.KEY_, );
-//        newValues.put(DBAdapter.KEY_, );
-//        newValues.put(DBAdapter.KEY_, );
-//        newValues.put(DBAdapter.KEY_, );
-//        newValues.put(DBAdapter.KEY_, );
         newValues.put(DBAdapter.KEY_RESULTS_DURATION, duration);
         newValues.put(DBAdapter.KEY_RESULTS_ADJ_DURATION, adjDuration);
         newValues.put(DBAdapter.KEY_RESULTS_PENALTY, penalty );
         newValues.put(DBAdapter.KEY_RESULTS_NOTE, note);
         newValues.put(DBAdapter.KEY_RESULTS_PLACE, place);
+        newValues.put(DBAdapter.KEY_RESULTS_NOT_FINISHED, notFinished);
+
         return db.update(DBAdapter.TABLE_RESULTS, newValues, whereClause, null) != 0;
 
     }
@@ -84,7 +80,7 @@ public class ResultDataSource {
     public boolean psudoDelete(long id) {
         String whereClause = DBAdapter.KEY_ID + " = " + id;
         ContentValues newValues = new ContentValues();
-        newValues.put(DBAdapter.KEY_RACE_VISIBLE, 0);
+        newValues.put(DBAdapter.KEY_RESULTS_VISIBLE, 0);
         return db.update(DBAdapter.TABLE_RESULTS, newValues, whereClause, null) != 0;
     }
 

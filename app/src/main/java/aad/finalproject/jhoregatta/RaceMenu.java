@@ -99,7 +99,6 @@ public class RaceMenu extends MainActivity {
     }
 
     public void navigateToAddRaceForm(View view){
-//        CHILD_ACTIVITY_TYPE_SWITCHER = "CREATE";
         Intent intent = new Intent(this,RaceAddForm.class);
         intent.putExtra(ACCESS_METHOD_KEY, "CREATE");
         startActivity(intent);
@@ -114,6 +113,7 @@ public class RaceMenu extends MainActivity {
 
     @Override
     protected void onResume() {
+        Log.i(LOG, " onResume Now");
         super.onResume();
         raceDataSource.open();
         populateListView();
@@ -122,6 +122,7 @@ public class RaceMenu extends MainActivity {
 
     @Override
     protected void onPause() {
+        Log.i(LOG, " onPause NOW");
         super.onPause();
         raceDataSource.close();
     }

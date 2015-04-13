@@ -348,8 +348,8 @@ public class RegattaTimer extends MainActivity {
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                flagToDisplay=0;
-                classToDisplay=0;
+                flagToDisplay = 0;
+                classToDisplay = 0;
                 masterStartButtonSwitcher();
             }
         });

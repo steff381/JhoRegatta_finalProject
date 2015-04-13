@@ -149,6 +149,7 @@ public class BoatAddForm extends Form {
             newBoat.setBoatName(strBoatName);
             newBoat.setBoatSailNum(strBoatSailNum);
             newBoat.setBoatPHRF(Integer.parseInt(strBoatPHRF));
+            newBoat.setBoatVisible(1);
             boatDataSource.create(newBoat); // push the loaded boat instance to the SQL table
             Log.i(LOG, "Validated add entry");
 //            boatDataSource.close();

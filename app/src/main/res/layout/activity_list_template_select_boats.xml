@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="aad.finalproject.jhoregatta.ListTemplateBoats">
+    tools:context="aad.finalproject.jhoregatta.ListTemplateSelectBoats">
 
     <TableRow
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Id"
-            android:id="@+id/txt_hd_ID"
+            android:id="@+id/txt_hd_sb_ID"
             android:layout_weight="0"
             android:visibility="invisible"/>
 
@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="PHRF"
-            android:id="@+id/txt_hd_PHRF"
+            android:id="@+id/txt_hd_sb_PHRF"
             android:layout_weight="0"
             android:visibility="invisible"/>
 
@@ -30,15 +30,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Visible"
-            android:id="@+id/txt_hd_Visible"
+            android:id="@+id/txt_hd_sb_Visible"
             android:layout_weight="0"
             android:visibility="invisible" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ckboxSelectBoatCheck"
+            android:text="     "/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Class"
-            android:id="@+id/txt_hd_Class"
+            android:id="@+id/txt_hd_sb_Class"
             android:layout_weight="1.5"
             android:layout_gravity="center_vertical" />
 
@@ -46,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Name"
-            android:id="@+id/txt_hd_Name"
+            android:id="@+id/txt_hd_sb_Name"
             android:layout_weight="3"
             android:layout_gravity="center_vertical" />
 
@@ -54,7 +60,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Sail Num"
-            android:id="@+id/txt_hd_SailNum"
+            android:id="@+id/txt_hd_sb_SailNum"
             android:layout_weight="3"
             android:layout_gravity="center_vertical" />
     </TableRow>

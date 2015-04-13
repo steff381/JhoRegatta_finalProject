@@ -53,7 +53,7 @@ public class BoatMenu extends MainActivity {
 
         /* get the checkbox and label so we can make it disapear */
 //        ckboxSelectBoatsCheck = (CheckBox) findViewById(R.id.ckboxSelectBoatCheck);
-        ckboxSelectBoatsCheckLabel = (TextView) findViewById(R.id.txt_hd_checkbox);
+//        ckboxSelectBoatsCheckLabel = (TextView) findViewById(R.id.txt_hd_checkbox);
 //        ckboxSelectBoatsCheck.setVisibility(View.GONE);
 //        ckboxSelectBoatsCheckLabel.setVisibility(View.GONE);
 

@@ -10,8 +10,8 @@ public class Boat {
     String boatSailNum;
     String boatClass;
     int boatPHRF;
-    int boatVisible = 1;
-    private boolean selected;
+    int boatVisible;
+    private boolean selected = false;
     String boatCreateDate = DBAdapter.getDateTime();
 
     public int getBoatVisible() {

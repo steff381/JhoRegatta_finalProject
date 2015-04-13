@@ -21,6 +21,7 @@ public class Result {
     String resultsNote;
     int resultsPlace;
     int resultsVisible = 1;
+    boolean resultsNotFinished;
     String resultsCreateDate = DBAdapter.getDateTime();
 
 
@@ -156,11 +157,16 @@ public class Result {
         return resultsCreateDate;
     }
 
+    public boolean isResultsNotFinished() {
+        return resultsNotFinished;
+    }
+
+    public void setResultsNotFinished(boolean resultsNotFinished) {
+        this.resultsNotFinished = resultsNotFinished;
+    }
+
     public void setResultsCreateDate(String resultsCreateDate) {
         this.resultsCreateDate = resultsCreateDate;
     }
-
-
-
 
 }

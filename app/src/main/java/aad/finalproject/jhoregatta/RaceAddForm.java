@@ -11,20 +11,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import aad.finalproject.db.DBAdapter;
 import aad.finalproject.db.Race;
 import aad.finalproject.db.RaceDataSource;
 
 
-public class RaceAddForm extends Form  {
+public class RaceAddForm extends Form {
 
-    private static String LOG; // create a log tag that changes based on activity mode
+    private String editModeStatus = "None"; //the button selections change with status
+    //logging header
+    private String LOGTAG = this.getClass().getSimpleName() + " - MODE: " + editModeStatus + ": ";
+
+
+    int boatCounter = 0;
+    HashMap<String, Integer> boatClassHashMap = new HashMap<>();
 
 
     // create empty instances for widgets
@@ -39,6 +46,8 @@ public class RaceAddForm extends Form  {
     CheckBox raceClassYellow;
     CheckBox raceClassGreen;
     CheckBox raceClass_TBD_;
+
+    ArrayList<CheckBox> checkBoxArrayList = new ArrayList<CheckBox>();
 
     // create create field data containers
     String strraceTitle;
@@ -55,13 +64,6 @@ public class RaceAddForm extends Form  {
     int intRaceClassGreen;
     int intRaceClass_TBD_;
 
-
-    //Time handleing variables
-    private Calendar calendar;
-    private int year, month, day;
-
-
-
     Bundle extras;
     // initialize the race data source object
     RaceDataSource raceDataSource;
@@ -72,15 +74,12 @@ public class RaceAddForm extends Form  {
     Button update;
     Button delete;
 
-    // date formatter instance
-    private SimpleDateFormat dateFormatter;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_race_add_form);
-        Log.i("Race add edit form ","Form opened" );
+        Log.i(LOGTAG, "Form opened");
+
 
         //open an Writable instance of the RaceDataSource
         raceDataSource = new RaceDataSource(this);
@@ -99,16 +98,27 @@ public class RaceAddForm extends Form  {
         raceClassYellow = (CheckBox) findViewById(R.id.ckbx_inpt_RaceClassYellow);
         raceClass_TBD_ = (CheckBox) findViewById(R.id.ckbx_inpt_RaceClass_TBD_);
 
+        checkBoxArrayList.add(raceClassRed);
+        checkBoxArrayList.add(raceClassBlue);
+        checkBoxArrayList.add(raceClassPurple);
+        checkBoxArrayList.add(raceClassGreen);
+        checkBoxArrayList.add(raceClassYellow);
+        checkBoxArrayList.add(raceClass_TBD_);
+
+
+
+        // set the oncheck listeners for each of the check boxes
+        setCheckboxListenders();
+
         // special properties for the text box with date data.
         raceDateMM = (EditText) findViewById(R.id.txt_inpt_RaceDateMM);
-        raceDateDD =  (EditText) findViewById(R.id.txt_inpt_RaceDateDD);
-        raceDateYYYY =  (EditText) findViewById(R.id.txt_inpt_RaceDateYYYY);
+        raceDateDD = (EditText) findViewById(R.id.txt_inpt_RaceDateDD);
+        raceDateYYYY = (EditText) findViewById(R.id.txt_inpt_RaceDateYYYY);
 
-            // wire button widgets to button instances
+        // wire button widgets to button instances
         create = (Button) findViewById(R.id.btn_add_race);
         update = (Button) findViewById(R.id.btn_update_race);
         delete = (Button) findViewById(R.id.btn_delete_race);
-
 
 
         if (extras.getString(RaceMenu.ACCESS_METHOD_KEY).equals("EDIT")) {
@@ -117,7 +127,7 @@ public class RaceAddForm extends Form  {
             delete.setVisibility(View.VISIBLE);
 
 
-            LOG = "Race EDIT form";
+            editModeStatus = "Race EDIT form";
             raceDataSource.getRow(Form.getROW_ID());
 
             //if EDIT mode is active initialize cursor fields
@@ -129,10 +139,13 @@ public class RaceAddForm extends Form  {
             raceDistance.setText(updateRowFromCursor.getString(updateRowFromCursor
                     .getColumnIndex(DBAdapter.KEY_RACE_DISTANCE)));
 
-            String[] dateTemp = updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(DBAdapter.KEY_RACE_DATE)).split("/");
+            String[] dateTemp = updateRowFromCursor.getString(updateRowFromCursor
+                    .getColumnIndex(DBAdapter.KEY_RACE_DATE)).split("/");
             raceDateMM.setText(dateTemp[0]);
             raceDateDD.setText(dateTemp[1]);
             raceDateYYYY.setText(dateTemp[2]);
+
+
 
             //check if the variable in SQLite is 1 or 0, if one set the checkbox to checked
             if (Integer.parseInt(updateRowFromCursor.getString(updateRowFromCursor
@@ -160,19 +173,67 @@ public class RaceAddForm extends Form  {
                 raceClass_TBD_.setChecked(true);
             }
 
-            Log.i(LOG, "Edit mode buttons activated");
+            Log.i(LOGTAG, "Edit mode buttons activated");
         } else if (extras.getString(RaceMenu.ACCESS_METHOD_KEY).equals("CREATE")) {
             create.setVisibility(View.VISIBLE);
             update.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
 
-            LOG = "Race CREATE form";
-            Log.i(LOG, "create mode buttons activated");
+            editModeStatus = "Race CREATE form";
+            Log.i(LOGTAG, "create mode buttons activated");
         } else {
-            Log.i(LOG, "NO RACE CHILD ACIVITY TYPE ERROR!!!!");
+            Log.i(LOGTAG, "NO RACE CHILD ACIVITY TYPE ERROR!!!!");
 
         }
 
+    }
+
+    // set the onclick listners for each of the check boxes
+    String boatCheckBoxName;
+
+    public void setCheckboxListenders() {
+
+        for (int i = 0; i < checkBoxArrayList.size(); i++) {
+            boatCheckBoxName = checkBoxArrayList.get(i).getText().toString().trim();
+            final String BCBN = boatCheckBoxName;
+            Log.i(LOGTAG, " Adding Listener to " + boatCheckBoxName );
+            checkBoxArrayList.get(i).setOnCheckedChangeListener(new CompoundButton.
+                    OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // when it is checked for the boat class
+                    if (isChecked) {
+                        BoatStartingListClass.addToBoatClassStartArray(BCBN);
+                        Log.i(LOGTAG, " COMPLETE LIST ");
+                        for (int i = 0; i < BoatStartingListClass.BOAT_CLASS_START_ARRAY.size()
+                                ; i++) {
+                            Log.i(LOGTAG, " List item Number " + i + " is "
+                                    + BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(i)
+                                    .getBoatColor() );
+                        }
+                    } else {
+                        BoatClass tmpBC = null;
+                        for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+                            if (bc.getBoatColor().equals(BCBN)) {
+                                tmpBC = bc;
+                            }
+                        }
+                        Log.i(LOGTAG, "Removing " + tmpBC.getBoatColor());
+                        BoatStartingListClass.BOAT_CLASS_START_ARRAY.remove(tmpBC);
+                    }
+
+                }
+            });
+            boatCheckBoxName = null;
+
+        }
+    }
+
+    /*
+    * Test the output for hashmap
+    * */
+    public void testHash() {
+        Toast.makeText(this,"Hashmap value going in as key" + checkBoxArrayList.get(boatCounter)
+                        .toString(), Toast.LENGTH_LONG).show();
     }
 
 
@@ -181,7 +242,7 @@ public class RaceAddForm extends Form  {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_race_add_form, menu);
-        Log.i("BoatAddForm ","OnCreateOptionsMenu" );
+        Log.i("BoatAddForm ", "OnCreateOptionsMenu");
         return true;
 
 
@@ -205,7 +266,7 @@ public class RaceAddForm extends Form  {
 
     @Override
     public void onClickCancel(View view) {
-        super.onClickCancel(view);
+        finish();
         raceDataSource.close();
     }
 
@@ -236,11 +297,13 @@ public class RaceAddForm extends Form  {
         }
 
     }
+
     @Override
-    public void onClickUpdate(View view){
+    public void onClickUpdate(View view) {
         update(getROW_ID());
 
     }
+
     @Override
     protected void update(long id) {
         Cursor cursor = raceDataSource.getRow(id); // create cursor
@@ -248,20 +311,21 @@ public class RaceAddForm extends Form  {
         if (validateDataEntryFields()) {
             if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
                 raceDataSource.update(id, strraceTitle, strraceDate, Double.parseDouble(strraceDistance),
-                        intRaceClassBlue, intRaceClassGreen, intRaceClassPurple,intRaceClassYellow,
+                        intRaceClassBlue, intRaceClassGreen, intRaceClassPurple, intRaceClassYellow,
                         intRaceClassRed, intRaceClass_TBD_);
-                Log.i(LOG, "Validated UPDATE entry");
+                Log.i(LOGTAG, "Validated UPDATE entry");
                 this.finish();
 
             } else {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
                         Toast.LENGTH_LONG).show();
-                Log.i(LOG, "CURSOR ERROR>> BAD ID");
+                Log.i(LOGTAG, "CURSOR ERROR>> BAD ID");
             }
             cursor.close();
         }
 
     }
+
     @Override
     public void onClickDelete(View view) {
         delete();
@@ -280,7 +344,7 @@ public class RaceAddForm extends Form  {
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         raceDataSource.psudoDelete(getROW_ID());
-                        Log.i(LOG, "Validated PsudoDeleted entry");
+                        Log.i(LOGTAG, "Validated PsudoDeleted entry");
 
                         dialog.dismiss();
                         finish(); // close out of the current activity. Back to boatmenu
@@ -298,47 +362,47 @@ public class RaceAddForm extends Form  {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
                         Toast.LENGTH_LONG).show();
 //                cursor.close();
-                Log.i(LOG, "CURSOR ERROR>> BAD ID");
+                Log.i(LOGTAG, "CURSOR ERROR>> BAD ID");
             }
         }
     }
 
     @Override
-    protected boolean validateDataEntryFields(){
+    protected boolean validateDataEntryFields() {
         boolean isValid; // declare return value
         setTempDataFields(); // repopulate text strings to field values
         // Ensure fields are not null or class a class has been selected prior to data input
-        if (    !raceTitle.getText().toString().equals("") &&
+        if (!raceTitle.getText().toString().equals("") &&
                 !raceDateMM.getText().toString().equals("") &&
                 !raceDateDD.getText().toString().equals("") &&
                 !raceDateYYYY.getText().toString().equals("") &&
-                !raceDistance.getText().toString().equals("")){
+                !raceDistance.getText().toString().equals("")) {
             isValid = true;
         } else {
-            Toast.makeText(this,"All fields are required",
+            Toast.makeText(this, "All fields are required",
                     Toast.LENGTH_LONG).show();
             isValid = false;
         }
 
-        if( (isValid) &&
-            (raceClassRed.isChecked() ||
-             raceClassBlue.isChecked() ||
-             raceClassPurple.isChecked() ||
-             raceClassYellow.isChecked() ||
-             raceClassGreen.isChecked() ||
-             raceClass_TBD_.isChecked()
-        )) {
+        if ((isValid) &&
+                (raceClassRed.isChecked() ||
+                        raceClassBlue.isChecked() ||
+                        raceClassPurple.isChecked() ||
+                        raceClassYellow.isChecked() ||
+                        raceClassGreen.isChecked() ||
+                        raceClass_TBD_.isChecked()
+                )) {
             isValid = true;
         } else {
-            Toast.makeText(this,"You must select at least 1 boat class",
+            Toast.makeText(this, "You must select at least 1 boat class",
                     Toast.LENGTH_LONG).show();
             isValid = false;
         }
 
-        if( isValid && Double.parseDouble(strraceDistance) > 0  ){
+        if (isValid && Double.parseDouble(strraceDistance) > 0) {
             isValid = true;
         } else {
-            Toast.makeText(this,"The race distance must be greater than 0",
+            Toast.makeText(this, "The race distance must be greater than 0",
                     Toast.LENGTH_LONG).show();
             isValid = false;
         }
@@ -349,21 +413,25 @@ public class RaceAddForm extends Form  {
     @Override
     protected void setTempDataFields() {
         //pass values from data entry fields and spinner to String variables
-        strraceTitle = raceTitle.getText().toString();
-        strraceDateMM = Integer.parseInt(raceDateMM.getText().toString());
-        strraceDateDD = Integer.parseInt(raceDateDD.getText().toString());
-        strraceDateYYYY = Integer.parseInt(raceDateYYYY.getText().toString());
-        strraceDate = strraceDateMM + "/" + strraceDateDD + "/" + strraceDateYYYY;
-        strraceDistance = raceDistance.getText().toString();
-        intRaceClassRed = (raceClassRed.isChecked()) ? 1 : 0;
-        intRaceClassBlue = (raceClassBlue.isChecked()) ? 1 : 0;
-        intRaceClassPurple = (raceClassPurple.isChecked()) ? 1 : 0;
-        intRaceClassYellow = (raceClassYellow.isChecked()) ? 1 : 0;
-        intRaceClassGreen = (raceClassGreen.isChecked()) ? 1 : 0;
-        intRaceClass_TBD_ = (raceClass_TBD_.isChecked()) ? 1 : 0;
+        try {
+            strraceTitle = raceTitle.getText().toString();
+            strraceDateMM = Integer.parseInt(raceDateMM.getText().toString());
+            strraceDateDD = Integer.parseInt(raceDateDD.getText().toString());
+            strraceDateYYYY = Integer.parseInt(raceDateYYYY.getText().toString());
+            strraceDate = strraceDateMM + "/" + strraceDateDD + "/" + strraceDateYYYY;
+            strraceDistance = raceDistance.getText().toString();
+            intRaceClassRed = (raceClassRed.isChecked()) ? 1 : 0;
+            intRaceClassBlue = (raceClassBlue.isChecked()) ? 1 : 0;
+            intRaceClassPurple = (raceClassPurple.isChecked()) ? 1 : 0;
+            intRaceClassYellow = (raceClassYellow.isChecked()) ? 1 : 0;
+            intRaceClassGreen = (raceClassGreen.isChecked()) ? 1 : 0;
+            intRaceClass_TBD_ = (raceClass_TBD_.isChecked()) ? 1 : 0;
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "All fields are required",
+                    Toast.LENGTH_LONG).show();
+        }
 
     }
-
 
 
 }
