@@ -8,10 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import aad.finalproject.db.Boat;
 import aad.finalproject.db.BoatDataSource;
@@ -24,16 +22,13 @@ public class BoatMenu extends MainActivity {
     private static final String LOG = "LogTag: BoatMenu";
 
     // parameters for methods using sql quiery parameters
-    private String whereClauseIsVisible = "visible = 1";
-    private String orderByClause = "boat_class, boat_name DESC";
+    private String whereClauseIsVisible = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
+    private String orderByClause = DBAdapter.KEY_BOAT_CLASS + ", "
+            + DBAdapter.KEY_BOAT_NAME + " DESC";
     private String havingClause = null;
 
-    //get an instance of the checkbox from the listview and the text label
-    CheckBox ckboxSelectBoatsCheck;
-    TextView ckboxSelectBoatsCheckLabel;
-
     // tells all child activities how they should be displayed. i.e. edit vs add menu items
-    public static String CHILD_ACTIVITY_TYPE_SWITCHER; // EDIT or CREATE
+//    public static String CHILD_ACTIVITY_TYPE_SWITCHER; // EDIT or CREATE
 
 //    public static long ROW_ID; // a public row id that passes info to other activities
     ListView myList; // initialize the listview
@@ -48,15 +43,8 @@ public class BoatMenu extends MainActivity {
         setContentView(R.layout.activity_boat_menu);
 
         //Build database
-        boatDataSource = new BoatDataSource(this);
+        boatDataSource = new BoatDataSource(this); // open writable version of DB
         boatDataSource.open();
-
-        /* get the checkbox and label so we can make it disapear */
-//        ckboxSelectBoatsCheck = (CheckBox) findViewById(R.id.ckboxSelectBoatCheck);
-//        ckboxSelectBoatsCheckLabel = (TextView) findViewById(R.id.txt_hd_checkbox);
-//        ckboxSelectBoatsCheck.setVisibility(View.GONE);
-//        ckboxSelectBoatsCheckLabel.setVisibility(View.GONE);
-
 
         myList = (ListView) findViewById(R.id.lvBoatList); // set the lv to the current listview
 
@@ -64,10 +52,10 @@ public class BoatMenu extends MainActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i(LOG, "Row id " + id);
-                Form.setROW_ID(id);
-                CHILD_ACTIVITY_TYPE_SWITCHER = "EDIT";
+                GlobalContent.setBoatRowID(id); // set the boat row id for the boat edit form
+                GlobalContent.setBoatFormAccessMode(true); // edit mode is on
                 Intent gotoBoatForm = new Intent(view.getContext(), BoatAddForm.class);
-                gotoBoatForm.putExtra(ACCESS_METHOD_KEY, "EDIT");
+//                gotoBoatForm.putExtra(ACCESS_METHOD_KEY, "EDIT");
                 startActivity(gotoBoatForm);
             }
         });
@@ -109,23 +97,24 @@ public class BoatMenu extends MainActivity {
     }
 
     public void navigateToAddBoatForm(View view) {
-        CHILD_ACTIVITY_TYPE_SWITCHER = "CREATE";
+        GlobalContent.setBoatFormAccessMode(false);
+//        CHILD_ACTIVITY_TYPE_SWITCHER = "CREATE";
         Intent intent = new Intent(this, BoatAddForm.class);
-        intent.putExtra(ACCESS_METHOD_KEY, "CREATE");
+//        intent.putExtra(ACCESS_METHOD_KEY, "CREATE");
         startActivity(intent);
     }
 
     public void navigateToMainMenu(View view){
-        boatDataSource.close();
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this,MainActivity.class); // open main menu and nav to
         startActivity(intent);
+        endBoatActivity(); // close db and exit activity
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        boatDataSource.open();
-        populateListView();
+        boatDataSource.open(); // reopen the datasource
+        populateListView(); // refresh the listview
 
     }
 
@@ -136,6 +125,7 @@ public class BoatMenu extends MainActivity {
     }
 
 
+    // create lorim ipsum data
     public void createData() {
         String[][] boatString = {
             {"Blue" , "J-Hoe" , "514473" , "89"},
@@ -193,6 +183,15 @@ public class BoatMenu extends MainActivity {
         myCursorAdaptor = new SimpleCursorAdapter(getBaseContext(),
                 R.layout.activity_list_template_boats, cursor, fromFieldNames, toViewIDs,0);
         myList.setAdapter(myCursorAdaptor);
+    }
+
+    protected void endBoatActivity() {
+        try {
+            boatDataSource.close();
+        } catch (Exception e) {
+            Log.i(LOG, "Data source close caused error");
+        }
+        this.finish();
     }
 
 }

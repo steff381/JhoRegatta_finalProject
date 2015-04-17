@@ -75,7 +75,7 @@
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:maxLength="4"
-                android:inputType="date"
+                android:inputType="number"
                 android:ems="10"
                 android:id="@+id/txt_inpt_RaceDateYYYY"
                 android:hint="yyyy" />
@@ -181,6 +181,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Update"
+                android:id="@+id/btn_update_current_race"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update"
                 android:id="@+id/btn_update_race"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
@@ -209,6 +216,70 @@
                 android:layout_weight="1"
                 android:onClick="onClickCancel"/>
         </TableRow>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linlay_class_start_order_textviews"
+            android:visibility="invisible">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/txt_class_1_holder"
+                    android:text="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/txt_class_2_holder"
+                    android:text="2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/txt_class_3_holder"
+                    android:text="3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/txt_class_4_holder"
+                    android:text="4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/txt_class_5_holder"
+                    android:text="5" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/txt_class_6_holder"
+                    android:text="6" />
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

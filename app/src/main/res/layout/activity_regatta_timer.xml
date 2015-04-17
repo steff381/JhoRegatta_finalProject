@@ -162,6 +162,13 @@
                                     android:text="Next Event:"
                                     android:id="@+id/txtlblNextEvent"
                                     android:layout_gravity="center_horizontal|bottom" />
+
+                                <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Finish Line"
+                                    android:id="@+id/btn_navigateTo_FinishLine"
+                                    android:layout_gravity="right|top" />
                             </FrameLayout>
                         </TableRow>
 
@@ -211,7 +218,9 @@
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:focusableInTouchMode="false"
+                        android:id="@+id/linlay_class_container">
 
                         <TableRow
                             android:layout_width="match_parent"
@@ -265,8 +274,8 @@
                                         style="?android:attr/buttonStyleSmall"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Start"
-                                        android:id="@+id/btn1Start"
+                                        android:text="Recall"
+                                        android:id="@+id/btnClassRecall1"
                                         android:layout_gravity="right|center_vertical" />
 
                                 </FrameLayout>
@@ -327,8 +336,8 @@
                                             style="?android:attr/buttonStyleSmall"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Start"
-                                            android:id="@+id/btn2Start"
+                                            android:text="Recall"
+                                            android:id="@+id/btnClassRecall2"
                                             android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
@@ -386,8 +395,8 @@
                                         style="?android:attr/buttonStyleSmall"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Start"
-                                        android:id="@+id/btn3Start"
+                                        android:text="Recall"
+                                        android:id="@+id/btnClassRecall3"
                                         android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
@@ -445,8 +454,8 @@
                                         style="?android:attr/buttonStyleSmall"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Start"
-                                        android:id="@+id/btn4Start"
+                                        android:text="Recall"
+                                        android:id="@+id/btnClassRecall4"
                                         android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
@@ -505,8 +514,8 @@
                                         style="?android:attr/buttonStyleSmall"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Start"
-                                        android:id="@+id/btn5Start"
+                                        android:text="Recall"
+                                        android:id="@+id/btnClassRecall5"
                                         android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>
@@ -565,8 +574,8 @@
                                         style="?android:attr/buttonStyleSmall"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Start"
-                                        android:id="@+id/btn6Start"
+                                        android:text="Recall"
+                                        android:id="@+id/btnClassRecall6"
                                         android:layout_gravity="right|center_vertical" />
                                 </FrameLayout>
                             </LinearLayout>

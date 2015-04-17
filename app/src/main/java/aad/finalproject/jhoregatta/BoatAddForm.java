@@ -20,7 +20,7 @@ import aad.finalproject.db.DBAdapter;
 
 public class BoatAddForm extends Form {
 
-    private static String LOG; // create a log tag that changes based on activity mode
+    private static String LOG = "No mode: "; // create a log tag that changes based on activity mode
 
 
     // initialize instances of text and spinner widgets
@@ -28,6 +28,8 @@ public class BoatAddForm extends Form {
     EditText boatName;
     EditText boatSailNum;
     EditText boatPHRF;
+
+
 
     // initialize button widgets
     Button create;
@@ -53,9 +55,7 @@ public class BoatAddForm extends Form {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boat_add_form);
 
-        extras = getIntent().getExtras();
-
-        boatDataSource = new BoatDataSource(this);
+        boatDataSource = new BoatDataSource(this); // open writable database
         boatDataSource.open();
 
         //load up text and spinner instances with their corresponding widgets
@@ -70,25 +70,25 @@ public class BoatAddForm extends Form {
         delete = (Button) findViewById(R.id.btn_delete_current_boat);
 
         //change the button's shown based on if form is in create or edit mode.
-        // instructions for CREATE mode
-        if ("CREATE".equals(extras.getString(BoatMenu.ACCESS_METHOD_KEY))) {
+        // instructions for ADD mode
+        if (GlobalContent.modeAdd.equals(GlobalContent.getBoatFormAccessMode())) {
             create.setVisibility(View.VISIBLE);
             update.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
             LOG = "Boat ADD form";
 
             // instructions for EDIT mode
-        } else if (extras.getString(BoatMenu.ACCESS_METHOD_KEY).equals("EDIT")) {
+        } else if (GlobalContent.modeEdit.equals(GlobalContent.getBoatFormAccessMode())) {
             create.setVisibility(View.GONE);
             update.setVisibility(View.VISIBLE);
             delete.setVisibility(View.VISIBLE);
-            boatDataSource.getRow(getROW_ID());
-            LOG = "Boat UPDATE form";
+            boatDataSource.getRow(GlobalContent.getBoatRowID());
+            LOG = "Boat EDIT form";
 
-            Log.i(LOG, " Row id = " + getROW_ID());
+            Log.i(LOG, " Row id = " + GlobalContent.getBoatRowID());
 
             // if in update mode assign cursor to initialized cursor field
-            updateRowFromCursor = boatDataSource.getRow(getROW_ID());
+            updateRowFromCursor = boatDataSource.getRow(GlobalContent.getBoatRowID());
 
             // populate the form with data for the row selected by the user in the boatMenu
             boatClassSpn.setSelection(BoatDataSource.getClassColorPosition(
@@ -128,8 +128,7 @@ public class BoatAddForm extends Form {
 
     @Override
     public void onClickCancel(View view){
-        boatDataSource.close();
-        finish();
+        endBoatActivity(); // Exit the activity
     }
 
     @Override
@@ -144,16 +143,17 @@ public class BoatAddForm extends Form {
         //check if form is valid
         if (validateDataEntryFields()) {
             Boat newBoat = new Boat(); // create new boat instance
+
             //assign text data to the new boat instance
             newBoat.setBoatClass(strBoatClassSpn);
             newBoat.setBoatName(strBoatName);
             newBoat.setBoatSailNum(strBoatSailNum);
             newBoat.setBoatPHRF(Integer.parseInt(strBoatPHRF));
-            newBoat.setBoatVisible(1);
+            newBoat.setBoatVisible(1); // visible should always be 1 initially
             boatDataSource.create(newBoat); // push the loaded boat instance to the SQL table
             Log.i(LOG, "Validated add entry");
-//            boatDataSource.close();
-            this.finish(); // close out activity
+            GlobalContent.clearBoatFormAccessMode(); // release the edit mode
+            endBoatActivity(); // Exit the activity
         }
     }
 
@@ -168,7 +168,7 @@ public class BoatAddForm extends Form {
 
     @Override
     protected boolean validateDataEntryFields(){
-        boolean isValid; // declare return vallue
+        boolean isValid; // declare return value
         setTempDataFields(); // repopulate text strings to field values
         // Ensure fields are not null or class a class has been selected prior to data input
         if (strBoatName.length() != 0
@@ -210,14 +210,14 @@ public class BoatAddForm extends Form {
 
     @Override
     public void onClickUpdate(View view){
-        update(getROW_ID());
-        this.finish(); // close out of the current activity. Back to boatmenu
+        update(GlobalContent.getBoatRowID());
+        endBoatActivity(); // Exit the activity
     }
 
 
     @Override
     protected void delete() {
-        Cursor cursor = boatDataSource.getRow(getROW_ID());
+        Cursor cursor = boatDataSource.getRow(GlobalContent.getBoatRowID());
         if (validateDataEntryFields()) {
 
             if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
@@ -227,11 +227,11 @@ public class BoatAddForm extends Form {
                         "You are about to delete this boat. You cannot undo this event");
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        boatDataSource.psudoDelete(getROW_ID());
+                        boatDataSource.psudoDelete(GlobalContent.getBoatRowID());
                         Log.i(LOG, "Validated PsudoDeleted entry");
 
                         dialog.dismiss();
-                        finish(); // close out of the current activity. Back to boatmenu
+                        endBoatActivity(); // Exit the activity
                     }
                 });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -245,11 +245,18 @@ public class BoatAddForm extends Form {
             } else {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
                         Toast.LENGTH_LONG).show();
-//                cursor.close();
                 Log.i(LOG, "CURSOR ERROR>> BAD ID");
             }
         }
     }
 
+    protected void endBoatActivity() {
+        try {
+            boatDataSource.close();
+        } catch (Exception e) {
+            Log.i(LOG, "Data source close caused error");
+        }
+        this.finish();
+    }
 
 }

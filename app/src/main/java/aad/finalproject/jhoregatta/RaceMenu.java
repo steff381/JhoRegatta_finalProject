@@ -22,7 +22,7 @@ public class RaceMenu extends MainActivity {
     private static final String LOG = "LogTag: RaceMenu";
 
     //TODO: Move this to List class
-    public static String ACCESS_METHOD_KEY = "Key";
+//    public static String ACCESS_METHOD_KEY = "Key";
 
 
     // parameters for methods using sql quiery parameters
@@ -54,10 +54,9 @@ public class RaceMenu extends MainActivity {
         myListRace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Form.setROW_ID(id);
-//                CHILD_ACTIVITY_TYPE_SWITCHER = "EDIT";
+                GlobalContent.setRaceRowID(id);
+                GlobalContent.setRaceFormAccessMode(true); // open form in edit mode
                 Intent navigateToAddRaceForm = new Intent(view.getContext(), RaceAddForm.class);
-                navigateToAddRaceForm.putExtra(ACCESS_METHOD_KEY, "EDIT");
                 startActivity(navigateToAddRaceForm);
 
 
@@ -100,7 +99,7 @@ public class RaceMenu extends MainActivity {
 
     public void navigateToAddRaceForm(View view){
         Intent intent = new Intent(this,RaceAddForm.class);
-        intent.putExtra(ACCESS_METHOD_KEY, "CREATE");
+        GlobalContent.setRaceFormAccessMode(false);
         startActivity(intent);
     }
 
@@ -108,25 +107,27 @@ public class RaceMenu extends MainActivity {
 
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
-        raceDataSource.close();
+        endActivity(); // exit activity and close db
     }
 
     @Override
     protected void onResume() {
-        Log.i(LOG, " onResume Now");
         super.onResume();
-        raceDataSource.open();
-        populateListView();
+        Log.i(LOG, " onResume Now");
+        raceDataSource.open(); // reopen the db
+        populateListView(); // refresh listview
 
     }
 
     @Override
     protected void onPause() {
-        Log.i(LOG, " onPause NOW");
         super.onPause();
-        raceDataSource.close();
+        Log.i(LOG, " onPause NOW");
+        raceDataSource.close(); // close db to reduce data leak
     }
 
+
+    // TODO: Get rid of lorim ipsum data
     public void createData() {
         String[][] raceString = new String[][] {
             {"Race 1","03/30/15",	"0.83",	"0",	"0",	"0",	"0",	"1",	"1",	"1"},
@@ -201,5 +202,14 @@ public class RaceMenu extends MainActivity {
         myCursorAdaptor = new SimpleCursorAdapter(getBaseContext(),
                 R.layout.activity_list_template_races, cursor, fromFieldNames, toViewIDs,0);
         myListRace.setAdapter(myCursorAdaptor); // wire the adapter to the listview
+    }
+
+    protected void endActivity() {
+        try {
+            raceDataSource.close();
+        } catch (Exception e) {
+            Log.i(LOG, "Data source close threw error");
+        }
+        this.finish();
     }
 }

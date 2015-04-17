@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 
@@ -30,12 +29,13 @@ public class SelectBoats extends MainActivity {
     ListView myList; // initialize the listview
     BoatAdapter objAdapter; // initialize custom adapter
 
-    // parameters for methods using sql quiery parameters
+    // parameters for methods using sql query parameters
     private String whereClauseIsVisible = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
     private String orderByClause = DBAdapter.KEY_BOAT_CLASS + ", "
             + DBAdapter.KEY_BOAT_NAME + " DESC";
     private String havingClause = null;
-    CheckBox selectBoatCkBox;
+
+    CheckBox selectBoatCkBox; // create an accessible instance of the checkbox widget
 
     // data base stuff
     BoatDataSource boatDataSource; // call the boat datasource
@@ -62,6 +62,7 @@ public class SelectBoats extends MainActivity {
         BoatListClass.clearSelectedBoatsList();
         addBoatsToBoatListClass(); // generate the boat list
 
+        /// wire the custom view adapter to the view
         Log.i(LOG, "Setting obj Adapter");
         objAdapter = new BoatAdapter(this, boatDataSource
                 .getAllBoats(whereClauseIsVisible, orderByClause, havingClause));
@@ -69,17 +70,20 @@ public class SelectBoats extends MainActivity {
 
     }
 
+    // build a sql query that includes only the classes chosen by the user in the prvious form.
     private void appendWhereClause() {
         StringBuilder sb = new StringBuilder();
-        sb.append(whereClauseIsVisible);
+        whereClauseIsVisible = null;
+        sb.append(DBAdapter.KEY_BOAT_VISIBLE + " = 1"); // grab the original statement and append
+        // it to the new one
         sb.append(" AND " + DBAdapter.KEY_BOAT_CLASS + " in(");
         for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
             sb.append("\"" + bc.getBoatColor() + "\"");
             sb.append(", ");
         }
-        String substring = sb.substring(0, sb.length() - 2);
-        substring += ")";
-        whereClauseIsVisible = substring;
+        String substring = sb.substring(0, sb.length() - 2); // chop off the last comma.
+        substring += ")"; // include the last brace
+        whereClauseIsVisible = substring;// replace old string with newly built string
         Log.i(LOG, substring);
     }
 
@@ -111,11 +115,14 @@ public class SelectBoats extends MainActivity {
     public void onClickTimer(View view) {
 
         Log.i(LOG, "Boat list sie " + BoatListClass.boatList.size());
+        // TODO: get rid of this testing item
         for (int i = 0; i < BoatListClass.boatList.size(); i++) {
             Log.i(LOG, "Get checked item positions iteratior " + myList.getCheckedItemPositions());
         }
-        BoatListClass.setSelectedBoats();
-        BoatListClass.getSelectedBoats();
+
+        BoatListClass.setSelectedBoats();//assign the selected boats to a special array list
+        BoatListClass.getSelectedBoats(); //TODO: testing method should be removed
+        // open the timer
         Intent intent = new Intent(this, RegattaTimer.class);
         startActivity(intent);
 
@@ -123,38 +130,38 @@ public class SelectBoats extends MainActivity {
     }
 
     public void onClickBack(View view) {
-        boatDataSource.close();
+        boatDataSource.close(); // close datasource to prevent leakage
         Log.i(LOG, " Close SelectBoats");
-        finish();
+        finish(); // close out the current view
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        boatDataSource.open();
-        populateListView();
+        boatDataSource.open(); // open the datasource
+        appendWhereClause(); // refresh the where clause
+        populateListView(); // refresh the listview
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        boatDataSource.close();
+        boatDataSource.close(); // close datasource to prevent leakage
     }
 
+    //put the selected boat classes into the special boatclass array
     private void addBoatsToBoatListClass() {
 
-        try {
+        try { // creat a cursor of all the data in the boats sql table
             Cursor boatCursor = boatDataSource.getAllBoatsCursor(whereClauseIsVisible, null, null);
 
-            try {
+            try { // clear any old or useless data from the list.
                 BoatListClass.clearSelectedBoatsList();
             } catch (Exception e) {
                 Log.i(LOG, " exception when attempting to Clear Boat List");
             }
-            int k =0;
-
-
+            // run through the array list and get the pertinant data
             while (boatCursor.moveToNext()) {
                 String id = boatCursor
                         .getString(boatCursor.getColumnIndex(DBAdapter.KEY_ID));
@@ -169,8 +176,9 @@ public class SelectBoats extends MainActivity {
                 String visible = boatCursor
                         .getString(boatCursor.getColumnIndex(DBAdapter.KEY_BOAT_VISIBLE));
 
-                Boat boat = new Boat();
+                Boat boat = new Boat(); // create a new boat class item
 
+                // pass arguments into the boat class using setters
                 boat.setId(Long.parseLong(id));
                 boat.setBoatClass(bClass);
                 boat.setBoatName(name);
@@ -178,11 +186,12 @@ public class SelectBoats extends MainActivity {
                 boat.setBoatPHRF(Integer.parseInt(phrf));
                 boat.setBoatVisible((Integer.parseInt(visible)));
 
-                BoatListClass.boatList.add(boat);
+                BoatListClass.boatList.add(boat);// add the boat instance to the array list
 
             }
-            boatCursor.close();
+            boatCursor.close(); // close the curosr to preserve resources
 
+            // compares the id's of both lists against one another
             Collections.sort(BoatListClass.boatList,
                     new Comparator<Boat>() {
                         @Override
@@ -192,29 +201,30 @@ public class SelectBoats extends MainActivity {
                                     rhs.getId() + ""));
                         }
                     });
-            populateListView();
-            myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            populateListView(); // refresh the list view
 
-                @Override
-                public void onItemClick(AdapterView<?> parent,
-                                        View view, int position, long id) {
-
-                    Boat boat = BoatListClass.boatList
-                            .get(position);
-                    if (boat.isSelected()) {
-                        Log.i(LOG, "Deselecting " + boat.getBoatName());
-                        boatDataSource.updateChecked(boat.getId(),!boat.isSelected());
-                        boat.setSelected(false);
-                        selectBoatCkBox.setChecked(false);
-                    } else {
-                        boatDataSource.updateChecked(boat.getId(), boat.isSelected());
-                        Log.i(LOG, "Selecting " + boat.getBoatName());
-                        boat.setSelected(true);
-                        selectBoatCkBox.setChecked(true);
-                    }
-
-                }
-            });
+            // Set the listener for row selection
+//            myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent,
+//                                        View view, int position, long id) {
+//
+//                    Boat boat = BoatListClass.boatList
+//                            .get(position);
+//                    if (boat.isSelected()) {
+//                        Log.i(LOG, "Deselecting " + boat.getBoatName());
+//                        boatDataSource.updateChecked(boat.getId(),!boat.isSelected());
+//                        boat.setSelected(false);
+//                        selectBoatCkBox.setChecked(false);
+//                    } else {
+//                        boatDataSource.updateChecked(boat.getId(), boat.isSelected());
+//                        Log.i(LOG, "Selecting " + boat.getBoatName());
+//                        boat.setSelected(true);
+//                        selectBoatCkBox.setChecked(true);
+//                    }
+//
+//                }
+//            });
 
         } catch (Exception e) {
             e.printStackTrace();

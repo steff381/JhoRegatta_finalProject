@@ -3,12 +3,14 @@ package aad.finalproject.jhoregatta;
 import android.graphics.Color;
 import android.util.Log;
 
+import java.sql.Time;
+
 /**
  * Created by Daniel on 4/12/2015.
  */
 public class BoatClass {
 
-    private String startTime;
+    private Time startTime;
     private String elapsedTime;
     private String boatColor;
     private int classColorSolid;
@@ -33,11 +35,11 @@ public class BoatClass {
     }
 
 
-    public String getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 

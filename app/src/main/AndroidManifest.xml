@@ -57,6 +57,14 @@
             android:name=".ListTemplateSelectBoats"
             android:label="@string/title_activity_list_template_select_boats" >
         </activity>
+        <activity
+            android:name=".ListTemplateResults"
+            android:label="@string/title_activity_list_template_results" >
+        </activity>
+        <activity
+            android:name=".ResultsMenu"
+            android:label="@string/title_activity_results_menu" >
+        </activity>
     </application>
 
 </manifest>

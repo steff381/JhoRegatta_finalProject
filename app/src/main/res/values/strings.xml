@@ -29,4 +29,6 @@
     <string name="DDMS">DDMS</string>
     <string name="title_activity_results_edit_form">ResultsEditForm</string>
     <string name="title_activity_list_template_select_boats">ListTemplateSelectBoats</string>
+    <string name="title_activity_list_template_results">ListTemplateResults</string>
+    <string name="title_activity_results_menu">ResultsMenu</string>
 </resources>
