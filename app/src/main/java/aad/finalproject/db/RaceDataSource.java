@@ -71,6 +71,18 @@ public class RaceDataSource {
         return cursor;
     }
 
+    public long getLastInsertedRowID() {
+        String query = "SELECT MAX(" + DBAdapter.KEY_ID + ") from " + DBAdapter.TABLE_RACES;
+        Cursor c;
+        c = ((db.rawQuery(query, null)));
+        if (c != null && c.moveToFirst()) {
+            return c.getLong(0);
+        } else {
+            return -1;
+        }
+
+    }
+
     public boolean update(long id, String raceName, String raceDate, Double raceDistance, int clsBlue,
                           int clsGreen, int clsPurple, int clsYellow, int clsRed, int cls_TBD_) {
         String whereClause = DBAdapter.KEY_ID + " = " + id;

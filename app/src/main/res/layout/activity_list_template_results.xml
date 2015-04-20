@@ -17,8 +17,9 @@
             android:layout_height="35dp"
             android:text="Finish!"
             android:layout_marginRight="5dp"
-            android:id="@+id/button"
-            android:layout_gravity="center_vertical" />
+            android:id="@+id/btn_boat_finished"
+            android:layout_gravity="center_vertical"
+            android:focusable="false" />
 
         <TextView
             android:layout_width="0dp"

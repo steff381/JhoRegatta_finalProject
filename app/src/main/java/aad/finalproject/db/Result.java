@@ -5,25 +5,38 @@ package aad.finalproject.db;
  */
 public class Result {
 
+    //IDs
     long id;
     long resultsRaceId;
     long resultsBoatId;
-    String raceName;
-    String raceDate;
-    double raceDistance;
-    String boatName;
-    String boatSailNum;
-    String boatClass;
-    int boatPHRF;
+    // results
     String resultsDuration;
     String resultsAdjDuration;
     double resultsPenalty;
     String resultsNote;
     int resultsPlace;
-    int resultsVisible = 1;
-    boolean resultsNotFinished;
+    int resultsVisible;
+    int resultsNotFinished;
+    int resultsManualEntry;
+    // boat
+    String boatName;
+    String boatSailNum;
+    String boatClass;
+    int boatPHRF;
+    //race
+    double raceDistance;
+    String raceName; // no
+    String raceDate; // no
+
     String resultsCreateDate = DBAdapter.getDateTime();
 
+    public int getResultsManualEntry() {
+        return resultsManualEntry;
+    }
+
+    public void setResultsManualEntry(int resultsManualEntry) {
+        this.resultsManualEntry = resultsManualEntry;
+    }
 
     public long getResultsId() {
         return id;
@@ -157,11 +170,11 @@ public class Result {
         return resultsCreateDate;
     }
 
-    public boolean isResultsNotFinished() {
+    public int getResultsNotFinished() {
         return resultsNotFinished;
     }
 
-    public void setResultsNotFinished(boolean resultsNotFinished) {
+    public void setResultsNotFinished(int resultsNotFinished) {
         this.resultsNotFinished = resultsNotFinished;
     }
 

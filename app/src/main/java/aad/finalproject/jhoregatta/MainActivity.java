@@ -45,15 +45,6 @@ public class MainActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
 
-
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-
     }
 
 
@@ -72,12 +63,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    public void navigateToSettings(View view){
-        Intent intent = new Intent(this, SelectBoats.class); //TODO: wire to settings activity
-        startActivity(intent);
+    public void navigateToPreferences(View view){
+//        Intent intent = new Intent(this, SelectBoats.class); //TODO: wire to settings activity
+//        startActivity(intent);
 
 
-        Log.i("Main Menu ", " GotoSettings ");
+        Log.i("Main Menu ", " goto Preferences ");
     }
 
     public void onActionClickDDMS(){

@@ -9,11 +9,11 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Settings"
+        android:text="Preferences"
         android:id="@+id/btn_nav_Settings"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:onClick="navigateToSettings"/>
+        android:onClick="navigateToPreferences"/>
 
     <Button
         android:layout_width="fill_parent"

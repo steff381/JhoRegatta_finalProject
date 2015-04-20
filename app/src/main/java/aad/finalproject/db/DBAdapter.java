@@ -91,6 +91,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_RESULTS_PLACE = "place";
     public static final String KEY_RESULTS_NOT_FINISHED = "notFinished";
     public static final String KEY_RESULTS_VISIBLE = "visible";
+    public static final String KEY_RESULTS_MANUAL_ENTRY = "visible";
 
 
     // build table statements
@@ -127,20 +128,21 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_RACE_ID + " INTEGER,"
             + KEY_BOAT_ID + " INTEGER,"
-            + KEY_RACE_NAME + " TEXT,"
-            + KEY_RACE_DATE + " TEXT,"
-            + KEY_RACE_DISTANCE + " DOUBLE,"
-            + KEY_BOAT_NAME + " TEXT,"
-            + KEY_BOAT_SAIL_NUM + " TEXT,"
-            + KEY_BOAT_CLASS + " TEXT,"
-            + KEY_BOAT_PHRF + " INTEGER,"
             + KEY_RESULTS_DURATION + " TEXT,"
             + KEY_RESULTS_ADJ_DURATION + " TEXT,"
             + KEY_RESULTS_PENALTY + " REAL,"
             + KEY_RESULTS_NOTE + " TEXT,"
             + KEY_RESULTS_PLACE + " INTEGER,"
-            + KEY_RESULTS_NOT_FINISHED + " INTEGER,"
             + KEY_RESULTS_VISIBLE + " INTEGER NOT NULL,"
+            + KEY_RESULTS_NOT_FINISHED + " INTEGER,"
+            + KEY_RESULTS_MANUAL_ENTRY + " INTEGER,"
+            + KEY_BOAT_NAME + " TEXT,"
+            + KEY_BOAT_SAIL_NUM + " TEXT,"
+            + KEY_BOAT_CLASS + " TEXT,"
+            + KEY_BOAT_PHRF + " INTEGER,"
+            + KEY_RACE_DISTANCE + " DOUBLE,"
+            + KEY_RACE_NAME + " TEXT,"
+            + KEY_RACE_DATE + " TEXT,"
             + KEY_CREATED_AT + " TEXT"
             + ")";
 
@@ -149,19 +151,21 @@ public class DBAdapter extends SQLiteOpenHelper{
             KEY_ID,
             KEY_RACE_ID,
             KEY_BOAT_ID,
-            KEY_RACE_NAME,
-            KEY_RACE_DATE,
-            KEY_RACE_DISTANCE,
-            KEY_BOAT_NAME,
-            KEY_BOAT_SAIL_NUM,
-            KEY_BOAT_CLASS,
-            KEY_BOAT_PHRF,
             KEY_RESULTS_DURATION,
             KEY_RESULTS_ADJ_DURATION,
             KEY_RESULTS_PENALTY,
             KEY_RESULTS_NOTE,
             KEY_RESULTS_PLACE,
-            KEY_RESULTS_VISIBLE
+            KEY_RESULTS_NOT_FINISHED,
+            KEY_RESULTS_MANUAL_ENTRY,
+            KEY_RESULTS_VISIBLE,
+            KEY_BOAT_NAME,
+            KEY_BOAT_SAIL_NUM,
+            KEY_BOAT_CLASS,
+            KEY_BOAT_PHRF,
+            KEY_RACE_NAME,
+            KEY_RACE_DATE,
+            KEY_RACE_DISTANCE
     } ;
     public DBAdapter(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

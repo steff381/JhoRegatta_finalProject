@@ -42,7 +42,7 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text=" Add New Race"
+                        android:text="New Race"
                         android:id="@+id/btn_add_race"
                         android:layout_gravity="center_vertical"
                         android:onClick="navigateToAddRaceForm"

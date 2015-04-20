@@ -105,7 +105,8 @@
 
                             <FrameLayout
                                 android:layout_width="fill_parent"
-                                android:layout_height="fill_parent">
+                                android:layout_height="fill_parent"
+                                android:id="@+id/frmlay_pause_bg">
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -113,6 +114,14 @@
                                     android:textAppearance="?android:attr/textAppearanceLarge"
                                     android:id="@+id/txtMasterStartTime"
                                     android:layout_gravity="center" />
+
+                                <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pause"
+                                    android:id="@+id/btnMasterPause"
+                                    android:layout_gravity="center"
+                                    android:onClick="onClickMasterPause" />
                             </FrameLayout>
                         </TableRow>
 
@@ -168,6 +177,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="Finish Line"
                                     android:id="@+id/btn_navigateTo_FinishLine"
+                                    android:onClick="onClickFinishLine"
                                     android:layout_gravity="right|top" />
                             </FrameLayout>
                         </TableRow>

@@ -66,7 +66,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Id"
-                android:id="@+id/txt_hd_sb_ID"
+                android:id="@+id/txt_hd_rl_ID"
                 android:layout_weight="0"
                 android:visibility="invisible"/>
 
@@ -74,7 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="PHRF"
-                android:id="@+id/txt_hd_sb_PHRF"
+                android:id="@+id/txt_hd_rl_PHRF"
                 android:layout_weight="0"
                 android:visibility="invisible"/>
 
@@ -82,7 +82,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Visible"
-                android:id="@+id/txt_hd_sb_Visible"
+                android:id="@+id/txt_hd_rl_Visible"
                 android:layout_weight="0"
                 android:visibility="invisible" />
 
@@ -97,7 +97,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Class"
-                android:id="@+id/txt_hd_sb_Class"
+                android:id="@+id/txt_hd_rl_Class"
                 android:layout_weight="1.5"
                 android:layout_gravity="center_vertical" />
 
@@ -105,7 +105,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Name"
-                android:id="@+id/txt_hd_sb_Name"
+                android:id="@+id/txt_hd_rl_Name"
                 android:layout_weight="3"
                 android:layout_gravity="center_vertical" />
 
@@ -113,7 +113,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Sail Num"
-                android:id="@+id/txt_hd_sb_SailNum"
+                android:id="@+id/txt_hd_rl_SailNum"
                 android:layout_weight="3"
                 android:layout_gravity="center_vertical" />
 
@@ -124,7 +124,7 @@
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/lvRaceList"/>
+            android:id="@+id/lvResultList"/>
     </LinearLayout>
 
 

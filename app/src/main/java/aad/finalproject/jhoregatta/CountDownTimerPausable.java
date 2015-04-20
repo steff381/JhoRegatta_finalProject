@@ -1,8 +1,11 @@
 package aad.finalproject.jhoregatta;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 
 public abstract class CountDownTimerPausable {
+
+    private static String LOGTAG = "LogTag: CountDownTimerPausable: ";
     long millisInFuture = 0;
     long countDownInterval = 0;
     long millisRemaining =  0;
@@ -16,7 +19,10 @@ public abstract class CountDownTimerPausable {
         this.millisInFuture = millisInFuture;
         this.countDownInterval = countDownInterval;
         this.millisRemaining = this.millisInFuture;
+
     }
+
+
     private void createCountDownTimer(){
         countDownTimer = new CountDownTimer(millisRemaining,countDownInterval) {
 
@@ -30,6 +36,7 @@ public abstract class CountDownTimerPausable {
             @Override
             public void onFinish() {
                 CountDownTimerPausable.this.onFinish();
+                Log.i(LOGTAG,  Thread.currentThread().getStackTrace()[2].getMethodName()  + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber()  + " XXX RRR ---------------- onFinish Counter# " + this.hashCode());
 
             }
         };
@@ -50,6 +57,7 @@ public abstract class CountDownTimerPausable {
     public final void cancel(){
         if(countDownTimer!=null){
             countDownTimer.cancel();
+            Log.i(LOGTAG, Thread.currentThread().getStackTrace()[2].getMethodName() + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber() + " XXX RRR ---------------- Cancelled Counter# "  + this.hashCode());
         }
         this.millisRemaining = 0;
     }
@@ -62,6 +70,10 @@ public abstract class CountDownTimerPausable {
             createCountDownTimer();
             countDownTimer.start();
             isPaused = false;
+            RegattaTimer.masterPause.setText("Pause");
+            Log.i(LOGTAG, Thread.currentThread().getStackTrace()[2].getMethodName()  + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber()  + " XXX RRR ---------------- Resuming Counter# "  + this.hashCode());
+        } else{
+            Log.i(LOGTAG, Thread.currentThread().getStackTrace()[2].getMethodName()  + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber()  + " XXX RRR ---------------- Starting Counter# "  + this.hashCode());
         }
         return this;
     }
@@ -70,8 +82,11 @@ public abstract class CountDownTimerPausable {
      * later from the same point where it was paused.
      */
     public void pause()throws IllegalStateException{
-        if(isPaused==false){
+        if(!isPaused){
             countDownTimer.cancel();
+            RegattaTimer.masterPause.setText("Resume");
+            Log.i(LOGTAG, Thread.currentThread().getStackTrace()[2].getMethodName() + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber() + " XXX RRR ---------------- Paused Counter# "  + this.hashCode());
+
         } else{
             throw new IllegalStateException("CountDownTimerPausable is already in pause state, start counter before pausing it.");
         }

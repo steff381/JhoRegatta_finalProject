@@ -137,7 +137,7 @@ public class BoatDataSource {
            }
            return cursor;
        }
-
+// data for displaying boat class in boat calls select dropdown
     public static int getClassColorPosition(String classColor) {
         int colorPosition;
         switch (classColor) {

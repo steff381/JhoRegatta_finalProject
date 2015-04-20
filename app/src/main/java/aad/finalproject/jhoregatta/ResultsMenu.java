@@ -1,19 +1,54 @@
 package aad.finalproject.jhoregatta;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import aad.finalproject.db.RaceDataSource;
+import aad.finalproject.db.ResultDataSource;
 
 
 public class ResultsMenu extends ActionBarActivity {
+    private static final String LOGTAG = "Logtag: " + Thread.currentThread()
+            .getStackTrace()[2].getClassName(); // log tag for records
 
-    @Override
+    //instance of data source
+    RaceDataSource raceDataSource;
+    ResultDataSource resultDataSource;
+
+    // make a listview instance
+    ListView lvResultList;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results_menu);
-    }
 
+        //wire data source and open
+        raceDataSource = new RaceDataSource(this);
+        resultDataSource = new ResultDataSource(this);
+        raceDataSource.open();
+        resultDataSource.open();
+
+        // wire list view
+        lvResultList = (ListView) findViewById(R.id.lvResultList);
+
+        //set onclick listening for listview
+        lvResultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GlobalContent.setResultsRowID(id);
+                Intent intent = new Intent(view.getContext(), ResultsEditForm.class);
+                startActivity(intent);
+
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

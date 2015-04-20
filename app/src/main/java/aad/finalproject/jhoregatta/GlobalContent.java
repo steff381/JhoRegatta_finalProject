@@ -2,10 +2,15 @@ package aad.finalproject.jhoregatta;
 
 import android.graphics.Color;
 
+import aad.finalproject.db.Race;
+
 /**
  * Created by Daniel on 4/14/2015.
  */
 public class GlobalContent {
+
+    public static Race activeRace;
+
     private static String BoatFormAccessMode;
     private static String RaceFormAccessMode;
     private static String ResultsFormAccessMode;
@@ -23,6 +28,7 @@ public class GlobalContent {
     private static int secondsUntilPrepFlagUp;
     private static int secondsUntilPrepFlagDown;
     private static int secondsUntilClassFlagDown;
+    private static int secondsUntilRestartFromRecall;
 
     public static int colorOrange = Color.rgb(255, 100, 0);
 
@@ -162,6 +168,16 @@ public class GlobalContent {
         GlobalContent.resultsRowID = resultsRowID;
     }
 
+    public static int getSecondsUntilRestartFromRecall() {
+        return secondsUntilRestartFromRecall;
+    }
 
+    public static void setSecondsUntilRestartFromRecall(int secondsUntilRestartFromRecall) {
+        GlobalContent.secondsUntilRestartFromRecall = secondsUntilRestartFromRecall;
+    }
 
+    public static void setActiveRace(Race activeRace, long id) {
+        GlobalContent.activeRace = activeRace;
+        activeRace.setId(id);
+    }
 }

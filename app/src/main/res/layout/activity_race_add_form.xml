@@ -80,6 +80,14 @@
                 android:id="@+id/txt_inpt_RaceDateYYYY"
                 android:hint="yyyy" />
 
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today!"
+                android:id="@+id/btnToday"
+                android:onClick="onClickToday"/>
+
         </LinearLayout>
 
         <TextView
@@ -105,65 +113,142 @@
             android:id="@+id/txt_form_ClassChkBoxes" />
 
 
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-            <CheckBox
+            <GridLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Red"
-                android:id="@+id/ckbx_inpt_RaceClassRed"
-                android:layout_row="0"
-                android:layout_column="0"
-                android:layout_marginRight="40dp" />
+                android:layout_gravity="left"
+                android:layout_marginRight="15dp">
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Green"
-                android:id="@+id/ckbx_inpt_RaceClassGreen"
-                android:layout_row="0"
-                android:layout_column="1" />
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Red"
+                    android:id="@+id/ckbx_inpt_RaceClassRed"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_marginRight="40dp" />
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Blue"
-                android:id="@+id/ckbx_inpt_RaceClassBlue"
-                android:layout_row="1"
-                android:layout_column="0" />
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Green"
+                    android:id="@+id/ckbx_inpt_RaceClassGreen"
+                    android:layout_row="0"
+                    android:layout_column="1" />
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Purple"
-                android:id="@+id/ckbx_inpt_RaceClassPurple"
-                android:layout_row="1"
-                android:layout_column="1" />
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blue"
+                    android:id="@+id/ckbx_inpt_RaceClassBlue"
+                    android:layout_row="1"
+                    android:layout_column="0" />
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Yellow"
-                android:id="@+id/ckbx_inpt_RaceClassYellow"
-                android:layout_row="2"
-                android:layout_column="0" />
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Purple"
+                    android:id="@+id/ckbx_inpt_RaceClassPurple"
+                    android:layout_row="1"
+                    android:layout_column="1" />
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="_TBD_"
-                android:id="@+id/ckbx_inpt_RaceClass_TBD_"
-                android:layout_row="2"
-                android:layout_column="1" />
-        </GridLayout>
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yellow"
+                    android:id="@+id/ckbx_inpt_RaceClassYellow"
+                    android:layout_row="2"
+                    android:layout_column="0" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="_TBD_"
+                    android:id="@+id/ckbx_inpt_RaceClass_TBD_"
+                    android:layout_row="2"
+                    android:layout_column="1" />
+            </GridLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/linlay_class_start_order_textviews"
+                android:visibility="invisible">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_class_1_holder"
+                        android:text="1" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_class_2_holder"
+                        android:text="2"
+                        android:layout_gravity="right" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_class_3_holder"
+                        android:text="3" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_class_4_holder"
+                        android:text="4"
+                        android:layout_gravity="left" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_class_5_holder"
+                        android:text="5"
+                        android:layout_gravity="left" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:id="@+id/txt_class_6_holder"
+                        android:text="6"
+                        android:layout_gravity="left" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp">
 
             <Button
                 android:layout_width="wrap_content"
@@ -217,69 +302,13 @@
                 android:onClick="onClickCancel"/>
         </TableRow>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/linlay_class_start_order_textviews"
-            android:visibility="invisible">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/txt_class_1_holder"
-                    android:text="1" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/txt_class_2_holder"
-                    android:text="2" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/txt_class_3_holder"
-                    android:text="3" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/txt_class_4_holder"
-                    android:text="4" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/txt_class_5_holder"
-                    android:text="5" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/txt_class_6_holder"
-                    android:text="6" />
-            </LinearLayout>
-        </LinearLayout>
+            android:text="RACE MAKER TEST"
+            android:id="@+id/btnMakeLifeEasier"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onClickGoodLife" />
 
     </LinearLayout>
 </RelativeLayout>

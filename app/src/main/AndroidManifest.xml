@@ -19,27 +19,33 @@
         </activity>
         <activity
             android:name=".BoatMenu"
-            android:label="@string/title_activity_boat_menu" >
+            android:label="@string/title_activity_boat_menu"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ListTemplateBoats"
-            android:label="@string/title_activity_list_template_boats" >
+            android:label="@string/title_activity_list_template_boats"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".BoatAddForm"
-            android:label="@string/title_activity_boat_add_form" >
+            android:label="@string/title_activity_boat_add_form"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".RaceMenu"
-            android:label="@string/title_activity_race_menu" >
+            android:label="@string/title_activity_race_menu"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".RaceAddForm"
-            android:label="@string/title_activity_race_add_form" >
+            android:label="@string/title_activity_race_add_form"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".SelectBoats"
-            android:label="@string/title_activity_select_boats" >
+            android:label="@string/title_activity_select_boats"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ListTemplateRaces"
@@ -47,11 +53,13 @@
         </activity>
         <activity
             android:name=".RegattaTimer"
-            android:label="@string/title_activity_regatta_timer" >
+            android:label="@string/title_activity_regatta_timer"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ResultsEditForm"
-            android:label="@string/title_activity_results_edit_form" >
+            android:label="@string/title_activity_results_edit_form"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ListTemplateSelectBoats"
@@ -63,7 +71,8 @@
         </activity>
         <activity
             android:name=".ResultsMenu"
-            android:label="@string/title_activity_results_menu" >
+            android:label="@string/title_activity_results_menu"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

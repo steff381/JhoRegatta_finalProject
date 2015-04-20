@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 
 import aad.finalproject.db.DBAdapter;
@@ -78,7 +80,6 @@ public class RaceAddForm extends Form {
     Button create;
     Button update;
     Button delete;
-    Button specialUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,12 +140,10 @@ public class RaceAddForm extends Form {
         create = (Button) findViewById(R.id.btn_add_race);
         update = (Button) findViewById(R.id.btn_update_race);
         delete = (Button) findViewById(R.id.btn_delete_race);
-        specialUpdate = (Button) findViewById(R.id.btn_update_current_race);
 
         // set the buttons for edit mode.
         if (GlobalContent.modeEdit.equals(GlobalContent.getRaceFormAccessMode())) {
             create.setVisibility(View.GONE);
-            specialUpdate.setVisibility(View.GONE);
             update.setVisibility(View.VISIBLE);
             delete.setVisibility(View.VISIBLE);
 
@@ -153,7 +152,7 @@ public class RaceAddForm extends Form {
 
 
             LOG += " Race EDIT form"; // change the edit mode status for log cat
-            raceDataSource.getRow(GlobalContent.getRaceRowID()); // get the id from form
+//            raceDataSource.getRow(GlobalContent.getRaceRowID()); // get the id from global contetn
 
             //if EDIT mode is active initialize cursor fields
             updateRowFromCursor = raceDataSource.getRow(GlobalContent.getRaceRowID());
@@ -205,7 +204,6 @@ public class RaceAddForm extends Form {
             LOG += " Race ADD form"; // change status for log cat
 
             create.setVisibility(View.VISIBLE);
-            specialUpdate.setVisibility(View.GONE);
             update.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
 
@@ -324,7 +322,11 @@ public class RaceAddForm extends Form {
             // load new race instance with data from validated fields
             newRace.setName(strraceTitle);
             newRace.setDate(strraceDate);
-            newRace.setDistance(Double.parseDouble(strraceDistance));
+            try {
+                newRace.setDistance(Double.parseDouble(strraceDistance));
+            } catch (NumberFormatException e) {
+                // do nothing. will be cought by validator
+            }
             newRace.setClsRed(intRaceClassRed);
             newRace.setClsBlue(intRaceClassBlue);
             newRace.setClsPurple(intRaceClassPurple);
@@ -333,11 +335,67 @@ public class RaceAddForm extends Form {
             newRace.setCls_TBD_(intRaceClass_TBD_);
             raceDataSource.create(newRace); //assign the race class to the db
 
+            // grab the newly created RaceID and set it to the global content for use by
+            // the results table
+            long id = raceDataSource.getLastInsertedRowID();
+            GlobalContent.setRaceRowID(id); // set the id of global content
+            GlobalContent.setActiveRace(newRace,id); // set the active race to the new race
+            Log.i(LOG, "Last inserted Id: " + id + " || Race name: " + newRace.getName());
+
+
+            // remove the ADD functions and replace with "Update" functions
+            create.setVisibility(View.GONE);
+            update.setVisibility(View.VISIBLE);
+            delete.setVisibility(View.VISIBLE);
 
             // open the select boats list
             Intent intent = new Intent(this, SelectBoats.class);
             startActivity(intent);
             Log.i("BoatAddForm ", "Validated entry added");
+        }
+
+    }
+
+//TODO: For testing
+    public void onClickGoodLife(View view) {
+//        setTempDataFields(); // load data from text fields
+        if (true) {
+
+            Race newRace = new Race(); // creae a new race instance
+
+            // load new race instance with data from validated fields
+            newRace.setName("Race TEST");
+            newRace.setDate("1/1/2005");
+            try {
+                newRace.setDistance(2.15);
+            } catch (NumberFormatException e) {
+                // do nothing. will be cought by validator
+            }
+            newRace.setClsRed(1);
+            newRace.setClsBlue(1);
+            newRace.setClsPurple(1);
+            newRace.setClsYellow(1);
+            newRace.setClsGreen(1);
+            newRace.setCls_TBD_(0);
+            raceDataSource.create(newRace); //assign the race class to the db
+
+
+            long id = raceDataSource.getLastInsertedRowID();
+            GlobalContent.setRaceRowID(id); // set the id of global content
+            GlobalContent.setActiveRace(newRace,id); // set the active race to the new race
+            Log.i(LOG, "Last inserted Id: " + id + " || Race name: " + newRace.getName());
+
+            BoatStartingListClass.addToBoatClassStartArray("Red");
+            BoatStartingListClass.addToBoatClassStartArray("Blue");
+            BoatStartingListClass.addToBoatClassStartArray("Purple");
+            BoatStartingListClass.addToBoatClassStartArray("Yellow");
+            BoatStartingListClass.addToBoatClassStartArray("Green");
+
+            // open the select boats list
+            Intent intent = new Intent(this, SelectBoats.class);
+            startActivity(intent);
+            Log.i("BoatAddForm ", "Validated entry added");
+
         }
 
     }
@@ -378,7 +436,7 @@ public class RaceAddForm extends Form {
     @Override
     void delete() {
         Cursor cursor = raceDataSource.getRow(GlobalContent.getRaceRowID());
-        if (validateDataEntryFields()) {
+
 
             if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -408,13 +466,13 @@ public class RaceAddForm extends Form {
 //                cursor.close();
                 Log.i(LOG, "CURSOR ERROR>> BAD ID");
             }
-        }
+
         cursor.close();
     }
 
     @Override
     protected boolean validateDataEntryFields() {
-        boolean isValid; // declare return value
+//        boolean isValid; // declare return value
         setTempDataFields(); // repopulate text strings to field values
         // Ensure fields are not null or class a class has been selected prior to data input
         if (!raceTitle.getText().toString().equals("") &&
@@ -422,14 +480,14 @@ public class RaceAddForm extends Form {
                 !raceDateDD.getText().toString().equals("") &&
                 !raceDateYYYY.getText().toString().equals("") &&
                 !raceDistance.getText().toString().equals("")) {
-            isValid = true;
+//            isValid = true;
         } else {
             Toast.makeText(this, "All fields are required",
                     Toast.LENGTH_LONG).show();
-            isValid = false;
+            return false;
         }
 
-        if ((isValid) &&
+        if (
                 (raceClassRed.isChecked() ||
                         raceClassBlue.isChecked() ||
                         raceClassPurple.isChecked() ||
@@ -437,36 +495,35 @@ public class RaceAddForm extends Form {
                         raceClassGreen.isChecked() ||
                         raceClass_TBD_.isChecked()
                 )) {
-            isValid = true;
+//            isValid = true;
         } else {
             Toast.makeText(this, "You must select at least 1 boat class",
                     Toast.LENGTH_LONG).show();
-            isValid = false;
+            return false;
         }
 
-        if (isValid && Double.parseDouble(strraceDistance) <= 0) {
+        if (Double.parseDouble(strraceDistance) <= 0) {
             Toast.makeText(this, "The race distance must be greater than 0",
                     Toast.LENGTH_LONG).show();
-            isValid = false;
-        } else {
-            isValid = true;
+            return false;
         }
 
-        if (isValid && Integer.parseInt(raceDateMM.getText().toString()) > 0
+        if (Integer.parseInt(raceDateMM.getText().toString()) > 0
                 && Integer.parseInt(raceDateMM.getText().toString()) <= 12
                 && Integer.parseInt(raceDateDD.getText().toString()) > 0
                 && Integer.parseInt(raceDateDD.getText().toString()) <= 31
-                && Integer.parseInt(raceDateYYYY.getText().toString()) > 999) {
+                && Integer.parseInt(raceDateYYYY.getText().toString()) > 999
+                && Integer.parseInt(raceDateYYYY.getText().toString()) < 2081) {
 
-            isValid = true;
+
         } else {
             Toast.makeText(this, " Check your date format. \n mm / dd / yyyy",
                     Toast.LENGTH_LONG).show();
-            isValid = false;
+            return false;
         }
 
 
-        return isValid;
+        return true;
     }
 
     @Override
@@ -489,6 +546,15 @@ public class RaceAddForm extends Form {
             Toast.makeText(this, "All fields are required",
                     Toast.LENGTH_LONG).show();
         }
+
+    }
+
+    public void onClickToday(View view){
+        DateTime date = new DateTime();
+        date.toLocalDate();
+        raceDateMM.setText(date.getMonthOfYear() + "");
+        raceDateDD.setText(date.getDayOfMonth() + "");
+        raceDateYYYY.setText(date.getYear() + "");
 
     }
 
