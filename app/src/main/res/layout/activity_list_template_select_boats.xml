@@ -8,7 +8,8 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="30dp">
+        android:layout_height="45dp"
+        android:id="@+id/tblRow_sb">
 
         <TextView
             android:layout_width="0dp"
@@ -36,33 +37,37 @@
 
         <CheckBox
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/ckboxSelectBoatCheck"
-            android:text="     "/>
+            android:text="     "
+            android:gravity="center_vertical" />
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Class"
             android:id="@+id/txt_hd_sb_Class"
             android:layout_weight="1.5"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical" />
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Name"
             android:id="@+id/txt_hd_sb_Name"
             android:layout_weight="3"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical" />
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Sail Num"
             android:id="@+id/txt_hd_sb_SailNum"
             android:layout_weight="3"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical" />
     </TableRow>
 
 </RelativeLayout>

@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import aad.finalproject.jhoregatta.R;
 
@@ -124,25 +123,18 @@ public class BoatAdapter extends BaseAdapter{
                         @Override
                         public void onCheckedChanged(CompoundButton vw, boolean isChecked) {
                             int getPosition = (Integer) vw.getTag();
-                            Log.i("BoatAdapter ", "OncheckChanged triggered for " +
-                                    mainDataList.get(getPosition).getBoatName());
-                            mainDataList.get(getPosition).setSelected(
-                                    vw.isChecked());
-                            Log.i("BoatAdapter ", " isSelected is now: " +
-                                    mainDataList.get(getPosition).isSelected());
+                            Log.i("BoatAdapter ", "OncheckChanged triggered for " + mainDataList.get(getPosition).getBoatName() + " getPosition is: " + getPosition);
+                            mainDataList.get(getPosition).setSelected(vw.isChecked());
+                            Log.i("BoatAdapter ", " isSelected is now: " + mainDataList.get(getPosition).isSelected());
 
                             for (Boat boat : BoatListClass.boatList) {
                                 String listBoatId = boat.getId() + "";
                                 String mainBoatId = mainDataList.get(getPosition).getId() + "";
                                 if (listBoatId.equals(mainBoatId)) {
                                     boat.setSelected(vw.isChecked());
-                                    Log.i("BoatAdapter ", " boatList entry: " +
-                                            boat.getBoatName() +
-                                            " was selected and changed to: " + vw.isChecked());
+                                    Log.i("BoatAdapter ", " boatList entry: " + boat.getBoatName() + " was selected and changed to: " + vw.isChecked());
                                 }
                             }
-
-
                         }
                     });
 
@@ -164,19 +156,5 @@ public class BoatAdapter extends BaseAdapter{
         return view;
     }
 
-    public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-        mainDataList.clear();
-        if (charText.length() == 0) {
-            mainDataList.addAll(arraylist);
-        } else {
-            for (Boat wp : arraylist) {
-                if (wp.getBoatName().toLowerCase(Locale.getDefault())
-                        .contains(charText)) {
-                    mainDataList.add(wp);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
+
 }

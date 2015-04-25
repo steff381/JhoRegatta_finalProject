@@ -84,14 +84,16 @@ public class DBAdapter extends SQLiteOpenHelper{
     //RESULTS table
     public static final String KEY_RACE_ID = "race_id";
     public static final String KEY_BOAT_ID = "boat_id";
-    public static final String KEY_RESULTS_DURATION = "duration";
+    public static final String KEY_RESULTS_CLASS_START = "class_start_time";
+    public static final String KEY_RESULTS_FINISH_TIME = "boat_finish_time";
+    public static final String KEY_RESULTS_DURATION = "elapsed_time";
     public static final String KEY_RESULTS_ADJ_DURATION = "adj_duration";
-    public static final String KEY_RESULTS_PENALTY = "penalty";
+    public static final String KEY_RESULTS_PENALTY = "penalty_percent";
     public static final String KEY_RESULTS_NOTE = "note";
     public static final String KEY_RESULTS_PLACE = "place";
     public static final String KEY_RESULTS_NOT_FINISHED = "notFinished";
     public static final String KEY_RESULTS_VISIBLE = "visible";
-    public static final String KEY_RESULTS_MANUAL_ENTRY = "visible";
+    public static final String KEY_RESULTS_MANUAL_ENTRY = "manual_entry";
 
 
     // build table statements
@@ -124,10 +126,13 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_CREATED_AT + " TEXT"
             + ")";
 
+    // Results table create
     private static final String CREATE_TABLE_RESULTS = "CREATE TABLE " + TABLE_RESULTS + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_RACE_ID + " INTEGER,"
             + KEY_BOAT_ID + " INTEGER,"
+            + KEY_RESULTS_CLASS_START + " TEXT,"
+            + KEY_RESULTS_FINISH_TIME + " TEXT,"
             + KEY_RESULTS_DURATION + " TEXT,"
             + KEY_RESULTS_ADJ_DURATION + " TEXT,"
             + KEY_RESULTS_PENALTY + " REAL,"
@@ -151,6 +156,8 @@ public class DBAdapter extends SQLiteOpenHelper{
             KEY_ID,
             KEY_RACE_ID,
             KEY_BOAT_ID,
+            KEY_RESULTS_CLASS_START,
+            KEY_RESULTS_FINISH_TIME,
             KEY_RESULTS_DURATION,
             KEY_RESULTS_ADJ_DURATION,
             KEY_RESULTS_PENALTY,
@@ -167,12 +174,15 @@ public class DBAdapter extends SQLiteOpenHelper{
             KEY_RACE_DATE,
             KEY_RACE_DISTANCE
     } ;
+
+    // instances constructor for the DBAdapter class
     public DBAdapter(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         Log.i(LOG, "------------Database Created");
 
     }
 
+    // oncreate write to log cat
     @Override
     public void onCreate(SQLiteDatabase db) {
         // create required tables and log result
@@ -197,7 +207,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     }
 
     /**
-     * get datetime
+     * Create a time stamp for each entry into the database for tracking
      * */
     public static String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(

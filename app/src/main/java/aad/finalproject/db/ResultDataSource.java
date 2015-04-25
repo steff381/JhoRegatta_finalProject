@@ -46,7 +46,8 @@ public class ResultDataSource {
 
         //put the values into the results table for each boat
         for (Boat b : BoatListClass.selectedBoatsList) {
-            Result result = new Result();
+            Result result = new Result(); // create result
+            //load result with data from all over
             ContentValues values = new ContentValues();
             values.put(DBAdapter.KEY_RACE_ID, GlobalContent.activeRace.getId());
             values.put(DBAdapter.KEY_BOAT_ID, b.getId());
@@ -67,7 +68,7 @@ public class ResultDataSource {
             values.put(DBAdapter.KEY_CREATED_AT, DBAdapter.getDateTime());
             values.put(DBAdapter.KEY_RACE_VISIBLE, 1);
             long insertId = db.insert(DBAdapter.TABLE_RESULTS, null, values);
-            result.setResultsId(insertId);
+            result.setResultsId(insertId); // insert data
             Log.i(LOG, " Added result ID: " + result.getResultsId() + " Boat name: " + b.getBoatName() + " Race name: " + GlobalContent.activeRace.getName());
         }
 
@@ -82,35 +83,38 @@ public class ResultDataSource {
                 null, null, having, orderBy);
 
         Log.i(LOG, "Returned " + cursor.getCount() + " Rows");
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                Result result = new Result();
-                // IDs
-                result.setResultsId(cursor.getLong(cursor.getColumnIndex(DBAdapter.KEY_ID)));
-                result.setResultsBoatId(cursor.getLong(cursor.getColumnIndex(DBAdapter.KEY_BOAT_ID)));
-                result.setResultsRaceId(cursor.getLong(cursor.getColumnIndex(DBAdapter.KEY_RACE_ID)));
-                //results
-                result.setResultsDuration(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_DURATION)));
-                result.setResultsAdjDuration(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_ADJ_DURATION)));
-                result.setResultsPenalty(cursor.getDouble(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_PENALTY)));
-                result.setResultsNote(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_NOTE)));
-                result.setResultsPlace(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_PLACE)));
-                result.setResultsVisible(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_VISIBLE)));
-                result.setResultsNotFinished(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_NOT_FINISHED)));
-                result.setResultsManualEntry(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_MANUAL_ENTRY)));
-                //boats
-                result.setBoatName(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_NAME)));
-                result.setBoatSailNum(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_SAIL_NUM)));
-                result.setBoatClass(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_CLASS)));
-                result.setBoatPHRF(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_BOAT_PHRF)));
-                //races
-                result.setRaceDistance(cursor.getDouble(cursor.getColumnIndex(DBAdapter.KEY_RACE_DISTANCE)));
-                result.setRaceName(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RACE_NAME)));
-                result.setRaceDate(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RACE_DATE)));
-                results.add(result); // add all to the results instance
-            }
+        // if the cursor isn't empty then build the results.
+        if (cursor.getCount() > 0) while (cursor.moveToNext()) {
+            Result result = new Result();
+            // IDs
+            result.setResultsId(cursor.getLong(cursor.getColumnIndex(DBAdapter.KEY_ID)));
+            result.setResultsBoatId(cursor.getLong(cursor.getColumnIndex(DBAdapter.KEY_BOAT_ID)));
+            result.setResultsRaceId(cursor.getLong(cursor.getColumnIndex(DBAdapter.KEY_RACE_ID)));
+            //results
+            result.setResultsClassStartTime(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_CLASS_START)));
+            result.setResultsBoatFinishTime(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_FINISH_TIME)));
+            result.setResultsDuration(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_DURATION)));
+            result.setResultsAdjDuration(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_ADJ_DURATION)));
+            result.setResultsPenalty(cursor.getDouble(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_PENALTY)));
+            result.setResultsNote(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_NOTE)));
+            result.setResultsPlace(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_PLACE)));
+            result.setResultsVisible(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_VISIBLE)));
+            result.setResultsNotFinished(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_NOT_FINISHED)));
+            result.setResultsManualEntry(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_RESULTS_MANUAL_ENTRY)));
+            //boats
+            result.setBoatName(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_NAME)));
+            result.setBoatSailNum(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_SAIL_NUM)));
+            result.setBoatClass(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_CLASS)));
+            result.setBoatPHRF(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_BOAT_PHRF)));
+            //races
+            result.setRaceDistance(cursor.getDouble(cursor.getColumnIndex(DBAdapter.KEY_RACE_DISTANCE)));
+            result.setRaceName(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RACE_NAME)));
+            result.setRaceDate(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RACE_DATE)));
+            results.add(result); // add all to the results instance
+            Log.i(LOG, "adding: " + result.getBoatName()
+                    + " resultId: " + result.getResultsId());
         }
-        cursor.close();
+        cursor.close(); //close cursor to preserve resources
         return results;
     }
 
@@ -131,18 +135,121 @@ public class ResultDataSource {
         return cursor;
     }
 
-    public boolean update(long id, String duration, String adjDuration, Double penalty,
-                          String note, int place, int notFinished, int manualEntry) {
-        String whereClause = DBAdapter.KEY_ID + " = " + id;
-        ContentValues newValues = new ContentValues();
+    // add the finish time to the results list for the individual result
+    // for the row buttons in the Results Activity
+    public boolean updateSingleFinishTime(long resultId, String timeFormatted) {
+        String where = DBAdapter.KEY_ID + " = " + resultId; // select what item to update
+        ContentValues newValues = new ContentValues(); // create a content values instance
+        //Put the new values into the contentValues variable
+        newValues.put(DBAdapter.KEY_RESULTS_FINISH_TIME, String.valueOf(timeFormatted));
+
+        // return update the table through the return statement if not 0
+        return db.update(DBAdapter.TABLE_RESULTS, newValues, where, null) != 0;
+
+    }
+
+    //clear the fields of result time, duration and adjusted duration
+    public boolean clearStartAndDurations(long resultId) {
+        String value = null;
+        String where = DBAdapter.KEY_ID + " = " + resultId; // select what item to update
+        ContentValues newValues = new ContentValues(); // create a content values instance
+        //Put the new values into the contentValues variable
+        newValues.put(DBAdapter.KEY_RESULTS_FINISH_TIME, value);
+        newValues.put(DBAdapter.KEY_RESULTS_DURATION, value);
+        newValues.put(DBAdapter.KEY_RESULTS_ADJ_DURATION, value);
+
+        // return update the table through the return statement if not 0
+        return db.update(DBAdapter.TABLE_RESULTS, newValues, where, null) != 0;
+    }
+
+
+    // add the finish time to the results list for the chosen class
+    public void updateClassStartTime(long raceId, String boatClass, String timeFormatted) {
+        ContentValues newValues = new ContentValues(); // create a content values instance
+        //Put the new values into the contentValues variable
+        newValues.put(DBAdapter.KEY_RESULTS_CLASS_START, timeFormatted);
+        // enter update statement in sql
+        db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS + " SET " + DBAdapter.KEY_RESULTS_CLASS_START
+                + "='" + timeFormatted + "' WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId
+                + " AND " + DBAdapter.KEY_BOAT_CLASS + " = '" + boatClass + "';");
+
+    }
+
+    // clear the finish time for all results in the given race.
+    //
+    public boolean clearAllClassStartTimes(long raceId) {
+        String where = DBAdapter.KEY_RACE_ID + " = " + raceId; // select what race to affect
+        ContentValues newValues = new ContentValues(); // create a content values instance
+        //Put the new values into the contentValues variable
+        newValues.putNull(DBAdapter.KEY_RESULTS_CLASS_START);
+        newValues.putNull(DBAdapter.KEY_RESULTS_FINISH_TIME);
+        newValues.putNull(DBAdapter.KEY_RESULTS_DURATION);
+        newValues.putNull(DBAdapter.KEY_RESULTS_ADJ_DURATION);
+
+        // return update the table through the return statement
+        return db.update(DBAdapter.TABLE_RESULTS, newValues, where, null) != 0;
+
+    }
+
+//    // clear the finish time for all results in the given race.
+//    //TODO Finish writing the execSQL statement.
+//    public boolean clearSingleClassStartTimesAndDurations(long raceId, String className) {
+//        String where = " WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId
+//                + " AND " + DBAdapter.KEY_BOAT_CLASS + " = '" + className + "';"; // select what race to affect
+//        ContentValues newValues = new ContentValues(); // create a content values instance
+//        //Put the new values into the contentValues variable
+//        newValues.putNull(DBAdapter.KEY_RESULTS_CLASS_START);
+//        newValues.putNull(DBAdapter.KEY_RESULTS_FINISH_TIME);
+//        newValues.putNull(DBAdapter.KEY_RESULTS_DURATION);
+//        newValues.putNull(DBAdapter.KEY_RESULTS_ADJ_DURATION);
+//
+//
+//        db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS + " SET " + DBAdapter.KEY_RESULTS_CLASS_START
+//                + "='" + timeFormatted + "' " + where);
+//        // return update the table through the return statement
+//        return db.update(DBAdapter.TABLE_RESULTS, newValues, where, null) != 0;
+//
+//    }
+
+    // clear the finish time for all results in the given race.
+    // Do not affect class start times
+    public boolean clearAllBoatFinishTimesAndDurations(long raceId) {
+        String where = DBAdapter.KEY_RACE_ID + " = " + raceId; // select what race to affect
+        ContentValues newValues = new ContentValues(); // create a content values instance
+        //Put the new values into the contentValues variable
+        newValues.putNull(DBAdapter.KEY_RESULTS_FINISH_TIME);
+        newValues.putNull(DBAdapter.KEY_RESULTS_DURATION);
+        newValues.putNull(DBAdapter.KEY_RESULTS_ADJ_DURATION);
+
+        // return update the table through the return statement
+        return db.update(DBAdapter.TABLE_RESULTS, newValues, where, null) != 0;
+
+    }
+
+    //execute query
+
+    public void execueSQLQuery(String sqlString) {
+        db.execSQL(sqlString);
+    }
+
+    //
+    public boolean update(long id, String classStartTime, String boatFinishTime, String duration,
+                          String adjDuration, Double penalty, String note, int place,
+                          int notFinished, int manualEntry) {
+        String whereClause = DBAdapter.KEY_ID + " = " + id; // select what item to update
+        ContentValues newValues = new ContentValues(); // create a content values instance
+        //Put the new values into the contentValues variable
+        newValues.put(DBAdapter.KEY_RESULTS_CLASS_START, classStartTime);
+        newValues.put(DBAdapter.KEY_RESULTS_FINISH_TIME, boatFinishTime);
         newValues.put(DBAdapter.KEY_RESULTS_DURATION, duration);
         newValues.put(DBAdapter.KEY_RESULTS_ADJ_DURATION, adjDuration);
-        newValues.put(DBAdapter.KEY_RESULTS_PENALTY, penalty );
+        newValues.put(DBAdapter.KEY_RESULTS_PENALTY, penalty);
         newValues.put(DBAdapter.KEY_RESULTS_NOTE, note);
         newValues.put(DBAdapter.KEY_RESULTS_PLACE, place);
         newValues.put(DBAdapter.KEY_RESULTS_NOT_FINISHED, notFinished);
         newValues.put(DBAdapter.KEY_RESULTS_MANUAL_ENTRY, manualEntry);
 
+        // return update the table through the return statement
         return db.update(DBAdapter.TABLE_RESULTS, newValues, whereClause, null) != 0;
 
     }
@@ -162,5 +269,56 @@ public class ResultDataSource {
             cursor.moveToFirst();
         }
         return cursor;
+    }
+
+    public void runCalculations() {
+        String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.activeRace.getId()
+                + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+        List<Result> resultArrayList = getAllResults(where, null, null);
+        String table = DBAdapter.TABLE_RESULTS;
+        String durationColumn = DBAdapter.KEY_RESULTS_DURATION;
+        String adjDurationColumn = DBAdapter.KEY_RESULTS_ADJ_DURATION;
+//        for (Result r : resultArrayList) {
+////            Log.i(LOG, "boat finish Time " + r.getResultsBoatFinishTime());
+//////            Log.i(LOG, "boat finish Time null " + r.getResultsBoatFinishTime().equals(null));
+////            Log.i(LOG, "boat finish Time \"null\" " + r.getResultsBoatFinishTime().equals("null"));
+////            Log.i(LOG, "not finished " + r.getResultsNotFinished());
+////            Log.i(LOG, "class start Time " + r.getResultsClassStartTime());
+////            Log.i(LOG, "class start Time Empty " + r.getResultsClassStartTime().isEmpty());
+//        }
+
+        for (Result r : resultArrayList) {
+            Log.i(LOG, " Boat: " + r.getBoatName() + " " + r.boatClass + " finish time: "
+                    + r.getResultsBoatFinishTime());
+            long resultId = r.getResultsId(); // get the result id
+            int phrf = r.getBoatPHRF();
+            double penalty = r.getResultsPenalty();
+            double distance = r.getRaceDistance();
+            // if the boat is both visible and not manual entry mode. Then next
+            if (r.getResultsManualEntry() == 0 && r.getResultsVisible() == 1) {
+                //if there is a start and a finish time calculate duration.
+                if (r.getResultsNotFinished() == 0 && r.getResultsClassStartTime() != null &&
+                        r.getResultsBoatFinishTime() != null) {
+                    //calculate elapsed time
+                    long milliDuration = GlobalContent.getDurationInMillis(r.getResultsClassStartTime(),
+                            r.getResultsBoatFinishTime());
+                    // convert to readable format
+                    String newDuration = GlobalContent.convertMillisToElapsedTime(milliDuration);
+                    // enter elapsed time into the database
+                    db.execSQL("UPDATE " + table + " SET " + durationColumn + " = '" + newDuration
+                            + "' WHERE _id = " + resultId + ";");
+                    //calculate adjusted duration
+                    String adjDuration = GlobalContent.calculateAdjDuration(phrf, milliDuration,
+                            penalty, distance, 1);
+                    // ender adjusted duration
+                    db.execSQL("UPDATE " + table + " SET " + adjDurationColumn + " = '" +
+                            adjDuration + "' WHERE _id = " + resultId + ";");
+
+                }
+            }
+        }
+        // check to see if the right data is present
+
+
     }
 }

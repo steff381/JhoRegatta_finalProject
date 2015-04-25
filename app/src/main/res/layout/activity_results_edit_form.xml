@@ -7,13 +7,52 @@
     tools:context="aad.finalproject.jhoregatta.ResultsEditForm">
 
 
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/btn_tp_set_finish_time"-->
+        <!--android:text="Set"-->
+
+    <!--/>-->
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Comming Soon!"
+        android:id="@+id/textView"
+        android:textSize="50sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="267dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Finish Line Individual Result"
+        android:id="@+id/textView3"
+        android:textSize="45sp"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="57dp" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_finish_time"
-        android:text="Set"
+        android:text="New Button"
+        android:id="@+id/btn_setText"
+        android:layout_above="@+id/textView3"
+        android:layout_centerHorizontal="true" />
 
-    />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="text"
+        android:id="@+id/txt_JODADURATION"
+        android:layout_above="@+id/btn_setText"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

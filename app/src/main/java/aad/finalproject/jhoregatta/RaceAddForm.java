@@ -30,6 +30,8 @@ public class RaceAddForm extends Form {
     //logging header
     private String LOG = this.getClass().getSimpleName() + " - MODE:";
 
+    public static boolean isBoatClassUpdate;  // if the update is boat update
+
     // create empty instances for widgets
     EditText raceTitle;
     EditText raceDateMM;
@@ -91,6 +93,8 @@ public class RaceAddForm extends Form {
         //open a Writable instance of the RaceDataSource
         raceDataSource = new RaceDataSource(this);
         raceDataSource.open();
+
+        isBoatClassUpdate = false; // opening up the menu for the first time makes false
 
         BoatStartingListClass.clearBoatClassStartArray(); // empty the array of all data
 
@@ -343,14 +347,14 @@ public class RaceAddForm extends Form {
             Log.i(LOG, "Last inserted Id: " + id + " || Race name: " + newRace.getName());
 
 
+            isBoatClassUpdate = true; // after the create, update goes to select boats
+            // open the select boats list
+            Intent intent = new Intent(this, SelectBoats.class);
+            startActivity(intent);
             // remove the ADD functions and replace with "Update" functions
             create.setVisibility(View.GONE);
             update.setVisibility(View.VISIBLE);
             delete.setVisibility(View.VISIBLE);
-
-            // open the select boats list
-            Intent intent = new Intent(this, SelectBoats.class);
-            startActivity(intent);
             Log.i("BoatAddForm ", "Validated entry added");
         }
 
@@ -391,9 +395,15 @@ public class RaceAddForm extends Form {
             BoatStartingListClass.addToBoatClassStartArray("Yellow");
             BoatStartingListClass.addToBoatClassStartArray("Green");
 
+            isBoatClassUpdate = true; // after the create, update goes to select boats
             // open the select boats list
             Intent intent = new Intent(this, SelectBoats.class);
             startActivity(intent);
+
+            // remove the ADD functions and replace with "Update" functions
+            create.setVisibility(View.GONE);
+            update.setVisibility(View.VISIBLE);
+            delete.setVisibility(View.VISIBLE);
             Log.i("BoatAddForm ", "Validated entry added");
 
         }
@@ -402,7 +412,7 @@ public class RaceAddForm extends Form {
 
     @Override
     public void onClickUpdate(View view) {
-        update(GlobalContent.getRaceRowID());
+        update(GlobalContent.getRaceRowID()); // update the data
 
     }
 
@@ -416,7 +426,14 @@ public class RaceAddForm extends Form {
                         intRaceClassBlue, intRaceClassGreen, intRaceClassPurple, intRaceClassYellow,
                         intRaceClassRed, intRaceClass_TBD_);
                 Log.i(LOG, "Validated UPDATE entry");
-                endActivity();
+
+                if (!isBoatClassUpdate) {
+                    endActivity();
+                } else {
+                    // open the select boats list
+                    Intent intent = new Intent(this, SelectBoats.class);
+                    startActivity(intent);
+                }
 
             } else {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
@@ -431,7 +448,7 @@ public class RaceAddForm extends Form {
     @Override
     public void onClickDelete(View view) {
         delete();
-    }
+    } // simply delete the record
 
     @Override
     void delete() {
@@ -548,7 +565,7 @@ public class RaceAddForm extends Form {
         }
 
     }
-
+    // user clicks today and today's date appears in the date picker
     public void onClickToday(View view){
         DateTime date = new DateTime();
         date.toLocalDate();
@@ -557,7 +574,7 @@ public class RaceAddForm extends Form {
         raceDateYYYY.setText(date.getYear() + "");
 
     }
-
+    // generic end of activty
     protected void endActivity() {
         try {
             raceDataSource.close();

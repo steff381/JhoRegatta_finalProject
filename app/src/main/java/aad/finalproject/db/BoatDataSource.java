@@ -87,6 +87,29 @@ public class BoatDataSource {
         return boats;
     }
 
+    public ArrayList<Boat> getAllBoatsArrayList(String where, String orderBy, String having ){
+        ArrayList<Boat> boats = new ArrayList<>();
+
+
+        Cursor cursor = db.query(DBAdapter.TABLE_BOATS, ALL_BOAT_COLUMNS, where,
+                null, null, having, orderBy);
+
+        Log.i(LOG, "Returned " + cursor.getCount() + " Rows");
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                Boat boat = new Boat();
+                boat.setId(cursor.getLong(cursor.getColumnIndex(DBAdapter.KEY_ID)));
+                boat.setBoatClass(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_CLASS)));
+                boat.setBoatName(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_NAME)));
+                boat.setBoatSailNum(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_BOAT_SAIL_NUM)));
+                boat.setBoatPHRF(cursor.getInt(cursor.getColumnIndex(DBAdapter.KEY_BOAT_PHRF)));
+                boats.add(boat);
+            }
+        }
+        cursor.close();
+        return boats;
+    }
+
     public Cursor getAllBoatsCursor(String where, String orderBy, String having){
 //        orderBy = DBAdapter.KEY_BOAT_CLASS;
 

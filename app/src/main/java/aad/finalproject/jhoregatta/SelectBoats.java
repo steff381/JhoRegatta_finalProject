@@ -9,15 +9,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 import aad.finalproject.db.Boat;
-import aad.finalproject.db.BoatAdapter;
 import aad.finalproject.db.BoatDataSource;
 import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.DBAdapter;
+import aad.finalproject.db.ResultDataSource;
 
 
 public class SelectBoats extends MainActivity {
@@ -27,31 +29,41 @@ public class SelectBoats extends MainActivity {
 
     // List stuff
     ListView myList; // initialize the listview
-    BoatAdapter objAdapter; // initialize custom adapter
+//    BoatAdapter objAdapter; // initialize custom adapter
+    SelectBoatAdapter objAdapter;
+
+    //arraylist of boats to put in the list
+    ArrayList<Boat> allTheBoats;
+
 
     // parameters for methods using sql query parameters
     private String whereClauseIsVisible = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
     private String orderByClause = DBAdapter.KEY_BOAT_CLASS + ", "
-            + DBAdapter.KEY_BOAT_NAME + " DESC";
+            + DBAdapter.KEY_BOAT_NAME;
     private String havingClause = null;
 
     CheckBox selectBoatCkBox; // create an accessible instance of the checkbox widget
 
     // data base stuff
     BoatDataSource boatDataSource; // call the boat datasource
-
+    ResultDataSource resultDataSource; // instance of results daasource
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_boats);
 
+        //Build database
+        boatDataSource = new BoatDataSource(this);
+        resultDataSource = new ResultDataSource(this);
+        boatDataSource.open(); // open a writable version of the db
+        resultDataSource.open(); // open a writable version of the db
+
         // edit the where statement in sql to only select the chosen boat classes
         appendWhereClause();
 
-        //Build database
-        boatDataSource = new BoatDataSource(this);
-        boatDataSource.open(); // open a writable version of the db
+        allTheBoats = boatDataSource
+                .getAllBoatsArrayList(whereClauseIsVisible, orderByClause, havingClause);
 
         // set the lv to the current listview
         myList = (ListView) findViewById(R.id.lvSelectBoatList);
@@ -59,14 +71,16 @@ public class SelectBoats extends MainActivity {
         myList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         selectBoatCkBox = (CheckBox) findViewById(R.id.ckboxSelectBoatCheck);
 
-        BoatListClass.clearSelectedBoatsList();
-        addBoatsToBoatListClass(); // generate the boat list
+
+//        addBoatsToBoatListClass(); // generate the boat list
 
         /// wire the custom view adapter to the view
         Log.i(LOG, "Setting obj Adapter");
-        objAdapter = new BoatAdapter(this, boatDataSource
-                .getAllBoats(whereClauseIsVisible, orderByClause, havingClause));
+//        objAdapter = new BoatAdapter(this, boatDataSource
+//                .getAllBoats(whereClauseIsVisible, orderByClause, havingClause));
 
+        objAdapter = new SelectBoatAdapter(this, R.layout.activity_list_template_select_boats,
+                allTheBoats);
 
     }
 
@@ -110,23 +124,34 @@ public class SelectBoats extends MainActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
+    //navigate user to the timer.
     public void onClickTimer(View view) {
 
-        Log.i(LOG, "Boat list sie " + BoatListClass.boatList.size());
-        // TODO: get rid of this testing item
-        for (int i = 0; i < BoatListClass.boatList.size(); i++) {
-            Log.i(LOG, "Get checked item positions iteratior " + myList.getCheckedItemPositions());
+        BoatListClass.selectedBoatsList.clear(); // clear data from the boat list.
+        //If the user selected the boat add it to the list.
+        for (Boat b : objAdapter.boatArrayList) {
+            if (b.isSelected()) {
+                BoatListClass.selectedBoatsList.add(b);
+            }
+
         }
 
-        BoatListClass.setSelectedBoats();//assign the selected boats to a special array list
-        BoatListClass.getSelectedBoats(); //TODO: testing method should be removed
-        // open the timer
-        Intent intent = new Intent(this, RegattaTimer.class);
-        startActivity(intent);
+        int listSize = BoatListClass.selectedBoatsList.size();
+        // check if user selected at least 1 boat
+        if (listSize > 0) {
+            // enter selected boats into the results table
+            resultDataSource.create();
+            // open the timer
+            Intent intent = new Intent(this, RegattaTimer.class);
+            startActivity(intent);
+            Log.i(LOG, " Navigate to Timer");
+            Toast.makeText(this, "Adding " + listSize + " boats to the results table"
+                    , Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "You must select at least 1 boat from each class"
+                    , Toast.LENGTH_LONG).show();
+        }
 
-        Log.i(LOG, " Navigate to Timer");
     }
 
     public void onClickBack(View view) {
@@ -202,29 +227,6 @@ public class SelectBoats extends MainActivity {
                         }
                     });
             populateListView(); // refresh the list view
-
-            // Set the listener for row selection
-//            myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent,
-//                                        View view, int position, long id) {
-//
-//                    Boat boat = BoatListClass.boatList
-//                            .get(position);
-//                    if (boat.isSelected()) {
-//                        Log.i(LOG, "Deselecting " + boat.getBoatName());
-//                        boatDataSource.updateChecked(boat.getId(),!boat.isSelected());
-//                        boat.setSelected(false);
-//                        selectBoatCkBox.setChecked(false);
-//                    } else {
-//                        boatDataSource.updateChecked(boat.getId(), boat.isSelected());
-//                        Log.i(LOG, "Selecting " + boat.getBoatName());
-//                        boat.setSelected(true);
-//                        selectBoatCkBox.setChecked(true);
-//                    }
-//
-//                }
-//            });
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -39,8 +39,8 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_ddms:
                 onActionClickDDMS();
                 return true;
-            case R.id.action_settings:
-                return true;
+//            case R.id.action_settings:
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -66,6 +66,7 @@ public class MainActivity extends ActionBarActivity {
     public void navigateToPreferences(View view){
 //        Intent intent = new Intent(this, SelectBoats.class); //TODO: wire to settings activity
 //        startActivity(intent);
+
 
 
         Log.i("Main Menu ", " goto Preferences ");

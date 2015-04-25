@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="aad.finalproject.jhoregatta.TimePickerDialog">
+
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/np_tpd_minute"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/np_tpd_hour"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/np_tpd_minute" />
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/np_tpd_second"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/np_tpd_minute" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="AM"
+        android:textOff="PM"
+        android:id="@+id/tb_tpd_amPm"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/btn_tpd_cancel" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:id="@+id/btn_tpd_set_time"
+        android:layout_marginTop="35dp"
+        android:layout_below="@+id/np_tpd_minute"
+        android:layout_alignStart="@+id/np_tpd_hour" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/btn_tpd_cancel"
+        android:onClick=""
+        android:layout_alignTop="@+id/btn_tpd_set_time"
+        android:layout_alignEnd="@+id/np_tpd_second" />
+
+</RelativeLayout>

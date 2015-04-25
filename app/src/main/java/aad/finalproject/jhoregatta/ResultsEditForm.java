@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import aad.finalproject.db.RaceDataSource;
+import aad.finalproject.db.ResultDataSource;
+
 
 public class ResultsEditForm extends Form {
 
@@ -14,21 +17,30 @@ public class ResultsEditForm extends Form {
     int hour, minute, second;
     private TextView time;
 
+    ResultDataSource resultDataSource;
+    RaceDataSource raceDataSource;
+
+    // instances of buttons
+    Button update;
+    Button setTime;
+    Button cancel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results_edit_form);
 
-        //wire widgets to instances
-        btnFinishTime = (Button) findViewById(R.id.btn_finish_time); // time picker buttons
+        resultDataSource = new ResultDataSource(this);
+        resultDataSource.open();
+        raceDataSource = new RaceDataSource(this);
+        raceDataSource.open();
 
-
-        // wire listeners to widgets
-
-        btnFinishTime.setOnClickListener(new View.OnClickListener() {
+        time = (TextView) findViewById(R.id.txt_JODADURATION);
+        setTime = (Button) findViewById(R.id.btn_setText);
+        setTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                resultDataSource.runCalculations();
             }
         });
 

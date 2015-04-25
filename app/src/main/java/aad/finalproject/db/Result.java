@@ -10,6 +10,8 @@ public class Result {
     long resultsRaceId;
     long resultsBoatId;
     // results
+    String resultsClassStartTime;
+    String resultsBoatFinishTime;
     String resultsDuration;
     String resultsAdjDuration;
     double resultsPenalty;
@@ -29,6 +31,22 @@ public class Result {
     String raceDate; // no
 
     String resultsCreateDate = DBAdapter.getDateTime();
+
+    public String getResultsClassStartTime() {
+        return resultsClassStartTime;
+    }
+
+    public void setResultsClassStartTime(String resultsClassStartTime) {
+        this.resultsClassStartTime = resultsClassStartTime;
+    }
+
+    public String getResultsBoatFinishTime() {
+        return resultsBoatFinishTime;
+    }
+
+    public void setResultsBoatFinishTime(String resultsBoatFinishTime) {
+        this.resultsBoatFinishTime = resultsBoatFinishTime;
+    }
 
     public int getResultsManualEntry() {
         return resultsManualEntry;

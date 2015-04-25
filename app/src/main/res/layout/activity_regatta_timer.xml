@@ -44,14 +44,34 @@
                         android:layout_height="fill_parent">
 
                         <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1"/>
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_horizontal">
+
+                            <TextClock
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="25sp"
+                                android:id="@+id/txtclkMasterTime"
+                                android:layout_margin="5dp"
+                                android:paddingTop="5dp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:paddingBottom="5dp"
+                                android:textColor="#000000"
+                                android:background="#00000000"
+                                android:textStyle="bold"
+                                android:format12Hour="h:mm:ss a"
+                                android:textIsSelectable="false" />
+                        </TableRow>
 
                         <TableRow
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:layout_weight="1" />
+                            android:layout_weight="1" >
+
+                        </TableRow>
 
                         <TableRow
                             android:layout_width="fill_parent"
@@ -78,23 +98,27 @@
                             <FrameLayout
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
-                                android:background="#000000">
+                                android:background="#00000000">
 
-                                <TextClock
+                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="25sp"
-                                    android:id="@+id/txtclkMasterTime"
-                                    android:layout_margin="5dp"
-                                    android:paddingTop="5dp"
-                                    android:paddingLeft="10dp"
-                                    android:paddingRight="10dp"
-                                    android:paddingBottom="5dp"
-                                    android:textColor="#ffffff"
-                                    android:background="#000000"
-                                    android:textStyle="bold"
-                                    android:textIsSelectable="false"
-                                    android:layout_gravity="center_horizontal|center" />
+                                    android:textAppearance="?android:attr/textAppearanceMedium"
+                                    android:text="Next Event:"
+                                    android:id="@+id/txtlblNextEvent"
+                                    android:layout_gravity="center_horizontal|top" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"
+                                    android:id="@+id/txtCountDown"
+                                    android:layout_gravity="center_horizontal|bottom"
+                                    android:text="0h 0m 00s"
+                                    android:gravity="center_vertical|center_horizontal"
+                                    android:textSize="45sp"
+                                    android:paddingTop="20dp"
+                                    android:textStyle="bold" />
                             </FrameLayout>
                         </TableRow>
 
@@ -139,7 +163,7 @@
                                     android:layout_height="wrap_content"
                                     android:id="@+id/btnMasterStart"
                                     android:onClick="onClickMasterStart"
-                                    android:layout_gravity="center_horizontal|top" />
+                                    android:layout_gravity="center" />
                             </FrameLayout>
                         </TableRow>
                     </LinearLayout>
@@ -164,14 +188,6 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="?android:attr/textAppearanceMedium"
-                                    android:text="Next Event:"
-                                    android:id="@+id/txtlblNextEvent"
-                                    android:layout_gravity="center_horizontal|bottom" />
-
                                 <Button
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -191,12 +207,6 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="?android:attr/textAppearanceLarge"
-                                    android:id="@+id/txtCountDown"
-                                    android:layout_gravity="center_horizontal|top" />
                             </FrameLayout>
                         </TableRow>
 
@@ -732,7 +742,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_weight="1" />
+                            android:layout_weight="1" >
+
+                            <FrameLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"></FrameLayout>
+                        </TableRow>
 
                     </LinearLayout>
                 </TableRow>
