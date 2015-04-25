@@ -177,7 +177,7 @@ public class ResultDataSource {
 
     // clear the finish time for all results in the given race.
     //
-    public boolean clearAllClassStartTimes(long raceId) {
+    public boolean clearRaceTimesDurations(long raceId) {
         String where = DBAdapter.KEY_RACE_ID + " = " + raceId; // select what race to affect
         ContentValues newValues = new ContentValues(); // create a content values instance
         //Put the new values into the contentValues variable
@@ -193,38 +193,28 @@ public class ResultDataSource {
 
 //    // clear the finish time for all results in the given race.
 //    //TODO Finish writing the execSQL statement.
-//    public boolean clearSingleClassStartTimesAndDurations(long raceId, String className) {
-//        String where = " WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId
-//                + " AND " + DBAdapter.KEY_BOAT_CLASS + " = '" + className + "';"; // select what race to affect
-//        ContentValues newValues = new ContentValues(); // create a content values instance
-//        //Put the new values into the contentValues variable
-//        newValues.putNull(DBAdapter.KEY_RESULTS_CLASS_START);
-//        newValues.putNull(DBAdapter.KEY_RESULTS_FINISH_TIME);
-//        newValues.putNull(DBAdapter.KEY_RESULTS_DURATION);
-//        newValues.putNull(DBAdapter.KEY_RESULTS_ADJ_DURATION);
-//
-//
-//        db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS + " SET " + DBAdapter.KEY_RESULTS_CLASS_START
-//                + "='" + timeFormatted + "' " + where);
-//        // return update the table through the return statement
-//        return db.update(DBAdapter.TABLE_RESULTS, newValues, where, null) != 0;
-//
-//    }
-
-    // clear the finish time for all results in the given race.
-    // Do not affect class start times
-    public boolean clearAllBoatFinishTimesAndDurations(long raceId) {
-        String where = DBAdapter.KEY_RACE_ID + " = " + raceId; // select what race to affect
+    public void clearSingleClassStartTimesAndDurations(long raceId, String className) {
+        String nullString = null;
+        String where = " WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId
+                + " AND " + DBAdapter.KEY_BOAT_CLASS + " = '" + className + "';"; // select what race to affect
         ContentValues newValues = new ContentValues(); // create a content values instance
         //Put the new values into the contentValues variable
+        newValues.putNull(DBAdapter.KEY_RESULTS_CLASS_START);
         newValues.putNull(DBAdapter.KEY_RESULTS_FINISH_TIME);
         newValues.putNull(DBAdapter.KEY_RESULTS_DURATION);
         newValues.putNull(DBAdapter.KEY_RESULTS_ADJ_DURATION);
 
+        String set = " SET " + DBAdapter.KEY_RESULTS_CLASS_START + "=" + null + ", " +
+                DBAdapter.KEY_RESULTS_FINISH_TIME + "=" + null + ", " +
+                DBAdapter.KEY_RESULTS_DURATION + "=" + null + ", " +
+                DBAdapter.KEY_RESULTS_ADJ_DURATION + "=" + null;
+
+                db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS + set + where);
         // return update the table through the return statement
-        return db.update(DBAdapter.TABLE_RESULTS, newValues, where, null) != 0;
+//        return db.update(DBAdapter.TABLE_RESULTS, newValues, where, null) != 0;
 
     }
+
 
     //execute query
 

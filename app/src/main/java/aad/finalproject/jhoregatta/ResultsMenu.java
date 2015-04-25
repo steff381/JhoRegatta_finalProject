@@ -72,7 +72,6 @@ public class ResultsMenu extends ActionBarActivity {
         });
 
 
-
         //set onclick listening for listview
         //make it long click to prevent accidental clicking
         myList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -98,12 +97,6 @@ public class ResultsMenu extends ActionBarActivity {
         });
     }
 
-
-    // prevent the user from using the devices back button
-    @Override
-    public void onBackPressed() {
-//        super.onBackPressed();
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

@@ -32,17 +32,18 @@ public class ResultsAdapter extends BaseAdapter {
     ResultDataSource resultDataSource;
     // lists of result
     private List<Result> mainDataList = null;
-    private ArrayList<Result> arraylist;
+    public static ArrayList<Result> arraylist;
 
     // instance constructor
     public ResultsAdapter(Context context, List<Result> mainDataList,
                           ResultDataSource resultDataSource) {
+        this.mainDataList= mainDataList;
         this.resultDataSource = resultDataSource;
         mContext = context;
         inflater = LayoutInflater.from(mContext);
         // create a copy of the main list so we don't end up damagaing the original list
-        this.arraylist = new ArrayList<Result>();
-        this.arraylist.addAll(mainDataList);
+        ResultsAdapter.arraylist = new ArrayList<>();
+        ResultsAdapter.arraylist.addAll(mainDataList);
 
     }
     /**
@@ -286,10 +287,39 @@ public class ResultsAdapter extends BaseAdapter {
         return view;
     }
 
+    // sync the list in the ResultsAdapter with what is in the Results SQL table.
+    public static void syncArrayListWithSql(ResultDataSource resultDataSource) {
+        //create statement strings
+        String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.activeRace.getId()
+                + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+        String orderBy = DBAdapter.KEY_BOAT_CLASS + ", "
+                + DBAdapter.KEY_BOAT_NAME + " DESC";
+        // create a temporary placeholder for the data from SQL
+        List<Result> tempResultFromSql;
+        tempResultFromSql = resultDataSource.getAllResults(where, orderBy,
+                null);
+        //TODO For testing
+        for (Result r : tempResultFromSql) {
+            Log.i(LOGTAG, "boat " + r.getBoatName());
+        }
+        // Make sure the data coming from sql isn't blank. Otherwise throw error
+        if (tempResultFromSql.size() > 0) {
+            ResultsAdapter.arraylist.clear(); // clear the current list
+            ResultsAdapter.arraylist.addAll(tempResultFromSql);
+        } else {
+            throw new NullPointerException("Data in tempResultFromSql is empty");
+        }
+    }
+
     //filter results based on text entered into text box in the Results menu
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
-        mainDataList.clear();
+
+        try {
+            mainDataList.clear();
+        } catch (Exception e) {
+            Log.i(LOGTAG, "Exception =------------------------------------------------------------");
+        }
         if (charText.length() == 0) {
             mainDataList.addAll(arraylist);
         } else {

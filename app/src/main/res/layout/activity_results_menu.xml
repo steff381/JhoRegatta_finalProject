@@ -50,24 +50,36 @@
                                 android:layout_marginRight="35dp"/>
                         </TableRow>
 
-                        <TableRow
-                            android:layout_width="60dp"
-                            android:layout_height="match_parent">
+                        <!--<TableRow-->
+                            <!--android:layout_width="60dp"-->
+                            <!--android:layout_height="match_parent">-->
 
-                        </TableRow>
+                        <!--</TableRow>-->
 
+                        <!--<TableRow-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_gravity="bottom">-->
+
+                            <!--<EditText-->
+                                <!--android:layout_width="229dp"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:id="@+id/txt_hd_rm_filter"-->
+                                <!--android:hint="text filter"/>-->
+                        <!--</TableRow>-->
                         <TableRow
-                            android:layout_width="match_parent"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom">
+                            android:layout_weight="1">
 
-                            <EditText
-                                android:layout_width="229dp"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/txt_hd_rm_filter"
-                                android:enabled="false" />
+                            <!--<Button-->
+                                <!--style="?android:attr/buttonStyleSmall"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:text="Clear"-->
+                                <!--android:id="@+id/btn_clear_filter"-->
+                                <!--android:layout_marginRight="35dp"/>-->
                         </TableRow>
-
 
                     </LinearLayout>
 
