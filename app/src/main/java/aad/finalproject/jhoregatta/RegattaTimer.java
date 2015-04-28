@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -35,18 +36,15 @@ public class RegattaTimer extends MainActivity {
 
     private static String LOGTAG = "LogTag: TimeTracker "; // default log tag
 
-    public static String CDT_STARTING = " Timer STARTING ";
     public static String CDT_PAUSING = " Timer PAUSING ";
     public static String CDT_RESUMING = " Timer RESUMING ";
-    public static String CDT_STOPPING = " Timer STOPPING ";
-    public static String CDT_CALLING = " Timer CALLING ";
-    public static String CDT_X = " XXX ";
-    public static String CDT_Z = " ZZZ ";
     public static String CDT_XZ = " ZZZ XXX ";
 
     // create an instance of the result table datasource
     ResultDataSource resultDataSource;
 
+    //get the shared preffs
+    SharedPreferences sharedPreferences;
 
     // media elements
     AssetFileDescriptor afd;
@@ -90,6 +88,7 @@ public class RegattaTimer extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regatta_timer);
 
+        sharedPreferences = getSharedPreferences(Preferences.PREFS, 0);// grab the shared prefs
         // TODO: FOR TESTING ONLY, DEFAULTS SHOULD BE SET IN PROPERTIES MENU
 //        GlobalContent.setSecondsUntilClassFlagUp(5); //
 //        GlobalContent.setSecondsUntilPrepFlagUp(5);
@@ -287,7 +286,7 @@ public class RegattaTimer extends MainActivity {
                             nextFlagImage.setImageResource(BoatStartingListClass.BOAT_CLASS_START_ARRAY
                                     .get(currentPosition).getImage());
 //                            //start a one second timer then pause
-                            myCountdownMethod(0, 0, GlobalContent.secondsUntilRestartFromRecall);// TODO 60 Seconds
+                            myCountdownMethod(0, 0, sharedPreferences.getInt("postRecallDelay",45));// TODO 60 Seconds
                             if (!myCountDownTimer.isPaused()) {
                                 myCountDownTimer.pause();
                             }
@@ -345,14 +344,16 @@ public class RegattaTimer extends MainActivity {
             case R.id.action_ddms:
                 onActionClickDDMS(); // TODO: Get rid of me
                 return true;
-//            case R.id.action_settings:
-//                return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, Preferences.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-
+        //TODO get rid of me
     public void onActionClickDDMS(){
         Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
         startActivity(dbmanager);
@@ -406,7 +407,6 @@ public class RegattaTimer extends MainActivity {
 
                 myCountdownMethod(0, 0, tempTime);// start new timer with given time limit
 
-                Log.i(LOGTAG, Thread.currentThread().getStackTrace()[2].getMethodName()  + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber() + CDT_CALLING  + CDT_XZ + " Case " + flagToDisplay);
                 break;
             case 0: // for 0 case show no current flag and display the class up as the next flag
                 tempTime = 10;
@@ -419,8 +419,7 @@ public class RegattaTimer extends MainActivity {
                 nextFlagImage.setImageResource(R.drawable.class_up); // put flag in next flag
 
 
-                myCountdownMethod(0, 0, GlobalContent.secondsUntilClassFlagUp);// start new timer with given time limit
-                Log.i(LOGTAG, Thread.currentThread().getStackTrace()[2].getMethodName()  + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber() + CDT_CALLING  + CDT_XZ + " Case " + flagToDisplay);
+                myCountdownMethod(0, 0, sharedPreferences.getInt("initialDelay", 15));// start new timer with given time limit
                 break;
             case 1:
                 tempTime = 3;
@@ -435,7 +434,7 @@ public class RegattaTimer extends MainActivity {
                         .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
                 currentFlagImage.setImageResource(R.drawable.class_up); // up for 1 min
                 nextFlagImage.setImageResource(R.drawable.class_up_prep_up);
-                myCountdownMethod(0, 0, GlobalContent.secondsUntilPrepFlagUp);// start new timer with given time limit
+                myCountdownMethod(0, 0, sharedPreferences.getInt("classUp",65));// start new timer with given time limit
                 break;
             case 2:
                 tempTime = t2;
@@ -448,7 +447,7 @@ public class RegattaTimer extends MainActivity {
                 nextFlagImage.setImageResource(R.drawable.class_up_prep_down);
 
 
-                myCountdownMethod(0, 0, GlobalContent.secondsUntilPrepFlagDown);// start new timer with given time limit
+                myCountdownMethod(0, 0, sharedPreferences.getInt("classUpPrepUp",185));// start new timer with given time limit
                 break;
             case 3:
                 tempTime = t2;
@@ -465,7 +464,7 @@ public class RegattaTimer extends MainActivity {
                     nextFlagImage.setImageResource(R.drawable.no_flags);
                 }
 
-                myCountdownMethod(0, 0, GlobalContent.secondsUntilClassFlagDown);// start new timer with given time limit
+                myCountdownMethod(0, 0,sharedPreferences.getInt("classUpPrepDown",65));// start new timer with given time limit
                 break;
             case 4:
 
@@ -668,7 +667,7 @@ public class RegattaTimer extends MainActivity {
 //                ResultsAdapter.syncArrayListWithSql(resultDataSource);
 
                 //set all variables to initial positions
-                flagToDisplay = -1;
+                flagToDisplay = 0;
                 currentPosition = 0; // position 0
                 BoatStartingListClass.resetAllClassStartTimes(); // clear all start times
 

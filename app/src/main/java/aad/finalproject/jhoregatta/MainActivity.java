@@ -39,8 +39,10 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_ddms:
                 onActionClickDDMS();
                 return true;
-//            case R.id.action_settings:
-//                return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, Preferences.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
