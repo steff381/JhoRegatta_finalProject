@@ -32,7 +32,7 @@ public class ResultsAdapter extends BaseAdapter {
     ResultDataSource resultDataSource;
     // lists of result
     private List<Result> mainDataList = null;
-    public static ArrayList<Result> arraylist;
+    public ArrayList<Result> arraylist;
 
     // instance constructor
     public ResultsAdapter(Context context, List<Result> mainDataList,
@@ -42,9 +42,8 @@ public class ResultsAdapter extends BaseAdapter {
         mContext = context;
         inflater = LayoutInflater.from(mContext);
         // create a copy of the main list so we don't end up damagaing the original list
-        ResultsAdapter.arraylist = new ArrayList<>();
-        ResultsAdapter.arraylist.addAll(mainDataList);
-
+        this.arraylist = new ArrayList<>();
+        this.arraylist.addAll(mainDataList);
     }
     /**
      * How many items are in the data set represented by this Adapter.
@@ -207,8 +206,6 @@ public class ResultsAdapter extends BaseAdapter {
                         //update the result's finish time.
                         resultDataSource.updateSingleFinishTime(result.getResultsId(), timeFormatted);
 
-                        //run table calculations to derive duration and adjusted duration
-                        resultDataSource.runCalculations();
 
                         //set the result entry's finish time to the same.
                         result.setResultsBoatFinishTime(timeFormatted);
@@ -234,8 +231,17 @@ public class ResultsAdapter extends BaseAdapter {
 
                        //get the finish time ""
                         GlobalContent.getElapsedTime(startTime, timeFormatted);
+
+
+                        //run table calculations to derive duration and adjusted duration
+                        resultDataSource.runCalculations();
+
+                        //refresh the viewed data
                         notifyDataSetChanged();
-                    }
+                    } else
+                        Toast.makeText(v.getContext(), "This boat's Class hasn't started yet. \n" +
+                                "Wait for Time Tracker to finish starting the Class.",
+                                Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -248,7 +254,6 @@ public class ResultsAdapter extends BaseAdapter {
                 if (counter == 1) { // check how many clicks are left, if 1 then...
 
                     //blank out database entry
-//                    resultDataSource.updateSingleFinishTime(result.getResultsId(), null);
                     resultDataSource.clearStartAndDurations(result.getResultsId());
 
 
@@ -288,27 +293,29 @@ public class ResultsAdapter extends BaseAdapter {
     }
 
     // sync the list in the ResultsAdapter with what is in the Results SQL table.
-    public static void syncArrayListWithSql(ResultDataSource resultDataSource) {
+    public void syncArrayListWithSql(ResultDataSource resultDataSource) {
         //create statement strings
         String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.activeRace.getId()
                 + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
         String orderBy = DBAdapter.KEY_BOAT_CLASS + ", "
-                + DBAdapter.KEY_BOAT_NAME + " DESC";
+                + DBAdapter.KEY_BOAT_NAME;
         // create a temporary placeholder for the data from SQL
         List<Result> tempResultFromSql;
-        tempResultFromSql = resultDataSource.getAllResults(where, orderBy,
-                null);
+        tempResultFromSql = resultDataSource.getAllResults(where, orderBy, null);
         //TODO For testing
         for (Result r : tempResultFromSql) {
             Log.i(LOGTAG, "boat " + r.getBoatName());
         }
         // Make sure the data coming from sql isn't blank. Otherwise throw error
         if (tempResultFromSql.size() > 0) {
-            ResultsAdapter.arraylist.clear(); // clear the current list
-            ResultsAdapter.arraylist.addAll(tempResultFromSql);
+
+            this.arraylist.clear();
+
+            this.arraylist.addAll(tempResultFromSql);
         } else {
             throw new NullPointerException("Data in tempResultFromSql is empty");
         }
+        notifyDataSetChanged();
     }
 
     //filter results based on text entered into text box in the Results menu

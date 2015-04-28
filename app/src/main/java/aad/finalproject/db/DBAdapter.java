@@ -44,6 +44,8 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_BOAT_SELECTED = "isSelected";
     public static final String KEY_BOAT_VISIBLE = "visible";
 
+
+    //TODO, get rid of this, it's useless
     public static final String[] BOATS_ALL_FIELDS = new String[]{
             KEY_ID,
             KEY_BOAT_NAME,
@@ -93,7 +95,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_RESULTS_PLACE = "place";
     public static final String KEY_RESULTS_NOT_FINISHED = "notFinished";
     public static final String KEY_RESULTS_VISIBLE = "visible";
-    public static final String KEY_RESULTS_MANUAL_ENTRY = "manual_entry";
+    public static final String KEY_RESULTS_MANUAL_ENTRY = "elapsed_isedited";
 
 
     // build table statements
@@ -174,6 +176,7 @@ public class DBAdapter extends SQLiteOpenHelper{
             KEY_RACE_DATE,
             KEY_RACE_DISTANCE
     } ;
+
 
     // instances constructor for the DBAdapter class
     public DBAdapter(Context context) {

@@ -30,6 +30,12 @@ public class RaceAddForm extends Form {
     //logging header
     private String LOG = this.getClass().getSimpleName() + " - MODE:";
 
+    // activity is active
+    public static boolean isActiveRaceAddForm;
+
+    // set the onclick listners for each of the check boxes
+    String boatCheckBoxName;
+
     public static boolean isBoatClassUpdate;  // if the update is boat update
 
     // create empty instances for widgets
@@ -37,7 +43,7 @@ public class RaceAddForm extends Form {
     EditText raceDateMM;
     EditText raceDateDD;
     EditText raceDateYYYY;
-    EditText raceDistance;
+    public static EditText raceDistance; // make accessible by the calculator
 
     //checkboxes for class selection
     CheckBox raceClassRed;
@@ -82,6 +88,20 @@ public class RaceAddForm extends Form {
     Button create;
     Button update;
     Button delete;
+    Button calculateDistance;
+
+    //change activie status when activity starts and stops
+    @Override
+    public void onStart() {
+        super.onStart();
+        isActiveRaceAddForm = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        isActiveRaceAddForm = false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +164,15 @@ public class RaceAddForm extends Form {
         create = (Button) findViewById(R.id.btn_add_race);
         update = (Button) findViewById(R.id.btn_update_race);
         delete = (Button) findViewById(R.id.btn_delete_race);
+        calculateDistance = (Button) findViewById(R.id.btn_calc_distance_race);
+
+        calculateDistance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), DistanceCalculator.class);
+                startActivity(intent);
+            }
+        });
 
         // set the buttons for edit mode.
         if (GlobalContent.modeEdit.equals(GlobalContent.getRaceFormAccessMode())) {
@@ -227,8 +256,7 @@ public class RaceAddForm extends Form {
 
     }
 
-    // set the onclick listners for each of the check boxes
-    String boatCheckBoxName;
+
 
 
     // create method to assign checkbox listeners to the class check boxes
@@ -362,7 +390,6 @@ public class RaceAddForm extends Form {
 
 //TODO: For testing
     public void onClickGoodLife(View view) {
-//        setTempDataFields(); // load data from text fields
         if (true) {
 
             Race newRace = new Race(); // creae a new race instance

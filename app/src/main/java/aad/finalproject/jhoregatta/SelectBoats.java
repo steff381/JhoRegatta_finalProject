@@ -1,7 +1,6 @@
 package aad.finalproject.jhoregatta;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,8 +11,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import aad.finalproject.db.Boat;
 import aad.finalproject.db.BoatDataSource;
@@ -63,7 +60,7 @@ public class SelectBoats extends MainActivity {
         appendWhereClause();
 
         allTheBoats = boatDataSource
-                .getAllBoatsArrayList(whereClauseIsVisible, orderByClause, havingClause);
+                .getAllBoatsArrayList(GlobalContent.globalWhere, orderByClause, havingClause);
 
         // set the lv to the current listview
         myList = (ListView) findViewById(R.id.lvSelectBoatList);
@@ -72,15 +69,11 @@ public class SelectBoats extends MainActivity {
         selectBoatCkBox = (CheckBox) findViewById(R.id.ckboxSelectBoatCheck);
 
 
-//        addBoatsToBoatListClass(); // generate the boat list
-
         /// wire the custom view adapter to the view
         Log.i(LOG, "Setting obj Adapter");
-//        objAdapter = new BoatAdapter(this, boatDataSource
-//                .getAllBoats(whereClauseIsVisible, orderByClause, havingClause));
 
         objAdapter = new SelectBoatAdapter(this, R.layout.activity_list_template_select_boats,
-                allTheBoats);
+                allTheBoats, GlobalContent.globalWhere);
 
     }
 
@@ -98,6 +91,7 @@ public class SelectBoats extends MainActivity {
         String substring = sb.substring(0, sb.length() - 2); // chop off the last comma.
         substring += ")"; // include the last brace
         whereClauseIsVisible = substring;// replace old string with newly built string
+        GlobalContent.globalWhere = substring;
         Log.i(LOG, substring);
     }
 
@@ -128,6 +122,7 @@ public class SelectBoats extends MainActivity {
     public void onClickTimer(View view) {
 
         BoatListClass.selectedBoatsList.clear(); // clear data from the boat list.
+
         //If the user selected the boat add it to the list.
         for (Boat b : objAdapter.boatArrayList) {
             if (b.isSelected()) {
@@ -166,6 +161,7 @@ public class SelectBoats extends MainActivity {
         boatDataSource.open(); // open the datasource
         appendWhereClause(); // refresh the where clause
         populateListView(); // refresh the listview
+        objAdapter.syncArrayListWithSql(boatDataSource);
 
     }
 
@@ -175,63 +171,6 @@ public class SelectBoats extends MainActivity {
         boatDataSource.close(); // close datasource to prevent leakage
     }
 
-    //put the selected boat classes into the special boatclass array
-    private void addBoatsToBoatListClass() {
-
-        try { // creat a cursor of all the data in the boats sql table
-            Cursor boatCursor = boatDataSource.getAllBoatsCursor(whereClauseIsVisible, null, null);
-
-            try { // clear any old or useless data from the list.
-                BoatListClass.clearSelectedBoatsList();
-            } catch (Exception e) {
-                Log.i(LOG, " exception when attempting to Clear Boat List");
-            }
-            // run through the array list and get the pertinant data
-            while (boatCursor.moveToNext()) {
-                String id = boatCursor
-                        .getString(boatCursor.getColumnIndex(DBAdapter.KEY_ID));
-                String bClass = boatCursor
-                        .getString(boatCursor.getColumnIndex(DBAdapter.KEY_BOAT_CLASS));
-                String name = boatCursor
-                        .getString(boatCursor.getColumnIndex(DBAdapter.KEY_BOAT_NAME));
-                String sail = boatCursor
-                        .getString(boatCursor.getColumnIndex(DBAdapter.KEY_BOAT_SAIL_NUM));
-                String phrf = boatCursor
-                        .getString(boatCursor.getColumnIndex(DBAdapter.KEY_BOAT_PHRF));
-                String visible = boatCursor
-                        .getString(boatCursor.getColumnIndex(DBAdapter.KEY_BOAT_VISIBLE));
-
-                Boat boat = new Boat(); // create a new boat class item
-
-                // pass arguments into the boat class using setters
-                boat.setId(Long.parseLong(id));
-                boat.setBoatClass(bClass);
-                boat.setBoatName(name);
-                boat.setBoatSailNum(sail);
-                boat.setBoatPHRF(Integer.parseInt(phrf));
-                boat.setBoatVisible((Integer.parseInt(visible)));
-
-                BoatListClass.boatList.add(boat);// add the boat instance to the array list
-
-            }
-            boatCursor.close(); // close the curosr to preserve resources
-
-            // compares the id's of both lists against one another
-            Collections.sort(BoatListClass.boatList,
-                    new Comparator<Boat>() {
-                        @Override
-                        public int compare(Boat lhs,
-                                           Boat rhs) {
-                            return (lhs.getId() + "").compareTo((
-                                    rhs.getId() + ""));
-                        }
-                    });
-            populateListView(); // refresh the list view
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     // wire the data from the sql table to the list view
     public void populateListView() {

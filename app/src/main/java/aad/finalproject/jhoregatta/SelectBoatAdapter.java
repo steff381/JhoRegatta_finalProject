@@ -10,8 +10,11 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import aad.finalproject.db.Boat;
+import aad.finalproject.db.BoatDataSource;
+import aad.finalproject.db.DBAdapter;
 
 /**
  * Created by Daniel on 4/24/2015.
@@ -21,17 +24,18 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
             .getClass().getSimpleName();
 
     private Context context; // make an accessible field for context
-
+    private String where;
 
     public ArrayList<Boat> boatArrayList;// list of all boats in the selected classes
     // instance constructor
     public SelectBoatAdapter(Context context, int textViewResourceId,
-                             ArrayList<Boat> boatArrayList) {
+                             ArrayList<Boat> boatArrayList, String where) {
         super(context, textViewResourceId, boatArrayList);
         this.context = context; // pass context to the class field
         // make a new array list and place all boats inside.
         this.boatArrayList = new ArrayList<>();
         this.boatArrayList.addAll(boatArrayList);
+        this.where = where;
     }
     // create a holder class for the variables
     private class ViewHolder{
@@ -98,4 +102,31 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
         return convertView;
 
     }
+
+    // sync the list in the ResultsAdapter with what is in the Results SQL table.
+    public void syncArrayListWithSql(BoatDataSource boatDataSource) {
+//    public static void syncArrayListWithSql(ResultDataSource resultDataSource) {
+        //create statement strings
+        String orderBy = DBAdapter.KEY_BOAT_CLASS + ", "
+                + DBAdapter.KEY_BOAT_NAME;
+        // create a temporary placeholder for the data from SQL
+        List<Boat> tempResultFromSql;
+        tempResultFromSql = boatDataSource.getAllBoats(where, orderBy, null);
+        //TODO For testing
+        for (Boat b : tempResultFromSql) {
+            Log.i(LOGTAG, "boat " + b.getBoatName());
+        }
+        // Make sure the data coming from sql isn't blank. Otherwise throw error
+        if (tempResultFromSql.size() > 0) {
+
+            this.boatArrayList.clear();
+
+            this.boatArrayList.addAll(tempResultFromSql);
+
+        } else {
+            throw new NullPointerException("Data in tempResultFromSql is empty");
+        }
+        notifyDataSetChanged();
+    }
+
 }

@@ -38,7 +38,6 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
             android:id="@+id/linlay_MultiTextLineDate">
 
             <EditText
@@ -98,12 +97,24 @@
             android:id="@+id/txt_form_RaceDistance" />
 
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:id="@+id/txt_inpt_RaceDistance" />
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:id="@+id/txt_inpt_RaceDistance"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calculate"
+                android:id="@+id/btn_calc_distance_race" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

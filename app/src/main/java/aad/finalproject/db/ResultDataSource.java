@@ -51,11 +51,7 @@ public class ResultDataSource {
             ContentValues values = new ContentValues();
             values.put(DBAdapter.KEY_RACE_ID, GlobalContent.activeRace.getId());
             values.put(DBAdapter.KEY_BOAT_ID, b.getId());
-//            values.put(DBAdapter.KEY_RESULTS_DURATION, result.getResultsDuration());
-//            values.put(DBAdapter.KEY_RESULTS_ADJ_DURATION, result.getResultsAdjDuration());
             values.put(DBAdapter.KEY_RESULTS_PENALTY, 0);
-//            values.put(DBAdapter.KEY_RESULTS_NOTE, result.getResultsNote());
-//            values.put(DBAdapter.KEY_RESULTS_PLACE, result.getResultsPenalty());
             values.put(DBAdapter.KEY_RESULTS_NOT_FINISHED, 0);
             values.put(DBAdapter.KEY_RESULTS_MANUAL_ENTRY, 0);
             values.put(DBAdapter.KEY_BOAT_NAME, b.getBoatName());
@@ -119,21 +115,6 @@ public class ResultDataSource {
     }
 
 
-
-
-    // return a cursor with all rows of data
-    public Cursor getAllResultsCursor(String where, String orderBy, String groupBy){
-
-        Cursor cursor = db.query(DBAdapter.TABLE_RESULTS, DBAdapter.RESULTS_ALL_FIELDS, where,
-                null, null, null, orderBy);
-
-        Log.i(LOG, "Returned " + cursor.getCount() + " Rows");
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-        }
-
-        return cursor;
-    }
 
     // add the finish time to the results list for the individual result
     // for the row buttons in the Results Activity
@@ -215,17 +196,17 @@ public class ResultDataSource {
 
     }
 
-
-    //execute query
-
-    public void execueSQLQuery(String sqlString) {
-        db.execSQL(sqlString);
-    }
-
     //
-    public boolean update(long id, String classStartTime, String boatFinishTime, String duration,
-                          String adjDuration, Double penalty, String note, int place,
-                          int notFinished, int manualEntry) {
+    public boolean update(long id,
+                          String classStartTime,
+                          String boatFinishTime,
+                          String duration,
+                          String adjDuration,
+                          Double penalty,
+                          String note,
+                          int place,
+                          int notFinished,
+                          int manualEntry) {
         String whereClause = DBAdapter.KEY_ID + " = " + id; // select what item to update
         ContentValues newValues = new ContentValues(); // create a content values instance
         //Put the new values into the contentValues variable
@@ -268,14 +249,7 @@ public class ResultDataSource {
         String table = DBAdapter.TABLE_RESULTS;
         String durationColumn = DBAdapter.KEY_RESULTS_DURATION;
         String adjDurationColumn = DBAdapter.KEY_RESULTS_ADJ_DURATION;
-//        for (Result r : resultArrayList) {
-////            Log.i(LOG, "boat finish Time " + r.getResultsBoatFinishTime());
-//////            Log.i(LOG, "boat finish Time null " + r.getResultsBoatFinishTime().equals(null));
-////            Log.i(LOG, "boat finish Time \"null\" " + r.getResultsBoatFinishTime().equals("null"));
-////            Log.i(LOG, "not finished " + r.getResultsNotFinished());
-////            Log.i(LOG, "class start Time " + r.getResultsClassStartTime());
-////            Log.i(LOG, "class start Time Empty " + r.getResultsClassStartTime().isEmpty());
-//        }
+
 
         for (Result r : resultArrayList) {
             Log.i(LOG, " Boat: " + r.getBoatName() + " " + r.boatClass + " finish time: "
@@ -285,9 +259,9 @@ public class ResultDataSource {
             double penalty = r.getResultsPenalty();
             double distance = r.getRaceDistance();
             // if the boat is both visible and not manual entry mode. Then next
-            if (r.getResultsManualEntry() == 0 && r.getResultsVisible() == 1) {
+            if (r.getResultsNotFinished() == 0 && r.getResultsVisible() == 1) {
                 //if there is a start and a finish time calculate duration.
-                if (r.getResultsNotFinished() == 0 && r.getResultsClassStartTime() != null &&
+                if (r.getResultsManualEntry() == 0 && r.getResultsClassStartTime() != null &&
                         r.getResultsBoatFinishTime() != null) {
                     //calculate elapsed time
                     long milliDuration = GlobalContent.getDurationInMillis(r.getResultsClassStartTime(),
@@ -300,10 +274,19 @@ public class ResultDataSource {
                     //calculate adjusted duration
                     String adjDuration = GlobalContent.calculateAdjDuration(phrf, milliDuration,
                             penalty, distance, 1);
-                    // ender adjusted duration
+                    // enter adjusted duration
                     db.execSQL("UPDATE " + table + " SET " + adjDurationColumn + " = '" +
                             adjDuration + "' WHERE _id = " + resultId + ";");
 
+                } else if (r.getResultsManualEntry() == 1 && r.getResultsDuration() != null) {
+                    //get the elapsed time in millis from the manually entered duration.
+                    long manualMilliDuration = GlobalContent.getDurationInMillis(r.getResultsDuration());
+                    //calculate adjusted duration
+                    String adjDuration = GlobalContent.calculateAdjDuration(phrf, manualMilliDuration,
+                            penalty, distance, 1);
+                    // enter adjusted duration
+                    db.execSQL("UPDATE " + table + " SET " + adjDurationColumn + " = '" +
+                            adjDuration + "' WHERE _id = " + resultId + ";");
                 }
             }
         }

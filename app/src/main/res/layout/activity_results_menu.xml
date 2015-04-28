@@ -29,59 +29,34 @@
                     android:layout_height="wrap_content"
                     android:baselineAligned="false">
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top">
+                    <FrameLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
 
-                        <TableRow
-                            android:layout_width="fill_parent"
+                        <Button
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1">
+                            android:text="Export DB"
+                            android:id="@+id/btn_rm_csv_export"
+                            android:layout_gravity="center" />
 
-                            <Button
-                                style="?android:attr/buttonStyleSmall"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Time Tracker"
-                                android:id="@+id/btn_nav_TimeTracker"
-                                android:onClick=""
-                                android:layout_marginRight="35dp"/>
-                        </TableRow>
+                        <Button
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Time Tracker"
+                            android:id="@+id/btn_nav_TimeTracker"
+                            android:onClick=""
+                            android:layout_marginRight="35dp"
+                            android:layout_gravity="left|center_vertical" />
 
-                        <!--<TableRow-->
-                            <!--android:layout_width="60dp"-->
-                            <!--android:layout_height="match_parent">-->
-
-                        <!--</TableRow>-->
-
-                        <!--<TableRow-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_gravity="bottom">-->
-
-                            <!--<EditText-->
-                                <!--android:layout_width="229dp"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:id="@+id/txt_hd_rm_filter"-->
-                                <!--android:hint="text filter"/>-->
-                        <!--</TableRow>-->
-                        <TableRow
-                            android:layout_width="fill_parent"
+                        <Button
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1">
-
-                            <!--<Button-->
-                                <!--style="?android:attr/buttonStyleSmall"-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:text="Clear"-->
-                                <!--android:id="@+id/btn_clear_filter"-->
-                                <!--android:layout_marginRight="35dp"/>-->
-                        </TableRow>
-
-                    </LinearLayout>
+                            android:text="Exit"
+                            android:id="@+id/btn_rm_exit"
+                            android:layout_gravity="right|center_vertical" />
+                    </FrameLayout>
 
 
                 </TableRow>

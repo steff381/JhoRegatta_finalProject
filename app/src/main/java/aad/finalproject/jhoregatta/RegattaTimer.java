@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 import aad.finalproject.db.AndroidDatabaseManager;
 import aad.finalproject.db.ResultDataSource;
-import aad.finalproject.db.ResultsAdapter;
 
 import static aad.finalproject.jhoregatta.R.id.imgNextFlag;
 
@@ -258,7 +257,7 @@ public class RegattaTimer extends MainActivity {
 
                     alertDialog.setMessage(alertMessage);
                     alertDialog.setCancelable(false);
-    //---------------------------BEGIN CONFIRMATION FUNCTION ---------------------------------------
+    //---------------------------BEGIN ON CONFIRMATION FUNCTION ------------------------------------
                     //User selects Confirm
                     alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener(){
                         @Override
@@ -290,7 +289,7 @@ public class RegattaTimer extends MainActivity {
                             nextFlagImage.setImageResource(BoatStartingListClass.BOAT_CLASS_START_ARRAY
                                     .get(currentPosition).getImage());
 //                            //start a one second timer then pause
-//                            myCountdownMethod(0, 0, 60);// TODO 60 Seconds
+                            myCountdownMethod(0, 0, 60);// TODO 60 Seconds
                             if (!myCountDownTimer.isPaused()) {
                                 myCountDownTimer.pause();
                             }
@@ -299,13 +298,17 @@ public class RegattaTimer extends MainActivity {
                             String color = boatClassInstance.getBoatColor();
 
                             //clear the times and durations for the given class.
-                            //TODO finish wiring this in reslt adapter
                             resultDataSource.clearSingleClassStartTimesAndDurations(GlobalContent
                                     .getResultsRowID(), color);
 
                             //rebuild the tables
                             classTableRowBuilder(colorBlockFLs, contentBlockLFs, boatClassNames);
                             linlayClassContainer.invalidate(); // force the view to refresh
+
+                            if (GlobalContent.activeResultsAdapter != null) {
+                                //sync the arraylist  in the results adapter with what is in sql
+                                GlobalContent.activeResultsAdapter.syncArrayListWithSql(resultDataSource);
+                            }
                         }
                     });
     //---------------------------BEGIN NO FUNCTION -------------------------------------------------
@@ -660,8 +663,11 @@ public class RegattaTimer extends MainActivity {
                 }
                 //remove any saved start times for all classes
                 resultDataSource.clearRaceTimesDurations(GlobalContent.getRaceRowID());
-                // make sure sql data and arraylist data are the same
-                ResultsAdapter.syncArrayListWithSql(resultDataSource);
+                if (GlobalContent.activeResultsAdapter != null) {
+                    // make sure sql data and arraylist data are the same
+                    GlobalContent.activeResultsAdapter.syncArrayListWithSql(resultDataSource);
+                }
+//                ResultsAdapter.syncArrayListWithSql(resultDataSource);
 
                 //set all variables to initial positions
                 flagToDisplay = -1;

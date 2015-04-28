@@ -64,8 +64,8 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void navigateToPreferences(View view){
-//        Intent intent = new Intent(this, SelectBoats.class); //TODO: wire to settings activity
-//        startActivity(intent);
+        Intent intent = new Intent(this, DistanceCalculator.class); //TODO: wire to settings activity
+        startActivity(intent);
 
 
 

@@ -1,0 +1,248 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="aad.finalproject.jhoregatta.DistanceCalculator">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Distance: 0 nm"
+            android:id="@+id/txt_dc_calculated_distance"
+            android:layout_gravity="center_horizontal" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Keep Degrees and Minutes Between Entries"
+            android:id="@+id/ckbx_will_save_deg_min"
+            android:checked="true"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Latitude"
+            android:id="@+id/lbl_dc_latitude" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:baselineAligned="false">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_dc_lat_degrees"
+                android:nextFocusDown="@+id/txt_dc_lat_minutes"
+                android:layout_weight="0.17"
+                android:hint="Degs"
+                android:inputType="number"
+                android:text="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="°"
+                android:id="@+id/lbl_dc_degrees"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="45sp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:nextFocusDown="@+id/txt_dc_lat_seconds"
+                android:id="@+id/txt_dc_lat_minutes"
+                android:inputType="number"
+                android:layout_weight="0.21"
+                android:hint="Mins"
+                android:text="2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="&apos;"
+                android:id="@+id/lbl_dc_minutes"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textIsSelectable="false"
+                android:textSize="45sp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:nextFocusDown="@+id/txt_dc_lon_degrees"
+                android:id="@+id/txt_dc_lat_seconds"
+                android:layout_weight="0.21"
+                android:hint="Secs"
+                android:text="3"
+                android:inputType="numberDecimal"
+                android:maxLength="7" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="&quot;"
+                android:id="@+id/lbl_dc_seconds"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0.05"
+                android:textSize="45sp" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="N"
+                android:textOn="S"
+                android:id="@+id/tog_dc_lat_direction"
+                android:layout_weight="0.17" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Longitude"
+            android:id="@+id/lbl_Longitude"
+            android:layout_marginTop="10dp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1"
+            android:baselineAligned="false" >
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:nextFocusDown="@+id/txt_dc_lon_minutes"
+                android:inputType="number"
+                android:id="@+id/txt_dc_lon_degrees"
+                android:layout_weight="0.17"
+                android:hint="Degs"
+                android:text="4" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="°"
+                android:id="@+id/textView"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="45sp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:nextFocusDown="@+id/txt_dc_lon_seconds"
+                android:inputType="number"
+                android:id="@+id/txt_dc_lon_minutes"
+                android:layout_weight="0.21"
+                android:hint="Mins"
+                android:text="5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="&apos;"
+                android:id="@+id/textView2"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textIsSelectable="false"
+                android:textSize="45sp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_dc_lon_seconds"
+                android:layout_weight="0.21"
+                android:hint="Secs"
+                android:text="6"
+                android:inputType="numberDecimal"
+                android:maxLength="7" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="&quot;"
+                android:id="@+id/textView3"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0.05"
+                android:textSize="45sp" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="W"
+                android:textOn="E"
+                android:id="@+id/tog_dc_lon_direction"
+                android:layout_weight="0.17" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Add/Edit"
+                android:id="@+id/btn_dc_addEdit"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Remove"
+                android:id="@+id/btn_dc_delete"
+                android:layout_weight="1"
+                android:layout_marginRight="25dp"
+                android:layout_marginLeft="25dp" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Done!"
+                android:id="@+id/btn_dc_done"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/lv_distcalc" />
+
+    </LinearLayout>
+</RelativeLayout>

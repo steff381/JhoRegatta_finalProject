@@ -40,7 +40,8 @@
             android:layout_height="match_parent"
             android:id="@+id/ckboxSelectBoatCheck"
             android:text="     "
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:focusable="false"/>
 
         <TextView
             android:layout_width="0dp"

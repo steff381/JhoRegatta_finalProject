@@ -16,43 +16,34 @@
     <!--/>-->
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Comming Soon!"
-        android:id="@+id/textView"
-        android:textSize="50sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="267dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Finish Line Individual Result"
-        android:id="@+id/textView3"
-        android:textSize="45sp"
-        android:layout_alignBottom="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="57dp" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
+        android:text="Set Elapsed"
         android:id="@+id/btn_setText"
-        android:layout_above="@+id/textView3"
+        android:onClick="showDialog"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="text"
+        android:text="1:23:45"
         android:id="@+id/txt_JODADURATION"
         android:layout_above="@+id/btn_setText"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:singleLine="false" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_forEditing"
+        android:layout_above="@+id/txt_JODADURATION"
+        android:layout_alignEnd="@+id/btn_setText"
+        android:layout_alignStart="@+id/btn_setText"
+        android:text="1:23:45"
+        android:layout_gravity="center"
+        android:enabled="false" />
 
 </RelativeLayout>

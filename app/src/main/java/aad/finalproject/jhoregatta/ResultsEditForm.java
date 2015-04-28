@@ -1,21 +1,24 @@
 package aad.finalproject.jhoregatta;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import aad.finalproject.db.RaceDataSource;
 import aad.finalproject.db.ResultDataSource;
 
 
-public class ResultsEditForm extends Form {
+public class ResultsEditForm extends Form implements TimePickerDialog.Communicator{
 
     private Button btnFinishTime;
     static final int dialog_id = 0;
     int hour, minute, second;
     private TextView time;
+    private String timeInitialElapsed;
 
     ResultDataSource resultDataSource;
     RaceDataSource raceDataSource;
@@ -24,6 +27,7 @@ public class ResultsEditForm extends Form {
     Button update;
     Button setTime;
     Button cancel;
+    CheckBox isEditedElapsed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +41,9 @@ public class ResultsEditForm extends Form {
 
         time = (TextView) findViewById(R.id.txt_JODADURATION);
         setTime = (Button) findViewById(R.id.btn_setText);
-        setTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resultDataSource.runCalculations();
-            }
-        });
+
+        timeInitialElapsed = time.getText().toString();
+
 
     }
 
@@ -62,4 +63,33 @@ public class ResultsEditForm extends Form {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void showDialog(View view) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Time", time.getText().toString());
+        FragmentManager manager = getFragmentManager();
+        TimePickerDialog picker = new TimePickerDialog();
+        picker.setArguments(bundle);
+
+        picker.show(manager, "HH:MM:SS");
+
+    }
+
+    @Override
+    public void onDialogMessage(String message) {
+        //get the message and initial time in millis
+        long timeInitialMillis = GlobalContent.getDurationInMillis(timeInitialElapsed);
+        long timeMessageMillis = GlobalContent.getDurationInMillis(message);
+
+        // check to see if the time value actually changed
+        if (timeInitialMillis != timeMessageMillis) {
+            time.setText(message); // set text to the new time
+            isEditedElapsed.setChecked(true);
+        } else {
+            time.setText(timeInitialElapsed); // make sure the value remains unchanged
+            isEditedElapsed.setChecked(false);
+        }
+
+    }
+
 }

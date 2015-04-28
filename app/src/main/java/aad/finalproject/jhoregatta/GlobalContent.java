@@ -10,6 +10,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 import aad.finalproject.db.Race;
+import aad.finalproject.db.ResultsAdapter;
 
 /**
  * Created by Daniel on 4/14/2015.
@@ -20,6 +21,7 @@ public class GlobalContent {
             .getStackTrace()[2].getClassName(); // log tag for records
 
     public static Race activeRace;
+    public static ResultsAdapter activeResultsAdapter = null;
 
     private static String BoatFormAccessMode;
     private static String RaceFormAccessMode;
@@ -43,6 +45,7 @@ public class GlobalContent {
     // Joda time formatters. Used by all applications for consistancy of date time formats
     private static DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("hh:mm:ss a");
     private static DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("MM/dd/yyyy");
+    public static String globalWhere; // where clause to be used by multiple interfaces
 
     // Time handling methods
     // from string to local time
@@ -83,6 +86,20 @@ public class GlobalContent {
         return finishTime.getMillis() - startTime.getMillis();
     }
 
+    //elapsed time string to millis
+    public static long getDurationInMillis(String elapsedDuration) {
+        String[] splitTime;
+        splitTime = elapsedDuration.split(":"); // break up string
+        long h, m, s;
+        // convert hours mins seconds to millis
+        h = 3600000 * Long.parseLong(splitTime[0]);
+        m = 60000 * Long.parseLong(splitTime[1]);
+        s = 1000 * Long.parseLong(splitTime[2]);
+
+        // calculate the time
+        return (h + m + s);
+    }
+
     // get elapsed time using strings
     public static String getElapsedTime(String startTimeString, String finishTimeString) {
         // convert string to date times
@@ -103,6 +120,7 @@ public class GlobalContent {
     public static String calculateAdjDuration(int PHRF, long durationInMillis, double penalty,
                                               double distance, double correctionFactor) {
         String result = null;
+        penalty = penalty/100;
         //calculate Time Allowance in Milliseconds
         long taInMillis = (long) ((distance * PHRF * correctionFactor / 60) * 60 * 1000);
         Log.i(LOGTAG, "TA in Millis " + taInMillis);
@@ -110,7 +128,7 @@ public class GlobalContent {
         long tmpAdjDuration = durationInMillis - taInMillis;
         Log.i(LOGTAG, "AdjDuration pre penalty " + tmpAdjDuration);
         //apply any penalty
-        long adjDurationWPenalty = (long)(taInMillis + (taInMillis * penalty));
+        long adjDurationWPenalty = (long)(tmpAdjDuration - (tmpAdjDuration * penalty));
         Log.i(LOGTAG, "AdjDuration with penalty " + tmpAdjDuration);
 
         //convert result to formatted duration
