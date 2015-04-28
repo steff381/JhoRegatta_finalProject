@@ -91,12 +91,10 @@ public class RegattaTimer extends MainActivity {
         setContentView(R.layout.activity_regatta_timer);
 
         // TODO: FOR TESTING ONLY, DEFAULTS SHOULD BE SET IN PROPERTIES MENU
-        GlobalContent.setSecondsUntilOrangeFlagUp(5); // 15 seconds *Warn user to prepare orange flag
-        GlobalContent.setSecondsUntilOrangeFlagDown(10); // Displayed for 1 min *Instruction: Warn boats of 6 mins to race start
-        GlobalContent.setSecondsUntilClassFlagUp(5); //
-        GlobalContent.setSecondsUntilPrepFlagUp(5);
-        GlobalContent.setSecondsUntilPrepFlagDown(15);
-        GlobalContent.setSecondsUntilClassFlagDown(5);
+//        GlobalContent.setSecondsUntilClassFlagUp(5); //
+//        GlobalContent.setSecondsUntilPrepFlagUp(5);
+//        GlobalContent.setSecondsUntilPrepFlagDown(15);
+//        GlobalContent.setSecondsUntilClassFlagDown(5);
 
         //wire and open the result datasource
         resultDataSource = new ResultDataSource(this);
@@ -289,7 +287,7 @@ public class RegattaTimer extends MainActivity {
                             nextFlagImage.setImageResource(BoatStartingListClass.BOAT_CLASS_START_ARRAY
                                     .get(currentPosition).getImage());
 //                            //start a one second timer then pause
-                            myCountdownMethod(0, 0, 60);// TODO 60 Seconds
+                            myCountdownMethod(0, 0, GlobalContent.secondsUntilRestartFromRecall);// TODO 60 Seconds
                             if (!myCountDownTimer.isPaused()) {
                                 myCountDownTimer.pause();
                             }
@@ -421,7 +419,7 @@ public class RegattaTimer extends MainActivity {
                 nextFlagImage.setImageResource(R.drawable.class_up); // put flag in next flag
 
 
-                myCountdownMethod(0, 0, tempTime);// start new timer with given time limit
+                myCountdownMethod(0, 0, GlobalContent.secondsUntilClassFlagUp);// start new timer with given time limit
                 Log.i(LOGTAG, Thread.currentThread().getStackTrace()[2].getMethodName()  + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber() + CDT_CALLING  + CDT_XZ + " Case " + flagToDisplay);
                 break;
             case 1:
@@ -437,7 +435,7 @@ public class RegattaTimer extends MainActivity {
                         .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
                 currentFlagImage.setImageResource(R.drawable.class_up); // up for 1 min
                 nextFlagImage.setImageResource(R.drawable.class_up_prep_up);
-                myCountdownMethod(0, 0, tempTime);// start new timer with given time limit
+                myCountdownMethod(0, 0, GlobalContent.secondsUntilPrepFlagUp);// start new timer with given time limit
                 break;
             case 2:
                 tempTime = t2;
@@ -450,7 +448,7 @@ public class RegattaTimer extends MainActivity {
                 nextFlagImage.setImageResource(R.drawable.class_up_prep_down);
 
 
-                myCountdownMethod(0, 0, tempTime);// start new timer with given time limit
+                myCountdownMethod(0, 0, GlobalContent.secondsUntilPrepFlagDown);// start new timer with given time limit
                 break;
             case 3:
                 tempTime = t2;
@@ -467,7 +465,7 @@ public class RegattaTimer extends MainActivity {
                     nextFlagImage.setImageResource(R.drawable.no_flags);
                 }
 
-                myCountdownMethod(0, 0, tempTime);// start new timer with given time limit
+                myCountdownMethod(0, 0, GlobalContent.secondsUntilClassFlagDown);// start new timer with given time limit
                 break;
             case 4:
 

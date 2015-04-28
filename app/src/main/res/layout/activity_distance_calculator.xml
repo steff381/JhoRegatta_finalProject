@@ -55,8 +55,7 @@
                 android:nextFocusDown="@+id/txt_dc_lat_minutes"
                 android:layout_weight="0.17"
                 android:hint="Degs"
-                android:inputType="number"
-                android:text="1" />
+                android:inputType="number" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,8 +75,7 @@
                 android:id="@+id/txt_dc_lat_minutes"
                 android:inputType="number"
                 android:layout_weight="0.21"
-                android:hint="Mins"
-                android:text="2" />
+                android:hint="Mins"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -98,7 +96,6 @@
                 android:id="@+id/txt_dc_lat_seconds"
                 android:layout_weight="0.21"
                 android:hint="Secs"
-                android:text="3"
                 android:inputType="numberDecimal"
                 android:maxLength="7" />
 
@@ -143,8 +140,7 @@
                 android:inputType="number"
                 android:id="@+id/txt_dc_lon_degrees"
                 android:layout_weight="0.17"
-                android:hint="Degs"
-                android:text="4" />
+                android:hint="Degs"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -164,8 +160,7 @@
                 android:inputType="number"
                 android:id="@+id/txt_dc_lon_minutes"
                 android:layout_weight="0.21"
-                android:hint="Mins"
-                android:text="5" />
+                android:hint="Mins"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -185,7 +180,6 @@
                 android:id="@+id/txt_dc_lon_seconds"
                 android:layout_weight="0.21"
                 android:hint="Secs"
-                android:text="6"
                 android:inputType="numberDecimal"
                 android:maxLength="7" />
 

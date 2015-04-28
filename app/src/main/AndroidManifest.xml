@@ -89,6 +89,14 @@
             android:name=".listTemplateDistanceCalculator"
             android:label="@string/title_activity_list_template_distance_calculator" >
         </activity>
+        <activity
+            android:name=".Preferences"
+            android:label="@string/title_activity_preferences"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="aad.finalproject.jhoregatta.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

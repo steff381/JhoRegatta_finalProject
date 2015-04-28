@@ -34,13 +34,13 @@ public class GlobalContent {
     public static String modeAdd = "ADD";
     public static String modeEdit = "EDIT";
 
-    private static int secondsUntilOrangeFlagUp;
-    private static int secondsUntilOrangeFlagDown;
-    private static int secondsUntilClassFlagUp;
-    private static int secondsUntilPrepFlagUp;
-    private static int secondsUntilPrepFlagDown;
-    private static int secondsUntilClassFlagDown;
-    private static int secondsUntilRestartFromRecall;
+//    public static int secondsUntilOrangeFlagUp;
+//    public static int secondsUntilOrangeFlagDown;
+    public static int secondsUntilClassFlagUp; // inital delay
+    public static int secondsUntilPrepFlagUp; // class goes up class flag for 1 min
+    public static int secondsUntilPrepFlagDown; // prep up and class for 3 mins
+    public static int secondsUntilClassFlagDown; // prep flag goes down 1 min
+    public static int secondsUntilRestartFromRecall; // 6 mins after a recall.
 
     // Joda time formatters. Used by all applications for consistancy of date time formats
     private static DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("hh:mm:ss a");
@@ -143,22 +143,22 @@ public class GlobalContent {
 
     // Time tracker content
 
-    // Tracker getters and setters
-    public static int getSecondsUntilOrangeFlagUp() {
-        return secondsUntilOrangeFlagUp;
-    }
-
-    public static void setSecondsUntilOrangeFlagUp(int secondsUntilOrangeFlagUp) {
-        GlobalContent.secondsUntilOrangeFlagUp = secondsUntilOrangeFlagUp;
-    }
-
-    public static int getSecondsUntilOrangeFlagDown() {
-        return secondsUntilOrangeFlagDown;
-    }
-
-    public static void setSecondsUntilOrangeFlagDown(int secondsUntilOrangeFlagDown) {
-        GlobalContent.secondsUntilOrangeFlagDown = secondsUntilOrangeFlagDown;
-    }
+//    // Tracker getters and setters
+//    public static int getSecondsUntilOrangeFlagUp() {
+//        return secondsUntilOrangeFlagUp;
+//    }
+//
+//    public static void setSecondsUntilOrangeFlagUp(int secondsUntilOrangeFlagUp) {
+//        GlobalContent.secondsUntilOrangeFlagUp = secondsUntilOrangeFlagUp;
+//    }
+//
+//    public static int getSecondsUntilOrangeFlagDown() {
+//        return secondsUntilOrangeFlagDown;
+//    }
+//
+//    public static void setSecondsUntilOrangeFlagDown(int secondsUntilOrangeFlagDown) {
+//        GlobalContent.secondsUntilOrangeFlagDown = secondsUntilOrangeFlagDown;
+//    }
 
     public static int getSecondsUntilClassFlagUp() {
         return secondsUntilClassFlagUp;

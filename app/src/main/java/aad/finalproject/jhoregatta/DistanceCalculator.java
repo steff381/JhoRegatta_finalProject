@@ -242,8 +242,11 @@ public class DistanceCalculator extends MainActivity {
                     }
                     populateListView(); // refresh the listview
                     clearValues(); // clear the text fields that the user wants emptied
+                    // calculate and store the distance
                     distanceDouble = calculateDistance();
+                    // update display
                     distanceDisplay.setText("Distance: " + distanceDouble + " nm");
+
                 }
             }
         });
@@ -259,6 +262,10 @@ public class DistanceCalculator extends MainActivity {
                     populateListView(); // refresh the list
                     delete.setEnabled(false); // disable the delete button
                     addEdit.setText("Add");
+                    // calculate and store the distance
+                    distanceDouble = calculateDistance();
+                    // update display
+                    distanceDisplay.setText("Distance: " + distanceDouble + " nm");
                 } else {
 
                 }

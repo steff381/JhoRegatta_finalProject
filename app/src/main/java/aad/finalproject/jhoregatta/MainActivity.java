@@ -64,7 +64,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void navigateToPreferences(View view){
-        Intent intent = new Intent(this, DistanceCalculator.class); //TODO: wire to settings activity
+        Intent intent = new Intent(this, Preferences.class); //TODO: wire to settings activity
         startActivity(intent);
 
 
