@@ -37,7 +37,8 @@
         <activity
             android:name=".BoatAddForm"
             android:label="@string/title_activity_boat_add_form"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name=".RaceMenu"
@@ -47,7 +48,8 @@
         <activity
             android:name=".RaceAddForm"
             android:label="@string/title_activity_race_add_form"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name=".SelectBoats"
@@ -66,7 +68,8 @@
         <activity
             android:name=".ResultsEditForm"
             android:label="@string/title_activity_results_edit_form"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name=".ListTemplateSelectBoats"
@@ -83,19 +86,34 @@
         </activity>
         <activity
             android:name=".DistanceCalculator"
-            android:label="@string/title_activity_distance_calculator" >
+            android:label="@string/title_activity_distance_calculator"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name=".listTemplateDistanceCalculator"
-            android:label="@string/title_activity_list_template_distance_calculator" >
+            android:label="@string/title_activity_list_template_distance_calculator"
+            android:screenOrientation="portrait"  >
         </activity>
         <activity
             android:name=".Preferences"
             android:label="@string/title_activity_preferences"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="aad.finalproject.jhoregatta.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ResultsEditor"
+            android:label="@string/title_activity_results_editor"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".SelectClassDistance"
+            android:label="@string/title_activity_select_class_distance"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

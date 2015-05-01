@@ -14,7 +14,7 @@ import aad.finalproject.jhoregatta.MainActivity;
 public class DatabaseWriter extends MainActivity {
     private static final String LOGTAG = "Database Writer ";
     // sql elements for selecting boats
-    private static String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.activeRace.getId()
+    private static String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
             + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
     private static String orderBy = DBAdapter.KEY_BOAT_CLASS + ", "
             + DBAdapter.KEY_BOAT_NAME + " DESC";

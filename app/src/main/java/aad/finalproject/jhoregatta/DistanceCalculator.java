@@ -47,6 +47,10 @@ public class DistanceCalculator extends MainActivity {
     private Button addEdit, delete, done;
 
     private CheckBox willSaveDegMin;
+
+
+    public static int editTextArrayLocation; // choose the right edit text to enter data into
+
     // specify the numeric boundaries for the degrees, minutes and seconds
     private boolean isValidFields() {
         if (setValuesToVars()) {
@@ -211,11 +215,20 @@ public class DistanceCalculator extends MainActivity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (RaceAddForm.isActiveRaceAddForm = true) {
-                    // grab the current distance
-                    RaceAddForm.raceDistance.setText(String.valueOf(distanceDouble));
-                    finish(); // close out of the activity
+
+                Log.i(LOGTAG, "Done clicked");
+                    // assign the distance to the appropriate class edit text in the
+                    // Select Class Distance activity
+                try {
+                    SelectClassDistance.classDistance.get(editTextArrayLocation)
+                            .setText(String.valueOf(distanceDouble));
+                } catch (Exception e) {
+                    Log.i(LOGTAG, " Cannot assign distance to the DistanceCalculator Textbox");
+
                 }
+
+
+                finish(); // close out of the activity
             }
         });
 
@@ -312,26 +325,31 @@ public class DistanceCalculator extends MainActivity {
 
         if (coordinatesArrayList.size()> 1) {
 
+            // calculate each coordinate against one another.
             for (int i = 0 ; i+1 < coordinatesArrayList.size(); i++) {
                 Coordinates c1 = coordinatesArrayList.get(i);
                 Coordinates c2 = coordinatesArrayList.get(i + 1);
-                Log.i(LOGTAG, " Lat/ lon of c1 > i " + i + ": " + c1.latitudeString + " / " + c1.longitudeString);
-                Log.i(LOGTAG, " Lat/ lon of c2 > i " + i + ": " + c2.latitudeString + " / " + c2.longitudeString);
+
+                // get the lat and long of the current and next coordinate
                 double lat1 = c1.getLatitudeDouble();
                 double lat2 = c2.getLatitudeDouble();
                 double lon1 = c1.getLongitudeDouble();
                 double lon2 = c2.getLongitudeDouble();
 
+                // get difference
                 double dLat = lat2 - lat1;
                 double dLon = lon2 - lon1;
 
+                // calculate some other stuff
                 double a = Math.pow((Math.sin(dLat / 2)), 2) + Math.cos(lat1) * Math.cos(lat2)
                         * Math.pow((Math.sin(dLon / 2)), 2);
 
+                // and some more calculating stuff
                 double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
                 Log.i(LOGTAG, "Distance of " + i + ": " + (er * c));
 
+                // add the result to the total distance.
                 totalDistance += er * c;
                 Log.i(LOGTAG, "Total Distance of " + i + " is : " + totalDistance);
              }

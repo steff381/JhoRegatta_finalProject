@@ -59,6 +59,7 @@ public class SelectBoats extends MainActivity {
         // edit the where statement in sql to only select the chosen boat classes
         appendWhereClause();
 
+        //get a list of all the boats in the selected classes
         allTheBoats = boatDataSource
                 .getAllBoatsArrayList(GlobalContent.globalWhere, orderByClause, havingClause);
 

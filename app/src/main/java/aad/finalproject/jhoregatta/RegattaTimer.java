@@ -7,7 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -36,27 +38,34 @@ public class RegattaTimer extends MainActivity {
 
     private static String LOGTAG = "LogTag: TimeTracker "; // default log tag
 
-    public static String CDT_PAUSING = " Timer PAUSING ";
-    public static String CDT_RESUMING = " Timer RESUMING ";
-    public static String CDT_XZ = " ZZZ XXX ";
-
     // create an instance of the result table datasource
-    ResultDataSource resultDataSource;
+    private ResultDataSource resultDataSource;
 
     //get the shared preffs
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     // media elements
-    AssetFileDescriptor afd;
-    MediaPlayer player;
+    private AssetFileDescriptor afd;
+    private MediaPlayer hornMid;
+    private int volume = 100;
+    private int streamType = AudioManager.STREAM_MUSIC;
+    private ToneGenerator toneGenerator;
+    private int toneType = ToneGenerator.TONE_CDMA_ABBR_ALERT;
+    private int durationMs = 250;
+
 
     // timing variables
     CountDownTimerPausable myCountDownTimer;
 
-    private Button masterStart; // start button instance
-    public static Button masterPause; // pause button instance
+//    private Button masterStart; // start button instance//TODO TRASH
+    public static Button startResume;
+//    public static Button masterPause; // pause button instance//TODO TRASH
     private TextView txtCountDown; // accessible instance of countdown
     private int flagToDisplay; // which flag case to implement
+    private int heldPosition; // when user clicks recall, get the held position.
+
+    //text options for start resume
+    String startText = "Start";
 
     // create array list instances
     private ArrayList<LinearLayout> visibleClasses = new ArrayList<>();
@@ -69,6 +78,7 @@ public class RegattaTimer extends MainActivity {
     // initialize containers
     LinearLayout linlayClassContainer;
     TableRow currentClassColor;
+    ImageView currentClassImage;
     ImageView currentFlagImage;
     ImageView nextFlagImage;
 
@@ -77,7 +87,7 @@ public class RegattaTimer extends MainActivity {
 
     long totalTime = 0;
 
-    boolean isStartButton; // If the button currently displayed is the Master Start button
+//    boolean isStartButton; // If the button currently displayed is the Master Start button//TODO TRASH
     int numberOfSelectedBoatClasses; // initialize the number of selected Classes variable
     int currentPosition = 0;
 
@@ -89,11 +99,6 @@ public class RegattaTimer extends MainActivity {
         setContentView(R.layout.activity_regatta_timer);
 
         sharedPreferences = getSharedPreferences(Preferences.PREFS, 0);// grab the shared prefs
-        // TODO: FOR TESTING ONLY, DEFAULTS SHOULD BE SET IN PROPERTIES MENU
-//        GlobalContent.setSecondsUntilClassFlagUp(5); //
-//        GlobalContent.setSecondsUntilPrepFlagUp(5);
-//        GlobalContent.setSecondsUntilPrepFlagDown(15);
-//        GlobalContent.setSecondsUntilClassFlagDown(5);
 
         //wire and open the result datasource
         resultDataSource = new ResultDataSource(this);
@@ -103,26 +108,49 @@ public class RegattaTimer extends MainActivity {
         enabledStatusSwitcherRecallButtons(false); // disable all recall buttons
 
         // Media play section
-        player = new MediaPlayer();
+        hornMid = new MediaPlayer();
+        toneGenerator = new ToneGenerator(streamType, volume);
 
+        // load up horn mid
         try {
             afd = getAssets().openFd("Horn_Blast.wav"); // get audio from assets
             //set the players data source elements
-            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            player.prepare();
+            hornMid.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            hornMid.prepare();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
 
-        masterStart = (Button) findViewById(R.id.btnMasterStart); // create master start button
-        masterStart.setText("Start"); // set initial text to "Start"
-        masterPause = (Button) findViewById(R.id.btnMasterPause); // pause button wired
-        // pause button only visible when timer is running.
-        masterPause.setVisibility(View.INVISIBLE); // hide pause button
+        //handle the start resume functions
+        startResume = (Button) findViewById(R.id.btn_tt_start_resume); // wire up the button
+        startResume.setText(startText); //set the text to "Start" initially
 
-        // start/general recall button state variables
-        isStartButton = true; // set oncreate value to true
+        //set onclick listener for start resume button
+        startResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (startResume.getText().toString()) {
+                    case "Start":
+                        masterTimerEventHandler(); // start the timer event!
+                        break;
+                    case "Resume":
+                        //Create a new timer instance and pause it. User will unpause
+                        myCountdownMethod(0, 0, sharedPreferences.getInt("postRecallDelay",45)," Resume Class: ");
+                        break;
+                }
+            }
+        });
+
+//
+//        masterStart = (Button) findViewById(R.id.btnMasterStart); // create master start button//TODO TRASH
+//        masterStart.setText("Start"); // set initial text to "Start"//TODO TRASH
+//        masterPause = (Button) findViewById(R.id.btnMasterPause); // pause button wired//TODO TRASH
+//        // pause button only visible when timer is running.
+//        masterPause.setVisibility(View.INVISIBLE); // hide pause button//TODO TRASH
+
+        // start/general recall button state variables//TODO TRASH
+//        isStartButton = true; // set oncreate value to true//TODO TRASH
 
         // event sequence variable
         flagToDisplay = 0; // set initial value
@@ -154,7 +182,9 @@ public class RegattaTimer extends MainActivity {
         linlayClassContainer = (LinearLayout) findViewById(R.id.linlay_class_container);
         currentFlagImage = (ImageView) findViewById(R.id.imgCurrentFlag); // wire to xml
         nextFlagImage = (ImageView) findViewById(imgNextFlag); // wire flag to xml
+        currentClassImage = (ImageView) findViewById(R.id.imgCurrentClass);
         currentClassColor = (TableRow) findViewById(R.id.tblrowCurrentClass);
+
 
         // get text view instance for the start time label
         txtCountDown = (TextView) findViewById(R.id.txtCountDown); // create instance of the countdown
@@ -220,11 +250,9 @@ public class RegattaTimer extends MainActivity {
                     .BOAT_CLASS_START_ARRAY.get(i);// grab boat class color for inner methods
             String startTimeInstance = boatClassInstance.getStartTime(); // grab the start time if any
             if (startTimeInstance != null) {
-                Log.i(LOGTAG, " BCROCL: Found a time in Boat Class: " + boatClassInstance.getBoatColor() + " and the time is: " + startTimeInstance);
                 //if a start time exists put it in the text box
                 currentCaseClassStartTime.get(i).setText(startTimeInstance);
             } else {
-                Log.i(LOGTAG, " BCROCL: No time in Boat Class: " + boatClassInstance.getBoatColor() + " getStartTime returns: " + startTimeInstance);
                 currentCaseClassStartTime.get(i).setText("");
             }
             Log.i(LOGTAG, "Color at " + i + " is " + boatClassInstance.getBoatColor());
@@ -232,11 +260,7 @@ public class RegattaTimer extends MainActivity {
             classRecallButtonArrayList.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override // create an alert dialog to confirm user wants to recall the boat class
                 public void onClick(View v) {
-                    if (!myCountDownTimer.isPaused()) { // prevent pausing a paused timer
-                        myCountDownTimer.pause(); // pause the timer.
-                        Log.i(LOGTAG, Thread.currentThread().getStackTrace()[2].getMethodName()  + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber()  + CDT_XZ + CDT_PAUSING  );
-                    }
-                    Log.i(LOGTAG, "RecallListener OnClick: arrayPosition is " + arrayPosition + " Color is " + boatClassInstance.getBoatColor() + " " + myCountDownTimer.isPaused());
+
 //-------------------------------BEGIN ALERT DIALOG-------------------------------------------------
                     //create a dialogue to confirm user wants to recall
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -245,12 +269,11 @@ public class RegattaTimer extends MainActivity {
                     // tell the user what will happen if they confirm the recall
                     String alertMessage = "Recall Class: "
                             + boatClassInstance.getBoatColor().toUpperCase()
-                            + "\nNOTE: After confirmation the class will move "
-                            + "to last position and its time will be reset.";
-                    if (currentPosition != arrayPosition) {
-                        alertMessage += "\n\nWARNING: You will have 10 seconds after recall "
-                                + "before the next class begins.";
-                    }
+                            + "\nNOTE: After confirmation you a countdown of " +
+                            GlobalContent.convertMillisToElapsedTime((long)(sharedPreferences
+                                    .getInt("postRecallDelay", 45)*1000)) +
+                            " and the class time will be reset.";
+
 
                     alertDialog.setMessage(alertMessage);
                     alertDialog.setCancelable(false);
@@ -259,37 +282,39 @@ public class RegattaTimer extends MainActivity {
                     alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener(){
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.i(LOGTAG, " Confirmed: > OnClick event triggered for "  + boatClassInstance.getBoatColor());
-                            masterStartButtonSwitcher();// switch from reset to start
+
+                            myCountDownTimer.cancel(); // cancel the timer completely
 
                             //clear out the start time from the current boat class isntance
                             clearUnstartedBoatTimes(arrayPosition);
+
+                            //disable all recall buttons for classes after current position
+                            for (int i = (arrayPosition + 1); i < numberOfSelectedBoatClasses; i++) {
+                                classRecallButtonArrayList.get(i).setEnabled(false);
+                                Log.i(LOGTAG, "Disabling recall for all classes beyond position" +
+                                        arrayPosition);
+                            }
+
+                            txtCountDown.setText(""); // blank out the counter
 
                             Log.i(LOGTAG, "BCROCL : arrayposition: " + arrayPosition);
 
 
                             //set current position to the array position
                             currentPosition = arrayPosition;
-                            flagToDisplay = 0; //reset flag sequence to position 0 IT WILL SWITCH TO 1 UPON COMPLETION OF FIRST TIMER
-                            // restart using new current position which restarts the timer
+                            flagToDisplay = 0; //reset flag sequence to position 0 IT WILL SWITCH
 
-                            if (isStartButton) {
-                                masterStartButtonSwitcher();// set the button to "Reset"
-                                // make the pause/resume button visible.
-                                masterPause.setVisibility(View.VISIBLE);
-                            }
-                            // make flag boxes invisible until new variables are set using flag switch
+                            // make current flag AND current class color boxes invisible until new
+                            // Flag switcher will make them visible again
                             currentFlagImage.setVisibility(View.INVISIBLE);
+                            currentClassImage.setVisibility(View.INVISIBLE);
                             // show the next flag container
                             nextFlagImage.setVisibility(View.VISIBLE);
                             // set the next flag to class up
-                            nextFlagImage.setImageResource(BoatStartingListClass.BOAT_CLASS_START_ARRAY
-                                    .get(currentPosition).getImage());
-//                            //start a one second timer then pause
-                            myCountdownMethod(0, 0, sharedPreferences.getInt("postRecallDelay",45));// TODO 60 Seconds
-                            if (!myCountDownTimer.isPaused()) {
-                                myCountDownTimer.pause();
-                            }
+                            nextFlagImage.setImageResource(BoatStartingListClass
+                                    .BOAT_CLASS_START_ARRAY
+                                    .get(arrayPosition).getImage());
+
 
                             // store color of current class
                             String color = boatClassInstance.getBoatColor();
@@ -302,10 +327,8 @@ public class RegattaTimer extends MainActivity {
                             classTableRowBuilder(colorBlockFLs, contentBlockLFs, boatClassNames);
                             linlayClassContainer.invalidate(); // force the view to refresh
 
-                            if (GlobalContent.activeResultsAdapter != null) {
-                                //sync the arraylist  in the results adapter with what is in sql
-                                GlobalContent.activeResultsAdapter.syncArrayListWithSql(resultDataSource);
-                            }
+                            Log.i(LOGTAG, "Try invalidating static myList");
+                            refreshResultsList(); //self explainitory
                         }
                     });
     //---------------------------BEGIN NO FUNCTION -------------------------------------------------
@@ -313,11 +336,7 @@ public class RegattaTimer extends MainActivity {
                     alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            myCountDownTimer.start();
-                            Log.i(LOGTAG, "BCROCL : " + Thread.currentThread().getStackTrace()[2].getMethodName()  + ": Line#: " + Thread.currentThread().getStackTrace()[2].getLineNumber()  + CDT_XZ + CDT_RESUMING);
-
-                            Log.i(LOGTAG, "Recall class " + boatClassInstance.getBoatColor()
-                                    + ". User selected \"NO : Do not recall the class\"");
+                           //Dialog will dismiss automatically
                         }
                     });
 
@@ -326,6 +345,22 @@ public class RegattaTimer extends MainActivity {
             });
         }
 //-------------------------------END ALERT DIALOG-------------------------------------------------
+    }
+
+    //sync up states and data sets with the results list
+    private void refreshResultsList() {
+        //risky because the results adapter and list may not be open yet.
+        if (GlobalContent.activeResultsAdapter != null) {
+            try {
+                //sync the results adapter with data from the SQL table.
+                GlobalContent.activeResultsAdapter
+                        .syncArrayListWithSql(ResultsMenu
+                                .getAllSQLResultResults(resultDataSource));
+                ResultsMenu.myList.invalidate(); // force refresh the list
+            } catch (Exception e) {
+                Log.i(LOGTAG, " GlobalContent.activeResultsAdapter SYNC fired but caused an exception!!!!!!!!!!!");
+            }
+        }
     }
 
     @Override
@@ -374,6 +409,7 @@ public class RegattaTimer extends MainActivity {
             contentFL.get(i).setBackgroundColor(bc.getClassColorLite()); // assign lite color to pane
             boatClassNameTV.get(i).setText(bc.getBoatColor()); // assign the name as text in the textview
             visibleClasses.get(i).setVisibility(View.VISIBLE); // make the pane visible.
+            //check if a time is present. if set the current class start time to blank
             if (time != null) {
                 currentCaseClassStartTime.get(i).setText(time);
             } else {
@@ -383,12 +419,7 @@ public class RegattaTimer extends MainActivity {
 
     }
 
-
-    // time vars for testing
-    int t2 = 3;
-    int tempTime = 0;
-
-
+    //controls which flags are to be displayed on the right hand side of the activity
     private void raceFlagSwitcher(int flagToDisplay){
         String caseString;
         if(this.flagToDisplay == flagToDisplay){
@@ -400,75 +431,70 @@ public class RegattaTimer extends MainActivity {
         // then calls the countdown method with the appropriate time interval for the flag set
         switch (flagToDisplay) {
             case -1: // for -1 case show no current flag and display the class up as the next flag
-                tempTime = 3;
                 Log.i(LOGTAG, caseString);
                 resetFlagAndClassHolders(); // reset all the flags and holders
-
-
-                myCountdownMethod(0, 0, tempTime);// start new timer with given time limit
+                myCountdownMethod(0, 0, 3," Case -1: current Pos: " + currentPosition);// start new timer with given time limit
 
                 break;
             case 0: // for 0 case show no current flag and display the class up as the next flag
-                tempTime = 10;
                 Log.i(LOGTAG, caseString);
-                currentClassColor.setBackgroundColor(BoatStartingListClass
-                        .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
+//                currentClassColor.setBackgroundColor(BoatStartingListClass
+//                        .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
                 currentFlagImage.setVisibility(View.INVISIBLE); // no current flag so invis
 
                 nextFlagImage.setVisibility(View.VISIBLE); // show the next flag holder
                 nextFlagImage.setImageResource(R.drawable.class_up); // put flag in next flag
 
-
-                myCountdownMethod(0, 0, sharedPreferences.getInt("initialDelay", 15));// start new timer with given time limit
+                // start new timer with given time limit
+                myCountdownMethod(0, 0, sharedPreferences.getInt("initialDelay", 15)," Case 0: current Pos: " + currentPosition);
                 break;
             case 1:
-                tempTime = 3;
                 Log.i(LOGTAG, caseString);
                 // enable the recall button for the active class
                 classRecallButtonArrayList.get(currentPosition).setEnabled(true);
                 // make sure the flags are visible
+                currentClassImage.setVisibility(View.VISIBLE);
                 currentFlagImage.setVisibility(View.VISIBLE);
                 nextFlagImage.setVisibility(View.VISIBLE);
                 //change the current class color to the currentPosition's class color
-                currentClassColor.setBackgroundColor(BoatStartingListClass
-                        .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
+                currentClassImage.setImageResource(BoatStartingListClass
+                        .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getImage());
                 currentFlagImage.setImageResource(R.drawable.class_up); // up for 1 min
                 nextFlagImage.setImageResource(R.drawable.class_up_prep_up);
-                myCountdownMethod(0, 0, sharedPreferences.getInt("classUp",65));// start new timer with given time limit
+                // start new timer with given time limit
+                myCountdownMethod(0, 0, sharedPreferences.getInt("classUp",65)," Case 1: current Pos: " + currentPosition);
                 break;
             case 2:
-                tempTime = t2;
                 currentFlagImage.setVisibility(View.VISIBLE);
                 nextFlagImage.setVisibility(View.VISIBLE);
-                Log.i(LOGTAG, caseString);
-                currentClassColor.setBackgroundColor(BoatStartingListClass
-                        .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
+                Log.i(LOGTAG, caseString);currentClassImage.setImageResource(BoatStartingListClass
+                    .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getImage());
                 currentFlagImage.setImageResource(R.drawable.class_up_prep_up); // up for 3 mins
                 nextFlagImage.setImageResource(R.drawable.class_up_prep_down);
 
-
-                myCountdownMethod(0, 0, sharedPreferences.getInt("classUpPrepUp",185));// start new timer with given time limit
+                // start new timer with given time limit
+                myCountdownMethod(0, 0, sharedPreferences.getInt("classUpPrepUp",185)," Case 2: current Pos: " + currentPosition);
                 break;
             case 3:
-                tempTime = t2;
                 currentFlagImage.setVisibility(View.VISIBLE);
                 nextFlagImage.setVisibility(View.VISIBLE);
-                currentClassColor.setBackgroundColor(BoatStartingListClass
-                        .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
+                //change the background color to the color of the next boat
+                currentClassImage.setImageResource(BoatStartingListClass
+                        .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getImage());
                 currentFlagImage.setImageResource(R.drawable.class_up_prep_down); // up for 1
                 //Check if there are more boat classes to time
                 if ((currentPosition + 1) <= (numberOfSelectedBoatClasses - 1)) {
                     nextFlagImage.setImageResource(BoatStartingListClass.BOAT_CLASS_START_ARRAY
-                            .get(this.currentPosition + 1).getImage());
+                            .get(this.currentPosition + 1).getImage()); // show the next class color
                 } else {
                     nextFlagImage.setImageResource(R.drawable.no_flags);
                 }
-
-                myCountdownMethod(0, 0,sharedPreferences.getInt("classUpPrepDown",65));// start new timer with given time limit
+                // start new timer with given time limit
+                myCountdownMethod(0, 0,sharedPreferences.getInt("classUpPrepDown",65)," Case 3: current Pos: " + currentPosition);
                 break;
             case 4:
 
-//                Time now = new Time(new Date().getTime()); // get the current time
+                //get current date time
                 DateTime localTime = DateTime.now();
                 String now = GlobalContent.dateTimeToString(localTime);
 
@@ -476,10 +502,26 @@ public class RegattaTimer extends MainActivity {
                 currentCaseClassStartTime.get(this.currentPosition)
                         .setText(now);
 
+                BoatClass currentBoatClass = BoatStartingListClass.BOAT_CLASS_START_ARRAY
+                        .get(currentPosition);
                 // send the class's start time to the sql database
                 resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
-                        BoatStartingListClass.BOAT_CLASS_START_ARRAY
-                                .get(currentPosition).getBoatColor(), now);
+                        currentBoatClass.getBoatColor(), now);
+
+                //very risky method. so we have a backup
+                try {
+                    // send the class's start time and class distance to the sql database
+                    resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
+                            currentBoatClass.getBoatColor(), now, currentBoatClass.getClassDistance());
+                    Log.i(LOGTAG, "Distance Version of updateClassStartTime Used. Distance is " +
+                            currentBoatClass.getClassDistance());
+                } catch (Exception e) {
+                    // send the class's start time to the sql database
+                    resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
+                            currentBoatClass.getBoatColor(), now);
+                    Log.i(LOGTAG, "NON - Distance Version of updateClassStartTime Used");
+
+                }
                 // write the current time to the BoatClass variable for storage
                 BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(currentPosition)
                         .setStartTime(now);
@@ -493,16 +535,16 @@ public class RegattaTimer extends MainActivity {
                 if ((this.currentPosition) < numberOfSelectedBoatClasses) {
                     raceFlagSwitcher(this.flagToDisplay); // run the flag sequence from 1
                     //change the class color to the color of the next boat class in the starting lineup
-                    currentClassColor.setBackgroundColor(BoatStartingListClass
-                            .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
+                    currentClassImage.setImageResource(BoatStartingListClass
+                            .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getImage());
                 } else {
                     //exit the switch case
                     resetFlagAndClassHolders(); // clear out the data in flag and class holders
                     currentFlagImage.setVisibility(View.VISIBLE);
                     currentFlagImage.setImageResource(R.drawable.no_flags);
-                    masterPause.setVisibility(View.INVISIBLE); // hide the pause button
                     txtCountDown.setText(""); // reset the countdown display's time to 0
                 }
+                refreshResultsList();
                 break;
             default:
                 Log.i(LOGTAG, " Switchcase raceFlagSwitcher ended in default");
@@ -512,7 +554,7 @@ public class RegattaTimer extends MainActivity {
 
     private void resetFlagAndClassHolders() {
         // make flag boxes invisible to start
-        currentClassColor.setBackgroundColor(0);
+        currentClassImage.setVisibility(View.INVISIBLE);
         currentFlagImage.setVisibility(View.INVISIBLE);
         nextFlagImage.setVisibility(View.INVISIBLE);
     }
@@ -527,32 +569,34 @@ public class RegattaTimer extends MainActivity {
     }
 
 
-    private void myCountdownMethod(int hours, int minutes, int seconds) {
+    private void myCountdownMethod(int hours, int minutes, int seconds, String caller) {
         //convert hours mins and seconds to milliseconds
         long milliHours = hours * 3600000;
         long milliMinutes = minutes * 60000;
-        long milliSeconds = seconds * 1000;
+        final long milliSeconds = seconds * 1000;
 
         // add all milliseconds up
         totalTime = milliHours + milliMinutes + milliSeconds;
 
-
-        myCountDownTimer = new CountDownTimerPausable(totalTime, 1001) {
+        Log.i(LOGTAG, " CountdownTimer Called by: " + caller);
+        myCountDownTimer = new CountDownTimerPausable(totalTime, 500) {
             /**
              * This method is called periodically with the interval set as the delay between subsequent calls.
              */
             @Override
             public void onTick(long millisUntilFinished) {
-                String timeString = bestTickTockTime(millisUntilFinished, totalTime);
+                String timeString = bestTickTockTime(millisUntilFinished+1000, totalTime);
                 txtCountDown.setText(timeString); // Update text to display current time remaining
-
+                // play sound every second for the last 10 seconds.
+                if (millisUntilFinished < 10001 & (millisUntilFinished %1000 > 501)) {
+                    toneGenerator.startTone(toneType, durationMs);
+                }
             }
 
             @Override
             public void onFinish() {
-                player.start(); // play horn sound to inform user that the state is switching
+                hornMid.start(); // play horn sound to inform user that the state is switching
                 flagToDisplay++; // add 1 to the flag sequence. Moves the case to next flag
-
                 raceFlagSwitcher(flagToDisplay); // restart switch case using next flag
             }
         }.start();
@@ -582,16 +626,6 @@ public class RegattaTimer extends MainActivity {
         return timeString;
     }
 
-    public void onClickMasterStart(View view) throws InterruptedException {
-
-        if (isStartButton) {
-            masterPause.setVisibility(View.VISIBLE); // make visible when timer started
-            masterStartButtonSwitcher(); //switch the visual aspects of the button
-            masterTimerEventHandler(); // call handler
-        } else {
-            verifyIntentToResetMasterTime(); // confirm choice to gen recall
-        }
-    }
 
     // starts everything off
     private void masterTimerEventHandler() {
@@ -601,37 +635,16 @@ public class RegattaTimer extends MainActivity {
         buildClassRecallOnClickListeners(); // rebuild the onclick listeners.
     }
 
-    // method to switch between timer start button and pause button
-    private void masterStartButtonSwitcher() {
-        if (isStartButton) {
-            masterStart.setText("Reset"); // change text of button
-            isStartButton = false; // change status of button to NOT start
-            Log.i(LOGTAG, "isStartButton = True");
-        } else {
-            masterStart.setText("Start");// change text of button
-            isStartButton = true; // change status of button to is start
-            Log.i(LOGTAG, "isStartButton = False");
-        }
-    }
 
     //function for finishline button
     public void onClickFinishLine(View view) {
         Log.i(LOGTAG, "Opening finishLine activity");
+        GlobalContent.setResultsFormAccessMode(false); //set access mode to "add" mode
         Intent intent = new Intent(this, ResultsMenu.class);
         startActivity(intent);
     }
 
-    //function for the pause button
-    public void onClickMasterPause(View view) throws InterruptedException {
-        if(!myCountDownTimer.isPaused()){
-            myCountDownTimer.pause();
-
-        } else {
-            myCountDownTimer.start(); // start the count down timer
-
-        }
-    }
-
+    //TODO Move to preferences!!!
     private void verifyIntentToResetMasterTime() {
 
         if (!myCountDownTimer.isPaused()) {
@@ -652,7 +665,6 @@ public class RegattaTimer extends MainActivity {
                 //blank out all stored times
                 resetFlagAndClassHolders();
                 myCountDownTimer.cancel(); // cancel the timing event
-                masterPause.setVisibility(View.INVISIBLE);// hide pause button to prevent errors
 
                 //clear start times from boat class array
                 for (TextView tv : currentCaseClassStartTime) {
@@ -660,18 +672,13 @@ public class RegattaTimer extends MainActivity {
                 }
                 //remove any saved start times for all classes
                 resultDataSource.clearRaceTimesDurations(GlobalContent.getRaceRowID());
-                if (GlobalContent.activeResultsAdapter != null) {
-                    // make sure sql data and arraylist data are the same
-                    GlobalContent.activeResultsAdapter.syncArrayListWithSql(resultDataSource);
-                }
-//                ResultsAdapter.syncArrayListWithSql(resultDataSource);
+                refreshResultsList();
 
                 //set all variables to initial positions
-                flagToDisplay = 0;
+                flagToDisplay = 0; // set flag to 0
                 currentPosition = 0; // position 0
                 BoatStartingListClass.resetAllClassStartTimes(); // clear all start times
 
-                masterStartButtonSwitcher(); // change the main button back to start
                 txtCountDown.setText(""); // set counter to 0
                 enabledStatusSwitcherRecallButtons(false); // disable recall buttons
             }

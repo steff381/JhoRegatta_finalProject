@@ -30,10 +30,6 @@ public class RaceMenu extends MainActivity {
     private String orderByClause = DBAdapter.KEY_RACE_DATE+ " ASC";
     private String havingClause = null;
 
-    // tells all child activities how they should be displayed. i.e. edit vs add menu items
-    public static String CHILD_ACTIVITY_TYPE_SWITCHER; // EDIT or CREATE
-
-//    public static long ROW_ID; // a public row id that passes info to other activities
     ListView myListRace; // initialize the listview
 
 
@@ -48,13 +44,13 @@ public class RaceMenu extends MainActivity {
         raceDataSource = new RaceDataSource(this);
         raceDataSource.open();
 
-//        listViewItemClicked(); // tell activity to start listening for onClicks of list items
         myListRace = (ListView) findViewById(R.id.lvRaceList); // set the lv to the current listview
+
 
         myListRace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GlobalContent.setRaceRowID(id);
+                GlobalContent.setRaceRowID(id); //grab race to get data for
                 GlobalContent.setRaceFormAccessMode(true); // open form in edit mode
                 Intent navigateToAddRaceForm = new Intent(view.getContext(), RaceAddForm.class);
                 startActivity(navigateToAddRaceForm);
@@ -97,9 +93,10 @@ public class RaceMenu extends MainActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // open the race editor/adder activity
     public void navigateToAddRaceForm(View view){
         Intent intent = new Intent(this,RaceAddForm.class);
-        GlobalContent.setRaceFormAccessMode(false);
+        GlobalContent.setRaceFormAccessMode(false);  //set access mode to false for add mode
         startActivity(intent);
     }
 
@@ -204,6 +201,7 @@ public class RaceMenu extends MainActivity {
         myListRace.setAdapter(myCursorAdaptor); // wire the adapter to the listview
     }
 
+    // end of activity actions
     protected void endActivity() {
         try {
             raceDataSource.close();

@@ -10,7 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import aad.finalproject.db.Boat;
@@ -24,31 +25,27 @@ public class BoatAddForm extends Form {
 
 
     // initialize instances of text and spinner widgets
-    Spinner boatClassSpn;
-    EditText boatName;
-    EditText boatSailNum;
-    EditText boatPHRF;
+    private EditText boatName;
+    private EditText boatSailNum;
+    private EditText boatPHRF;
 
-
-
-    // initialize button widgets
-    Button create;
-    Button update;
-    Button delete;
+    // radio group and buttons
+    private RadioGroup rbgrpBoatClass;
+    private RadioButton rb_single;
 
     //create a bundle instance to help pass vairables between activities
     Bundle extras;
 
     // initialize strings for use by other methods
-    String strBoatClassSpn;
-    String strBoatName;
-    String strBoatSailNum;
-    String strBoatPHRF;
+    private String strBoatName;
+    private String strBoatSailNum;
+    private String strBoatPHRF;
 
     Cursor updateRowFromCursor; // create a cursor to hold single row info for updates
 
     //Create initialize the boatDataSource class
-    BoatDataSource boatDataSource;
+    private BoatDataSource boatDataSource;
+    private String strBoatClassColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,16 +55,27 @@ public class BoatAddForm extends Form {
         boatDataSource = new BoatDataSource(this); // open writable database
         boatDataSource.open();
 
+
+
         //load up text and spinner instances with their corresponding widgets
-        boatClassSpn = (Spinner) findViewById(R.id.spn_BoatClass);
+//        boatClassSpn = (Spinner) findViewById(R.id.spn_BoatClass);
         boatName = (EditText) findViewById(R.id.txt_inpt_BoatName);
         boatSailNum = (EditText) findViewById(R.id.txt_inpt_SailNum);
         boatPHRF = (EditText) findViewById(R.id.txt_inpt_PHRF);
 
         //load up buttons with widget instances
-        create = (Button) findViewById(R.id.btn_add_current_boat);
-        update = (Button) findViewById(R.id.btn_update_current_boat);
-        delete = (Button) findViewById(R.id.btn_delete_current_boat);
+        Button create = (Button) findViewById(R.id.btn_add_current_boat);
+        Button update = (Button) findViewById(R.id.btn_update_current_boat);
+        Button delete = (Button) findViewById(R.id.btn_delete_current_boat);
+
+        // get the radio button group
+        rbgrpBoatClass = (RadioGroup) findViewById(R.id.rbgrp_baf_boat_class);
+
+        //set radio button to null initially
+        rb_single = null;
+
+
+
 
         //change the button's shown based on if form is in create or edit mode.
         // instructions for ADD mode
@@ -91,9 +99,34 @@ public class BoatAddForm extends Form {
             updateRowFromCursor = boatDataSource.getRow(GlobalContent.getBoatRowID());
 
             // populate the form with data for the row selected by the user in the boatMenu
-            boatClassSpn.setSelection(BoatDataSource.getClassColorPosition(
-                    updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
-                            DBAdapter.KEY_BOAT_CLASS))));
+
+            String boatClassFromSQL = updateRowFromCursor.getString(updateRowFromCursor
+                    .getColumnIndex(DBAdapter.KEY_BOAT_CLASS));
+
+            switch (boatClassFromSQL) {
+                case "Yellow":
+                    rb_single = (RadioButton) findViewById(R.id.rb_baf_yellow);
+                    break;
+                case "Blue":
+                    rb_single = (RadioButton) findViewById(R.id.rb_baf_blue);
+                    break;
+                case "Green":
+                    rb_single = (RadioButton) findViewById(R.id.rb_baf_green);
+                    break;
+                case "Purple":
+                    rb_single = (RadioButton) findViewById(R.id.rb_baf_purple);
+                    break;
+                case "_TBD_":
+                    rb_single = (RadioButton) findViewById(R.id.rb_baf__TBD_);
+                    break;
+                default:
+                    Log.i(LOG, "Boat Class edit mode switch case defaulted to no option");
+                    break;
+            }
+            if (rb_single != null) {
+                rb_single.setChecked(true);
+            }
+
             boatName.setText(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
                     DBAdapter.KEY_BOAT_NAME)));
             boatSailNum.setText(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
@@ -145,22 +178,28 @@ public class BoatAddForm extends Form {
             Boat newBoat = new Boat(); // create new boat instance
 
             //assign text data to the new boat instance
-            newBoat.setBoatClass(strBoatClassSpn);
+            newBoat.setBoatClass(strBoatClassColor);
             newBoat.setBoatName(strBoatName);
             newBoat.setBoatSailNum(strBoatSailNum);
             newBoat.setBoatPHRF(Integer.parseInt(strBoatPHRF));
             newBoat.setBoatVisible(1); // visible should always be 1 initially
             boatDataSource.create(newBoat); // push the loaded boat instance to the SQL table
             Log.i(LOG, "Validated add entry");
-            GlobalContent.clearBoatFormAccessMode(); // release the edit mode
             endBoatActivity(); // Exit the activity
         }
     }
 
     @Override
     protected void setTempDataFields() {
+        //get the selected text value from the radio button
+        int selected = rbgrpBoatClass.getCheckedRadioButtonId();
+        rb_single = (RadioButton) findViewById(selected);
         //pass values from data entry fields and spinner to String variables
-        strBoatClassSpn = boatClassSpn.getSelectedItem().toString();
+        try {
+            strBoatClassColor = rb_single.getText().toString();
+        } catch (Exception e) {
+            //will be caught by validator
+        }
         strBoatName = boatName.getText().toString();
         strBoatSailNum = boatSailNum.getText().toString();
         strBoatPHRF = boatPHRF.getText().toString();
@@ -168,26 +207,24 @@ public class BoatAddForm extends Form {
 
     @Override
     protected boolean validateDataEntryFields(){
-        boolean isValid; // declare return value
         setTempDataFields(); // repopulate text strings to field values
         // Ensure fields are not null or class a class has been selected prior to data input
-        if (strBoatName.length() != 0
-                && strBoatPHRF.length() != 0
-                && strBoatSailNum.length() != 0) {
-            if (!strBoatClassSpn.equals("Please Select a Class")) {
-                isValid = true; // change to valid
-            } else {
-                Toast.makeText(getApplicationContext(), "Please select a Boat Class",
-                        Toast.LENGTH_LONG).show();
-                Log.i(LOG, "No class selected");
-                isValid = false; // not valid
-            }
-        } else {
-            Toast.makeText(BoatAddForm.this, "All fields are required", Toast.LENGTH_LONG).show();
-            Log.i(LOG, "Missing fields");
-            isValid = false; // not valid
+        //check for commas
+        if (GlobalContent.checkForCommas(getApplicationContext(),strBoatName, strBoatSailNum)){
+            return false;
         }
-       return isValid;
+
+        Log.i(LOG, "rb Single = " + (rb_single == null) + " Text is " + strBoatClassColor);
+        if (strBoatName.length() == 0
+                || strBoatPHRF.length() == 0
+                || strBoatSailNum.length() == 0
+                || strBoatClassColor.length() == 0) {
+            Toast.makeText(getApplicationContext(), "All fields are required",
+                    Toast.LENGTH_LONG).show();
+            return false; // not valid
+        }
+
+       return true;
     }
 
     @Override
@@ -195,7 +232,7 @@ public class BoatAddForm extends Form {
         Cursor cursor = boatDataSource.getRow(id); // create cursor
         if (validateDataEntryFields()) {
             if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
-                boatDataSource.update(id, strBoatClassSpn, strBoatName, strBoatSailNum,
+                boatDataSource.update(id, strBoatClassColor, strBoatName, strBoatSailNum,
                         Integer.parseInt(strBoatPHRF));
                 Log.i(LOG, "Validated UPDATE entry");
 

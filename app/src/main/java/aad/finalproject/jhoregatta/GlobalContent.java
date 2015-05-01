@@ -1,14 +1,16 @@
 package aad.finalproject.jhoregatta;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.concurrent.TimeUnit;
 
+import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.Race;
 import aad.finalproject.db.ResultsAdapter;
 
@@ -34,18 +36,21 @@ public class GlobalContent {
     public static String modeAdd = "ADD";
     public static String modeEdit = "EDIT";
 
-//    public static int secondsUntilOrangeFlagUp;
-//    public static int secondsUntilOrangeFlagDown;
-    public static int secondsUntilClassFlagUp; // inital delay
-    public static int secondsUntilPrepFlagUp; // class goes up class flag for 1 min
-    public static int secondsUntilPrepFlagDown; // prep up and class for 3 mins
-    public static int secondsUntilClassFlagDown; // prep flag goes down 1 min
-    public static int secondsUntilRestartFromRecall; // 6 mins after a recall.
 
     // Joda time formatters. Used by all applications for consistancy of date time formats
     private static DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("hh:mm:ss a");
     private static DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("MM/dd/yyyy");
     public static String globalWhere; // where clause to be used by multiple interfaces
+
+    //clear out the common resources among activities
+    public static void finalDataClear() {
+        BoatFormAccessMode = null;
+        RaceFormAccessMode = null;
+        ResultsFormAccessMode = null;
+        BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
+        BoatListClass.selectedBoatsList.clear();
+
+    }
 
     // Time handling methods
     // from string to local time
@@ -55,11 +60,6 @@ public class GlobalContent {
         return formatter.parseDateTime(time);
     }
 
-    // from string to local date
-    public static LocalDate toLocalDate(String date) {
-        Log.i(LOGTAG, "Converting time: " + date + " to LocalTime: " + LocalDate.parse(date));
-        return LocalDate.parse(date);
-    }
 
     // from local time to string format
     public static String dateTimeToString(DateTime dateTime) {
@@ -122,7 +122,7 @@ public class GlobalContent {
         String result = null;
         penalty = penalty/100;
         //calculate Time Allowance in Milliseconds
-        long taInMillis = (long) ((distance * PHRF * correctionFactor / 60) * 60 * 1000);
+        long taInMillis = (long) ((distance * PHRF * correctionFactor) * 1000);
         Log.i(LOGTAG, "TA in Millis " + taInMillis);
         // Calculate the duration less the time allowance
         long tmpAdjDuration = durationInMillis - taInMillis;
@@ -139,58 +139,20 @@ public class GlobalContent {
         return result;
     }
 
-    //Calculate penalty
-
-    // Time tracker content
-
-//    // Tracker getters and setters
-//    public static int getSecondsUntilOrangeFlagUp() {
-//        return secondsUntilOrangeFlagUp;
-//    }
-//
-//    public static void setSecondsUntilOrangeFlagUp(int secondsUntilOrangeFlagUp) {
-//        GlobalContent.secondsUntilOrangeFlagUp = secondsUntilOrangeFlagUp;
-//    }
-//
-//    public static int getSecondsUntilOrangeFlagDown() {
-//        return secondsUntilOrangeFlagDown;
-//    }
-//
-//    public static void setSecondsUntilOrangeFlagDown(int secondsUntilOrangeFlagDown) {
-//        GlobalContent.secondsUntilOrangeFlagDown = secondsUntilOrangeFlagDown;
-//    }
-
-    public static int getSecondsUntilClassFlagUp() {
-        return secondsUntilClassFlagUp;
+    //check for commas in chosen text fields. Used for validation because commas will mess up the
+    // SQL table when converted to CSV
+    public static boolean checkForCommas(Context context, String ... textFields) {
+        for (String textField : textFields) {
+            if (textField.contains(",")) {
+                Toast.makeText(context, "Error: Comma(s) found. You cannot use commas in text fields"
+                ,Toast.LENGTH_LONG).show();
+                return true;
+            }
+        }
+        return false;
     }
 
-    public static void setSecondsUntilClassFlagUp(int secondsUntilClassFlagUp) {
-        GlobalContent.secondsUntilClassFlagUp = secondsUntilClassFlagUp;
-    }
 
-    public static int getSecondsUntilPrepFlagUp() {
-        return secondsUntilPrepFlagUp;
-    }
-
-    public static void setSecondsUntilPrepFlagUp(int secondsUntilPrepFlagUp) {
-        GlobalContent.secondsUntilPrepFlagUp = secondsUntilPrepFlagUp;
-    }
-
-    public static int getSecondsUntilPrepFlagDown() {
-        return secondsUntilPrepFlagDown;
-    }
-
-    public static void setSecondsUntilPrepFlagDown(int secondsUntilPrepFlagDown) {
-        GlobalContent.secondsUntilPrepFlagDown = secondsUntilPrepFlagDown;
-    }
-
-    public static int getSecondsUntilClassFlagDown() {
-        return secondsUntilClassFlagDown;
-    }
-
-    public static void setSecondsUntilClassFlagDown(int secondsUntilClassFlagDown) {
-        GlobalContent.secondsUntilClassFlagDown = secondsUntilClassFlagDown;
-    }
 
 // Boat form content
 
@@ -208,9 +170,6 @@ public class GlobalContent {
 
     }
 
-    public static void clearBoatFormAccessMode() {
-        BoatFormAccessMode = null;
-    }
 
     public static long getBoatRowID() {
         return boatRowID;
@@ -237,9 +196,6 @@ public class GlobalContent {
         }
     }
 
-    public static void clearRaceFormAccessMode() {
-        RaceFormAccessMode = null;
-    }
 
     public static long getRaceRowID() {
         return raceRowID;
@@ -264,9 +220,6 @@ public class GlobalContent {
         }
     }
 
-    public static void clearResultsFormAccessMode() {
-        ResultsFormAccessMode = null;
-    }
 
     public static long getResultsRowID() {
         return resultsRowID;
@@ -276,13 +229,6 @@ public class GlobalContent {
         GlobalContent.resultsRowID = resultsRowID;
     }
 
-    public static int getSecondsUntilRestartFromRecall() {
-        return secondsUntilRestartFromRecall;
-    }
-
-    public static void setSecondsUntilRestartFromRecall(int secondsUntilRestartFromRecall) {
-        GlobalContent.secondsUntilRestartFromRecall = secondsUntilRestartFromRecall;
-    }
 
     public static void setActiveRace(Race activeRace, long id) {
         GlobalContent.activeRace = activeRace;

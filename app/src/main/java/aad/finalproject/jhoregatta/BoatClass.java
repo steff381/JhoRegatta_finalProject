@@ -10,12 +10,12 @@ public class BoatClass {
 
     private String startTime;
     private String elapsedTime;
+    private double classDistance;
     private String boatColor;
     private int classColorSolid;
     private int classColorLite;
     private int startOrder;
     private int image;
-    public int selectedBoatCount;
 
     public int getImage() {
         return image;
@@ -33,11 +33,7 @@ public class BoatClass {
         setClassColor(color);
         this.startOrder = 0;
     }
-        //instance constructor
-    public BoatClass(String color, int startOrder) {
-        setClassColor(color);
-        this.startOrder = startOrder;
-    }
+
 
 
     public String getStartTime() {
@@ -56,6 +52,14 @@ public class BoatClass {
         this.elapsedTime = elapsedTime;
     }
 
+    public double getClassDistance() {
+        return classDistance;
+    }
+
+    public void setClassDistance(double classDistance) {
+        this.classDistance = classDistance;
+    }
+
     public int getClassColorSolid() {
         return classColorSolid;
     }
@@ -64,8 +68,8 @@ public class BoatClass {
         switch (classColor) {
             case "Red":
                 boatColor = "Red";
-                this.classColorSolid = Color.rgb(255, 0, 0);
-                this.classColorLite = Color.argb(60, 255, 0, 0);
+                this.classColorSolid = Color.rgb(255, 255, 255);
+                this.classColorLite = Color.argb(60, 255, 255, 255);
                 image = R.drawable.red_class;
                 break;
             case "Blue":

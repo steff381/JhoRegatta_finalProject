@@ -38,141 +38,61 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1">
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical">
 
-                        <TableRow
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:id="@+id/txtCountDown"
+                            android:text="00h 00m 00s"
+                            android:textSize="65dp"
+                            android:paddingTop="10dp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:gravity="center_horizontal"
+                            android:layout_centerVertical="true"
+                            android:layout_alignStart="@+id/txtclkMasterTime" />
+
+                        <TextClock
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:layout_gravity="center_horizontal">
+                            android:layout_height="wrap_content"
+                            android:textSize="25sp"
+                            android:id="@+id/txtclkMasterTime"
+                            android:paddingTop="5dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="5dp"
+                            android:textColor="#000000"
+                            android:background="#00000000"
+                            android:textStyle="bold"
+                            android:format12Hour="h:mm a"
+                            android:textIsSelectable="false"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentStart="true" />
 
-                            <TextClock
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="25sp"
-                                android:id="@+id/txtclkMasterTime"
-                                android:layout_margin="5dp"
-                                android:paddingTop="5dp"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:paddingBottom="5dp"
-                                android:textColor="#000000"
-                                android:background="#00000000"
-                                android:textStyle="bold"
-                                android:format12Hour="h:mm:ss a"
-                                android:textIsSelectable="false" />
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1" >
-
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1" />
-                    </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Next Event:"
+                            android:id="@+id/txtlblNextEvent"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:layout_below="@+id/txtCountDown"
+                            android:layout_centerHorizontal="true" />
+                    </RelativeLayout>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_weight="1">
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent" >
-
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1" >
-
-                            <FrameLayout
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:background="#00000000">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="?android:attr/textAppearanceMedium"
-                                    android:text="Next Event:"
-                                    android:id="@+id/txtlblNextEvent"
-                                    android:layout_gravity="center_horizontal|top" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:textAppearance="?android:attr/textAppearanceLarge"
-                                    android:id="@+id/txtCountDown"
-                                    android:layout_gravity="center_horizontal|bottom"
-                                    android:text="0h 0m 00s"
-                                    android:gravity="center_vertical|center_horizontal"
-                                    android:textSize="45sp"
-                                    android:paddingTop="20dp"
-                                    android:textStyle="bold" />
-                            </FrameLayout>
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1" >
-
-                            <FrameLayout
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:id="@+id/frmlay_pause_bg">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textAppearance="?android:attr/textAppearanceLarge"
-                                    android:id="@+id/txtMasterStartTime"
-                                    android:layout_gravity="center" />
-
-                                <Button
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Pause"
-                                    android:id="@+id/btnMasterPause"
-                                    android:layout_gravity="center"
-                                    android:onClick="onClickMasterPause" />
-                            </FrameLayout>
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1" >
-
-                            <FrameLayout
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent">
-
-                                <Button
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/btnMasterStart"
-                                    android:onClick="onClickMasterStart"
-                                    android:layout_gravity="center" />
-                            </FrameLayout>
-                        </TableRow>
-                    </LinearLayout>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="2.5">
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -195,6 +115,16 @@
                                     android:id="@+id/btn_navigateTo_FinishLine"
                                     android:onClick="onClickFinishLine"
                                     android:layout_gravity="right|top" />
+
+                                <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/btnMasterStart"
+                                    android:onClick="onClickMasterStart"
+                                    android:layout_gravity="left|bottom"
+                                    android:visibility="gone" />
+
+
                             </FrameLayout>
                         </TableRow>
 
@@ -207,13 +137,16 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent">
 
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="Strt/Resm"
+                                    android:id="@+id/btn_tt_start_resume"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="20dp" />
                             </FrameLayout>
                         </TableRow>
 
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="1" />
                     </LinearLayout>
                 </TableRow>
             </LinearLayout>

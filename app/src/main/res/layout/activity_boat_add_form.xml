@@ -11,22 +11,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Boat Class"
-            android:id="@+id/txt_form_BoatClass" />
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spn_BoatClass"
-            android:spinnerMode="dropdown"
-            android:entries="@array/class_options_array"
-            style="@style/Base.TextAppearance.AppCompat.Large" />
+        android:layout_alignParentStart="true"
+        android:layout_margin="7dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,13 +31,71 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Boat Class"
+            android:id="@+id/txt_form_BoatClass"
+            android:layout_marginBottom="10dp" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rbgrp_baf_boat_class"
+            android:layout_marginBottom="5dp">
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Blue"
+                android:id="@+id/rb_baf_blue"
+                android:checked="false"
+                android:layout_weight="1"
+                android:layout_margin="5dp" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yellow"
+                android:id="@+id/rb_baf_yellow"
+                android:checked="false"
+                android:layout_margin="5dp" />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Green"
+                android:id="@+id/rb_baf_green"
+                android:checked="false"
+                android:layout_weight="1"
+                android:layout_margin="5dp" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Purple"
+                android:id="@+id/rb_baf_purple"
+                android:checked="false"
+                android:layout_margin="5dp" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="_TBD_"
+                android:id="@+id/rb_baf__TBD_"
+                android:checked="false"
+                android:layout_margin="5dp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Sail Number"
             android:id="@+id/txt_form_SailNum" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/txt_inpt_SailNum" />
+            android:id="@+id/txt_inpt_SailNum"
+            android:inputType="textNoSuggestions|textCapCharacters" />
 
         <TextView
             android:layout_width="wrap_content"

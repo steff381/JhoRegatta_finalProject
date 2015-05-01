@@ -8,10 +8,11 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,6 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Date (mm/dd/yyyy)"
             android:id="@+id/txt_form_RaceDate" />
@@ -89,36 +91,15 @@
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Distance (Nautical Miles)"
-            android:id="@+id/txt_form_RaceDistance" />
 
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:id="@+id/txt_inpt_RaceDistance"
-                android:layout_weight="1" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Calculate"
-                android:id="@+id/btn_calc_distance_race" />
-        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Classes to Include:"
             android:id="@+id/txt_form_ClassChkBoxes" />
@@ -138,26 +119,9 @@
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Red"
-                    android:id="@+id/ckbx_inpt_RaceClassRed"
-                    android:layout_row="0"
-                    android:layout_column="0"
-                    android:layout_marginRight="40dp" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Green"
-                    android:id="@+id/ckbx_inpt_RaceClassGreen"
-                    android:layout_row="0"
-                    android:layout_column="1" />
-
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="Blue"
                     android:id="@+id/ckbx_inpt_RaceClassBlue"
-                    android:layout_row="1"
+                    android:layout_row="0"
                     android:layout_column="0" />
 
                 <CheckBox
@@ -165,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:text="Purple"
                     android:id="@+id/ckbx_inpt_RaceClassPurple"
-                    android:layout_row="1"
+                    android:layout_row="0"
                     android:layout_column="1" />
 
                 <CheckBox
@@ -173,16 +137,35 @@
                     android:layout_height="wrap_content"
                     android:text="Yellow"
                     android:id="@+id/ckbx_inpt_RaceClassYellow"
-                    android:layout_row="2"
-                    android:layout_column="0" />
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:layout_marginRight="10dp" />
 
                 <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="_TBD_"
                     android:id="@+id/ckbx_inpt_RaceClass_TBD_"
-                    android:layout_row="2"
+                    android:layout_row="1"
                     android:layout_column="1" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Green"
+                    android:id="@+id/ckbx_inpt_RaceClassGreen"
+                    android:layout_row="2"
+                    android:layout_column="0" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Classless"
+                    android:id="@+id/ckbx_inpt_RaceClassless"
+                    android:layout_row="2"
+                    android:layout_column="1"
+                    android:layout_marginRight="40dp"
+                    android:visibility="invisible"/>
             </GridLayout>
 
             <LinearLayout
@@ -282,7 +265,10 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:onClick="onClickUpdate"/>
+                android:onClick="onClickUpdate"
+                android:visibility="gone" />
+
+
 
             <Button
                 android:layout_width="wrap_content"
@@ -306,13 +292,32 @@
                 android:onClick="onClickCancel"/>
         </TableRow>
 
-        <Button
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RACE MAKER TEST"
-            android:id="@+id/btnMakeLifeEasier"
+            android:layout_height="fill_parent"
             android:layout_gravity="center_horizontal"
-            android:onClick="onClickGoodLife" />
+            android:layout_marginTop="10dp"
+            android:id="@+id/linlay_raf_results_buttons">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Modify Results"
+                android:id="@+id/btn_raf_modify_results"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="E-mail Results"
+                android:id="@+id/btn_raf_email_results"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+        </LinearLayout>
 
     </LinearLayout>
+
 </RelativeLayout>

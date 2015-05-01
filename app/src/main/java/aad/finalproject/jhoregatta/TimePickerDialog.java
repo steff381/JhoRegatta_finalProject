@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 
 public class TimePickerDialog extends DialogFragment implements View.OnClickListener {
@@ -27,6 +28,14 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
     private Button setTime;
     private Button cancel;
 
+    //ploymorphic textView
+    private TextView polymorphicTextView;
+
+    //setter for the polymorpher
+    public void setPolymorphicTextView(TextView polymorphicTextView) {
+        this.polymorphicTextView = polymorphicTextView;
+    }
+
     // create a new communicator interface to communicate between activity and dialog
     Communicator communicator;
     @Override
@@ -41,7 +50,7 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Bundle bundle = getArguments(); // get the arguments from the bundle
-        String time = bundle.getString("Time"); // get the specific argument
+        String time = bundle.getString("Value1"); // get the specific argument
         View rootView = inflater.inflate(R.layout.fragment_time_picker_dialog, container,
                 false);
         setCancelable(false); // disable cancallability
@@ -64,7 +73,7 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
         cancel.setOnClickListener(this);
 
         // set numeric boundaries for number pickers
-        hourPicker.setMaxValue(12);
+        hourPicker.setMaxValue(99);
         hourPicker.setMinValue(0);
         minutePicker.setMaxValue(59);
         minutePicker.setMinValue(0);
@@ -87,6 +96,9 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_tpd_set_time) {
+            hourPicker.clearFocus();
+            minutePicker.clearFocus();
+            secondPicker.clearFocus();
             // convert integers to milliseconds of hours minutes and seconds
             hour = 3600000 * hourPicker.getValue();
             minute = 60000 * minutePicker.getValue();
@@ -100,6 +112,7 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
             dismiss(); // dismiss the dialog
         } else
         {
+            communicator.onDialogMessage("X");
             dismiss(); // just close the dialog
         }
 

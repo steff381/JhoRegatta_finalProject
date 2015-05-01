@@ -39,4 +39,6 @@
     <string name="title_activity_list_template_distance_calculator">listTemplateDistanceCalculator
     </string>
     <string name="title_activity_preferences">Preferences</string>
+    <string name="title_activity_results_editor">Result Editor</string>
+    <string name="title_activity_select_class_distance">Class Distance</string>
 </resources>

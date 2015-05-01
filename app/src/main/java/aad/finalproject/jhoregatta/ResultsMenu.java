@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -28,15 +28,14 @@ import aad.finalproject.db.ResultDataSource;
 import aad.finalproject.db.ResultsAdapter;
 
 
-public class ResultsMenu extends ActionBarActivity {
-    private static final String LOGTAG = "Logtag: " + Thread.currentThread()
-            .getStackTrace()[2].getClass().getSimpleName(); // log tag for records
+public class ResultsMenu extends MainActivity {
+    private static final String LOGTAG = "Logtag: ResultsMenu";
 
     // sql elements for selecting boats
-    private String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.activeRace.getId()
+    //TODO REMEMBER, You changed get active race to get gracerowid
+    private String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
             + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
-    private String orderBy = DBAdapter.KEY_BOAT_CLASS + ", "
-            + DBAdapter.KEY_BOAT_NAME;
+    private String orderBy = DBAdapter.KEY_BOAT_NAME;
 
     private String validatorMessage;
 
@@ -45,7 +44,7 @@ public class ResultsMenu extends ActionBarActivity {
     ResultDataSource resultDataSource;
 
     // Listview widgets and objects
-    ListView myList;
+    public static ListView myList;
     ResultsAdapter resultsAdapter;
 
     // make button instance for capturing finish time
@@ -68,8 +67,8 @@ public class ResultsMenu extends ActionBarActivity {
         resultDataSource.open();
 
         //instantiate the custom results adapter
-        GlobalContent.activeResultsAdapter = new ResultsAdapter(getApplicationContext(), resultDataSource.getAllResults(where, orderBy,
-                null), resultDataSource);
+        GlobalContent.activeResultsAdapter = new ResultsAdapter(getApplicationContext(),
+                getAllSQLResultResults(resultDataSource), resultDataSource);
 
         // wire widgets
         myList = (ListView) findViewById(R.id.lvResultList);
@@ -78,6 +77,7 @@ public class ResultsMenu extends ActionBarActivity {
         returnToTimeTracker = (Button) findViewById(R.id.btn_nav_TimeTracker);
         finishAndSendResults = (Button) findViewById(R.id.btn_rm_csv_export);
         exitRace =(Button) findViewById(R.id.btn_rm_exit);
+
 
 ////////Exit race button functions
         // initially set button to invisible
@@ -97,22 +97,49 @@ public class ResultsMenu extends ActionBarActivity {
                 // Always do the following....
                 // close the results menu
                 // return to the main menu
-            }
-        });
-
-
-////////Return to time tracker button functions
-        // close finish line and navigate to back to time tracker
-        returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // close databases to conserve resources
-                resultDataSource.close();
-                raceDataSource.close();
-                finish();
+                GlobalContent.finalDataClear(); //clear all the data
+                //goto main menu
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
 
             }
         });
+
+//set the visability of buttons depending on access mode
+        if (GlobalContent.getResultsFormAccessMode().equals(GlobalContent.modeEdit)) {
+            //change the name of the back to tracker button
+            returnToTimeTracker.setText("Races");
+            //change the name of the finalizer button
+            finishAndSendResults.setText("E-Mail Results");
+            //change the function of the back to tracker button
+            returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), RaceMenu.class);
+                    startActivity(intent);
+                }
+            });
+
+            //show the exit button
+            exitRace.setVisibility(View.VISIBLE);
+
+        } else {//change the name of the back to tracker button
+            //set the text for the tracker button
+            returnToTimeTracker.setText("Time Tracker");
+            // close finish line and navigate to back to time tracker
+            returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // close databases to conserve resources
+                    resultDataSource.close();
+                    raceDataSource.close();
+                    finish(); //finish the activity
+
+                }
+            });
+        }
+
 
 ////////Finializer button functions
         finishAndSendResults.setText("Finalize");
@@ -134,7 +161,7 @@ public class ResultsMenu extends ActionBarActivity {
                     alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) { //if yes
-                            finalizeActiveRace(); // call finalizer
+//                            finalizeActiveRace(); // call finalizer
                             sendResultTableByEmail(); // send the finalized results by email
                             exitRace.setVisibility(View.VISIBLE); // make the exit button visible
                         }
@@ -173,18 +200,23 @@ public class ResultsMenu extends ActionBarActivity {
              */
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                GlobalContent.setResultsRowID(id);
-                Intent intent = new Intent(view.getContext(), ResultsEditForm.class);
+                TextView idTv = (TextView) view.findViewById(R.id.txt_hd_results_ID);
+                long myId = Long.parseLong(idTv.getText().toString());
+
+                GlobalContent.setResultsRowID(myId); // grab the result id so the editor can use it
+                Intent intent = new Intent(view.getContext(), ResultsEditor.class);
                 startActivity(intent);
                 return true;
             }
         });
+
+
     }
 
     //Check if the results table is complete,
     private boolean validateResultsTable() {
         // grab the data from the sql table
-        List<Result> results = resultDataSource.getAllResults(where, null, null);
+        List<Result> results = getAllSQLResultResults(resultDataSource);
         validatorMessage = null; // set validator message to null
         String boatName;
         boolean returnValue = true;
@@ -328,8 +360,29 @@ public class ResultsMenu extends ActionBarActivity {
         Log.i(LOGTAG, " onResume Now");
         raceDataSource.open(); // reopen the db
         resultDataSource.open(); // reopen the db
+
+        //risky method
+        try {
+            //sync the list in the adapter with data from SQL
+            GlobalContent.activeResultsAdapter
+                    .syncArrayListWithSql(getAllSQLResultResults(resultDataSource));
+        } catch (Exception e) {
+            Log.i(LOGTAG, "Caught error");
+            e.printStackTrace();
+        }
+        myList.invalidate(); // force a refresh of the list view
         populateListView(); // refresh listview
 
+
+    }
+
+    public static List<Result> getAllSQLResultResults(ResultDataSource resultDataSource) {
+
+        String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
+                + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+        String orderBy =  DBAdapter.KEY_BOAT_NAME;
+
+        return resultDataSource.getAllResults(where, orderBy, null);
     }
 
     @Override

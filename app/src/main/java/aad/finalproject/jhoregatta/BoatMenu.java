@@ -27,10 +27,6 @@ public class BoatMenu extends MainActivity {
             + DBAdapter.KEY_BOAT_NAME + " DESC";
     private String havingClause = null;
 
-    // tells all child activities how they should be displayed. i.e. edit vs add menu items
-//    public static String CHILD_ACTIVITY_TYPE_SWITCHER; // EDIT or CREATE
-
-//    public static long ROW_ID; // a public row id that passes info to other activities
     ListView myList; // initialize the listview
 
     public static String ACCESS_METHOD_KEY = "Key";
@@ -55,12 +51,11 @@ public class BoatMenu extends MainActivity {
                 GlobalContent.setBoatRowID(id); // set the boat row id for the boat edit form
                 GlobalContent.setBoatFormAccessMode(true); // edit mode is on
                 Intent gotoBoatForm = new Intent(view.getContext(), BoatAddForm.class);
-//                gotoBoatForm.putExtra(ACCESS_METHOD_KEY, "EDIT");
                 startActivity(gotoBoatForm);
             }
         });
 
-
+        // get a cursor for all the boats in the list
         Cursor boats = boatDataSource.getAllBoatsCursor(whereClauseIsVisible,
                 orderByClause, havingClause);
 
@@ -97,10 +92,9 @@ public class BoatMenu extends MainActivity {
     }
 
     public void navigateToAddBoatForm(View view) {
+        //set the access mode to create
         GlobalContent.setBoatFormAccessMode(false);
-//        CHILD_ACTIVITY_TYPE_SWITCHER = "CREATE";
         Intent intent = new Intent(this, BoatAddForm.class);
-//        intent.putExtra(ACCESS_METHOD_KEY, "CREATE");
         startActivity(intent);
     }
 
@@ -121,6 +115,7 @@ public class BoatMenu extends MainActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        //close data source on pause
         boatDataSource.close();
     }
 
@@ -137,12 +132,12 @@ public class BoatMenu extends MainActivity {
             {"_TBD_" , "Sea Shell" , "463029" , "175"},
             {"Purple" , "Hellofa Ride" , "393032" , "100"},
             {"Purple" , "Smooth Sailin'" , "632606" , "68"},
-            {"Red" , "Happy Tub" , "329123" , "115"},
-            {"Red" , "Norther Express" , "744688" , "65"},
-            {"Red" , "Speed Incarnate" , "551642" , "57"},
-            {"Red" , "Spirit Bomber" , "895720" , "185"},
-            {"Red" , "Sweet 16" , "383153" , "110"},
-            {"Red" , "Time Bandit" , "762180" , "186"},
+            {"Blue" , "Happy Tub" , "329123" , "115"},
+            {"Blue" , "Norther Express" , "744688" , "65"},
+            {"Blue" , "Speed Incarnate" , "551642" , "57"},
+            {"Blue" , "Spirit Bomber" , "895720" , "185"},
+            {"Blue" , "Sweet 16" , "383153" , "110"},
+            {"Blue" , "Time Bandit" , "762180" , "186"},
             {"Yellow" , "Katrina" , "941659" , "65"},
             {"Yellow" , "The Winner" , "794736" , "121"},
             {"Yellow" , "Spring" , "684919" , "165"}};
@@ -150,6 +145,7 @@ public class BoatMenu extends MainActivity {
         Boat boat = new Boat();
         for (int i = 0; i < boatString.length; i++) {
 
+            //add each boat to the listview
             boat.setBoatClass(boatString[i][0]);
             boat.setBoatName(boatString[i][1]);
             boat.setBoatSailNum(boatString[i][2]);
@@ -179,12 +175,14 @@ public class BoatMenu extends MainActivity {
                 R.id.txt_hd_Name,
                 R.id.txt_hd_SailNum};
 
+        //creaet an assign simple cursor adapter for the listview
         SimpleCursorAdapter myCursorAdaptor;
         myCursorAdaptor = new SimpleCursorAdapter(getBaseContext(),
                 R.layout.activity_list_template_boats, cursor, fromFieldNames, toViewIDs,0);
         myList.setAdapter(myCursorAdaptor);
     }
 
+    // close everythig out
     protected void endBoatActivity() {
         try {
             boatDataSource.close();

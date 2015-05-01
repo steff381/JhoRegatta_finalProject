@@ -7,11 +7,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import aad.finalproject.db.AndroidDatabaseManager;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    // set up buttons for click assignment
+    Button testButton;
+    Button calculator;
+
 
 
 
@@ -19,7 +25,26 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // wire buttons
+        testButton = (Button)findViewById(R.id.btn_ma_test);
+        calculator = (Button) findViewById(R.id.btn_nav_Calculator);
 
+
+        // assign click listeners
+        calculator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), DistanceCalculator.class);
+                startActivity(intent);
+            }
+        });
+
+        // assign click listeners
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
     }
 
 
@@ -64,7 +89,7 @@ public class MainActivity extends ActionBarActivity {
         Log.i("Main Menu ", " GotoRace ");
     }
 
-
+    // send the user to the preferences screen
     public void navigateToPreferences(View view){
         Intent intent = new Intent(this, Preferences.class); //TODO: wire to settings activity
         startActivity(intent);
@@ -74,6 +99,7 @@ public class MainActivity extends ActionBarActivity {
         Log.i("Main Menu ", " goto Preferences ");
     }
 
+    // TODO FOR TESTING
     public void onActionClickDDMS(){
         Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
         startActivity(dbmanager);

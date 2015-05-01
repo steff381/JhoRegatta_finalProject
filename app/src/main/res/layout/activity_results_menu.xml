@@ -106,7 +106,8 @@
                 android:text="Class"
                 android:id="@+id/txt_hd_rl_Class"
                 android:layout_weight="1.5"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:visibility="gone" />
 
             <TextView
                 android:layout_width="0dp"

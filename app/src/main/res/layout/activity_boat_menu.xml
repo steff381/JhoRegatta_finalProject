@@ -42,7 +42,7 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text=" + "
+                        android:text="Add Boat"
                         android:id="@+id/btn_add_boat"
                         android:layout_gravity="center_vertical"
                         android:onClick="navigateToAddBoatForm"

@@ -124,7 +124,7 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
             this.boatArrayList.addAll(tempResultFromSql);
 
         } else {
-            throw new NullPointerException("Data in tempResultFromSql is empty");
+//            throw new NullPointerException("Data in tempResultFromSql is empty");
         }
         notifyDataSetChanged();
     }

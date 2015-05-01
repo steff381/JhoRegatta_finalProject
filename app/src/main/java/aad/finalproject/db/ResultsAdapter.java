@@ -107,8 +107,6 @@ public class ResultsAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.activity_list_template_results, parent, false);
         }
 
-
-
         Log.i("Results Adapter ", "mainDataList is of size " + arraylist.size() + " index is " + index);
         // create an result that will hold the data for the row item.
         final Result result = arraylist.get(index);
@@ -122,7 +120,6 @@ public class ResultsAdapter extends BaseAdapter {
         // wire text views and set the associated text to them.
         final TextView tv1 = (TextView) view.findViewById(R.id.txt_hd_results_ID);
         tv1.setText(result.getResultsId() + "");
-
         final TextView tv2 = (TextView) view.findViewById(R.id.txt_hd_results_race_id);
         tv2.setText(result.getResultsRaceId() + "");
         final TextView tv3 = (TextView) view.findViewById(R.id.txt_hd_results_boat_id);
@@ -136,6 +133,7 @@ public class ResultsAdapter extends BaseAdapter {
         final TextView tv7 = (TextView) view.findViewById(R.id.txt_hd_results_SailNum);
         tv7.setText(result.getBoatSailNum() + "");
         final TextView tv8 = (TextView) view.findViewById(R.id.txt_hd_finish_time);
+        //set the boat finish time
         if (result.getResultsBoatFinishTime() != null) {
             tv8.setText(result.getResultsBoatFinishTime() + "");
         } else {
@@ -179,6 +177,17 @@ public class ResultsAdapter extends BaseAdapter {
             for (TextView t : textViews) {
                 t.setTextColor(Color.parseColor("#ffffff")); // make the text white
             }
+        } else if (r.getResultsNotFinished() == 1) {//if the boat didn't finish the race
+            //hide the finish button and show the reset button instead.
+            btnFinish.setVisibility(View.INVISIBLE);
+            btnReset.setVisibility(View.GONE);
+            //set the row color to black
+            view.setBackgroundColor(view.getResources().getColor(R.color.black));
+            //set the text of each text box white
+            for (TextView t : textViews) {
+                t.setTextColor(Color.parseColor("#ffffff")); // make the text white
+            }
+            tv8.setText("DNF");
         } else {
             // change the row color blank
             view.setBackgroundColor(Color.parseColor("#00000000"));
@@ -209,7 +218,6 @@ public class ResultsAdapter extends BaseAdapter {
 
                         //set the result entry's finish time to the same.
                         result.setResultsBoatFinishTime(timeFormatted);
-                        Log.i(LOGTAG, "Finish time for " + result.getBoatName() + " is: " + dateTime + " formatted: " + timeFormatted);
 
                         //hide the finish button and show the reset button instead.
                         btnFinish.setVisibility(View.GONE);
@@ -231,7 +239,6 @@ public class ResultsAdapter extends BaseAdapter {
 
                        //get the finish time ""
                         GlobalContent.getElapsedTime(startTime, timeFormatted);
-
 
                         //run table calculations to derive duration and adjusted duration
                         resultDataSource.runCalculations();
@@ -255,7 +262,6 @@ public class ResultsAdapter extends BaseAdapter {
 
                     //blank out database entry
                     resultDataSource.clearStartAndDurations(result.getResultsId());
-
 
                     //blank out result object fnish time entry
                     result.setResultsBoatFinishTime(null);
@@ -284,27 +290,17 @@ public class ResultsAdapter extends BaseAdapter {
                     btnReset.setText("   Reset [" + counter + "]   ");
                 }
                 Toast.makeText(v.getContext(), message, Toast.LENGTH_LONG).show();
-
-
             }
         });
-
         return view;
     }
 
     // sync the list in the ResultsAdapter with what is in the Results SQL table.
-    public void syncArrayListWithSql(ResultDataSource resultDataSource) {
-        //create statement strings
-        String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.activeRace.getId()
-                + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
-        String orderBy = DBAdapter.KEY_BOAT_CLASS + ", "
-                + DBAdapter.KEY_BOAT_NAME;
-        // create a temporary placeholder for the data from SQL
-        List<Result> tempResultFromSql;
-        tempResultFromSql = resultDataSource.getAllResults(where, orderBy, null);
+    public void syncArrayListWithSql(List<Result> tempResultFromSql) {
+
         //TODO For testing
         for (Result r : tempResultFromSql) {
-            Log.i(LOGTAG, "boat " + r.getBoatName());
+            Log.i(LOGTAG, "SYNC boat " + r.getBoatName());
         }
         // Make sure the data coming from sql isn't blank. Otherwise throw error
         if (tempResultFromSql.size() > 0) {
