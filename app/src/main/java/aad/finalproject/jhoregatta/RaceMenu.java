@@ -12,7 +12,6 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import aad.finalproject.db.DBAdapter;
-import aad.finalproject.db.Race;
 import aad.finalproject.db.RaceDataSource;
 
 
@@ -20,9 +19,6 @@ public class RaceMenu extends MainActivity {
 
     // log cat tagging
     private static final String LOG = "LogTag: RaceMenu";
-
-    //TODO: Move this to List class
-//    public static String ACCESS_METHOD_KEY = "Key";
 
 
     // parameters for methods using sql quiery parameters
@@ -46,7 +42,7 @@ public class RaceMenu extends MainActivity {
 
         myListRace = (ListView) findViewById(R.id.lvRaceList); // set the lv to the current listview
 
-
+    //set the onclick listener for when user selects an item from the list
         myListRace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -58,16 +54,10 @@ public class RaceMenu extends MainActivity {
 
             }
         });
+        //get a sql cursor of all the races in the database
         Cursor races = raceDataSource.getAllRacesCursor(whereClauseIsVisible,
                 orderByClause, havingClause);
 
-        //TODO: FOR TESTING ONLY, REMOVE IF STATEMENT PRIOR TO COMPLETION
-        if (races.getCount()>0) {
-            populateListView();
-        } else {
-            createData();
-            populateListView();
-        }
     }
 
 
@@ -123,47 +113,7 @@ public class RaceMenu extends MainActivity {
         raceDataSource.close(); // close db to reduce data leak
     }
 
-
-    // TODO: Get rid of lorim ipsum data
-    public void createData() {
-        String[][] raceString = new String[][] {
-            {"Race 1","03/30/15",	"0.83",	"0",	"0",	"0",	"0",	"1",	"1",	"1"},
-            {"Race 2","03/31/15",	"0.46",	"0",	"0",	"0",	"1",	"1",	"1",	"1"},
-            {"Race 3","04/01/15",	"1.95",	"0",	"0",	"0",	"0",	"1",	"0",	"1"},
-            {"Race 4","04/02/15",	"7.45",	"0",	"0",	"0",	"0",	"0",	"0",	"1"},
-            {"Race 5","04/03/15",	"1.99",	"1",	"0",	"1",	"1",	"1",	"0",	"1"},
-            {"Race 6","04/04/15",	"2.81",	"0",	"0",	"1",	"0",	"0",	"0",	"1"},
-            {"Race 7","04/05/15",	"9.11",	"0",	"1",	"1",	"0",	"0",	"1",	"1"},
-            {"Race 8","04/06/15",	"4.05",	"0",	"0",	"1",	"1",	"0",	"1",	"1"},
-            {"Race 9","04/07/15",	"5.53",	"0",	"1",	"1",	"0",	"0",	"0",	"1"},
-            {"Race 10","04/08/15",	"3.69",	"0",	"1",	"1",	"0",	"1",	"0",	"1"},
-            {"Race 11","04/09/15",	"7.51",	"1",	"0",	"1",	"1",	"1",	"1",	"1"},
-            {"Race 12","04/10/15",	"7.98",	"0",	"0",	"1",	"0",	"1",	"1",	"1"},
-            {"Race 13","04/11/15",	"6.60",	"0",	"0",	"1",	"1",	"1",	"1",	"1"},
-            {"Race 14","04/12/15",	"7.79",	"0",	"0",	"1",	"1",	"0",	"0",	"1"},
-            {"Race 15","04/13/15",	"3.64",	"0",	"1",	"0",	"1",	"1",	"0",	"1"},
-            {"Race 16","04/14/15",	"9.01",	"0",	"1",	"0",	"0",	"0",	"0",	"1"},
-            {"Race 17","04/15/15",	"9.72",	"1",	"0",	"1",	"1",	"0",	"1",	"1"},
-            {"Race 18","04/16/15",	"5.73",	"1",	"0",	"1",	"0",	"0",	"1",	"1"}
-        };
-
-        Race race = new Race();
-        for (int i = 0; i < raceString.length; i++) {
-
-            race.setName(raceString[i][0]);
-            race.setDate(raceString[i][1]);
-            race.setDistance(Double.parseDouble(raceString[i][2]));
-            race.setClsBlue(Integer.parseInt(raceString[i][3]));
-            race.setClsGreen(Integer.parseInt(raceString[i][4]));
-            race.setClsPurple(Integer.parseInt(raceString[i][5]));
-            race.setClsYellow(Integer.parseInt(raceString[i][6]));
-            race.setClsRed(Integer.parseInt(raceString[i][7]));
-            race.setCls_TBD_(Integer.parseInt(raceString[i][8]));
-            race = raceDataSource.create(race);
-            Log.i(LOG,"Race created with the id of: " + race.getId() );
-        }
-    }
-
+    // add the data from sql to the listview
     public void populateListView(){
 
         Cursor cursor = raceDataSource.getAllRacesCursor("visible = 1", null, null);

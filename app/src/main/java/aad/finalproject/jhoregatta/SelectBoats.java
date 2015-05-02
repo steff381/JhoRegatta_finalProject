@@ -17,6 +17,7 @@ import aad.finalproject.db.BoatDataSource;
 import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.DBAdapter;
 import aad.finalproject.db.ResultDataSource;
+import aad.finalproject.db.SelectBoatAdapter;
 
 
 public class SelectBoats extends MainActivity {

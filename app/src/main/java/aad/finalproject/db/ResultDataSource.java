@@ -203,7 +203,6 @@ public class ResultDataSource {
     }
 
 //    // clear the finish time for all results in the given race.
-//    //TODO Finish writing the execSQL statement.
     public void clearSingleClassStartTimesAndDurations(long raceId, String className) {
         // select what race to affect
         String where = " WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId
@@ -224,7 +223,7 @@ public class ResultDataSource {
 
     }
 
-    //
+    //update sql with the data provided
     public boolean update(long id,
                           String duration,
                           int penalty,
@@ -310,7 +309,7 @@ public class ResultDataSource {
                     long milliDuration = GlobalContent.getDurationInMillis(r.getResultsClassStartTime(),
                             r.getResultsBoatFinishTime());
                     // convert to readable format
-                    String newDuration = GlobalContent.convertMillisToElapsedTime(milliDuration);
+                    String newDuration = GlobalContent.convertMillisToFormattedTime(milliDuration,0);
                     // enter elapsed time into the database
                     db.execSQL("UPDATE " + table + " SET " + durationColumn + " = '" + newDuration
                             + "' WHERE _id = " + resultId + ";");

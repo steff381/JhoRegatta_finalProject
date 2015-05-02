@@ -32,7 +32,6 @@ public class ResultsMenu extends MainActivity {
     private static final String LOGTAG = "Logtag: ResultsMenu";
 
     // sql elements for selecting boats
-    //TODO REMEMBER, You changed get active race to get gracerowid
     private String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
             + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
     private String orderBy = DBAdapter.KEY_BOAT_NAME;
@@ -89,14 +88,7 @@ public class ResultsMenu extends MainActivity {
             @Override
             public void onClick(View v) {
                 Log.i(LOGTAG, " exit button clicked");
-                //todo Create exit button functions
-                // if the race has been finailized then
-                // clear the global array adapter
-                // clear the global race ID  and Active Race ID
 
-                // Always do the following....
-                // close the results menu
-                // return to the main menu
                 GlobalContent.finalDataClear(); //clear all the data
                 //goto main menu
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
@@ -153,8 +145,7 @@ public class ResultsMenu extends MainActivity {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResultsMenu.this);
                     alertDialog.setTitle("WARNING: Finalizing Result Tables");
                     alertDialog.setMessage("Do you want to end the race?\n" +
-                            "Finalizing the race will disable all editing and send a copy of " +
-                            "the database via email.\n\nAre you sure you wish to proceed?");
+                            "Finalizing the race will send a copy of the race results by Email.");
                     alertDialog.setCancelable(false);
 
                     // User chooses confirm
@@ -320,7 +311,7 @@ public class ResultsMenu extends MainActivity {
         emailIntent.putExtra(Intent.EXTRA_STREAM, uri);//send file by email
 
         //dialog that asks the user to choose their mailing program preference
-        startActivity(Intent.createChooser(emailIntent, "Send your email in:"));
+        startActivity(Intent.createChooser(emailIntent, "Choose your Email App:"));
     }
 
     @Override

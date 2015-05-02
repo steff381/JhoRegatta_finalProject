@@ -44,11 +44,7 @@ public class RegattaTimer extends MainActivity {
     //get the shared preffs
     private SharedPreferences sharedPreferences;
 
-    // media elements
-    private AssetFileDescriptor afd;
     private MediaPlayer hornMid;
-    private int volume = 100;
-    private int streamType = AudioManager.STREAM_MUSIC;
     private ToneGenerator toneGenerator;
     private int toneType = ToneGenerator.TONE_CDMA_ABBR_ALERT;
     private int durationMs = 250;
@@ -57,9 +53,7 @@ public class RegattaTimer extends MainActivity {
     // timing variables
     CountDownTimerPausable myCountDownTimer;
 
-//    private Button masterStart; // start button instance//TODO TRASH
     public static Button startResume;
-//    public static Button masterPause; // pause button instance//TODO TRASH
     private TextView txtCountDown; // accessible instance of countdown
     private int flagToDisplay; // which flag case to implement
     private int heldPosition; // when user clicks recall, get the held position.
@@ -87,7 +81,6 @@ public class RegattaTimer extends MainActivity {
 
     long totalTime = 0;
 
-//    boolean isStartButton; // If the button currently displayed is the Master Start button//TODO TRASH
     int numberOfSelectedBoatClasses; // initialize the number of selected Classes variable
     int currentPosition = 0;
 
@@ -97,6 +90,9 @@ public class RegattaTimer extends MainActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regatta_timer);
+
+        //switch to media volume control vs notification volume control
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         sharedPreferences = getSharedPreferences(Preferences.PREFS, 0);// grab the shared prefs
 
@@ -109,11 +105,13 @@ public class RegattaTimer extends MainActivity {
 
         // Media play section
         hornMid = new MediaPlayer();
+        int volume = 100;
+        int streamType = AudioManager.STREAM_MUSIC;
         toneGenerator = new ToneGenerator(streamType, volume);
 
         // load up horn mid
         try {
-            afd = getAssets().openFd("Horn_Blast.wav"); // get audio from assets
+            AssetFileDescriptor afd = getAssets().openFd("Horn_Blast.wav");
             //set the players data source elements
             hornMid.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             hornMid.prepare();
@@ -142,15 +140,6 @@ public class RegattaTimer extends MainActivity {
             }
         });
 
-//
-//        masterStart = (Button) findViewById(R.id.btnMasterStart); // create master start button//TODO TRASH
-//        masterStart.setText("Start"); // set initial text to "Start"//TODO TRASH
-//        masterPause = (Button) findViewById(R.id.btnMasterPause); // pause button wired//TODO TRASH
-//        // pause button only visible when timer is running.
-//        masterPause.setVisibility(View.INVISIBLE); // hide pause button//TODO TRASH
-
-        // start/general recall button state variables//TODO TRASH
-//        isStartButton = true; // set oncreate value to true//TODO TRASH
 
         // event sequence variable
         flagToDisplay = 0; // set initial value
@@ -270,8 +259,8 @@ public class RegattaTimer extends MainActivity {
                     String alertMessage = "Recall Class: "
                             + boatClassInstance.getBoatColor().toUpperCase()
                             + "\nNOTE: After confirmation you a countdown of " +
-                            GlobalContent.convertMillisToElapsedTime((long)(sharedPreferences
-                                    .getInt("postRecallDelay", 45)*1000)) +
+                            GlobalContent.convertMillisToFormattedTime((long) (sharedPreferences
+                                    .getInt("postRecallDelay", 45) * 1000), 0) +
                             " and the class time will be reset.";
 
 
@@ -544,7 +533,7 @@ public class RegattaTimer extends MainActivity {
                     currentFlagImage.setImageResource(R.drawable.no_flags);
                     txtCountDown.setText(""); // reset the countdown display's time to 0
                 }
-                refreshResultsList();
+                refreshResultsList(); // force a repaint of the results list.
                 break;
             default:
                 Log.i(LOGTAG, " Switchcase raceFlagSwitcher ended in default");
@@ -585,6 +574,7 @@ public class RegattaTimer extends MainActivity {
              */
             @Override
             public void onTick(long millisUntilFinished) {
+                // set the string to the top of the current second
                 String timeString = bestTickTockTime(millisUntilFinished+1000, totalTime);
                 txtCountDown.setText(timeString); // Update text to display current time remaining
                 // play sound every second for the last 10 seconds.
@@ -605,21 +595,21 @@ public class RegattaTimer extends MainActivity {
     // change the display format based on if amount of time to track.
     public String bestTickTockTime(long millisUntilFinished, long totalTime) {
         String timeString;
-        if (totalTime > 3600000) {
-            timeString = String.format("%01dh %01dm %02ds",
+        if (millisUntilFinished >= 3600000) {
+            timeString = String.format("%2dh %2dm %02ds",
                     TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
                     TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) %
                             TimeUnit.HOURS.toMinutes(1),
                     TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) %
                             TimeUnit.MINUTES.toSeconds(1));
-        } else if (totalTime > 60000) {
-            timeString = String.format("%02dm %02ds",
+        } else if (millisUntilFinished >= 60000) {
+            timeString = String.format("%2dm %02ds",
                     TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) %
                             TimeUnit.HOURS.toMinutes(1),
                     TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) %
                             TimeUnit.MINUTES.toSeconds(1));
         } else {
-            timeString = String.format("%02ds",
+            timeString = String.format("%2ds",
                     TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) %
                             TimeUnit.MINUTES.toSeconds(1));
         }

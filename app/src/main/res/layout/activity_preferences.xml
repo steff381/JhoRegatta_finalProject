@@ -18,30 +18,34 @@
             android:layout_margin="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Initial Start Dealy:"
                 android:id="@+id/lbl_initialStartDelay"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical" />
 
             <TextView
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:inputType="number"
                 android:ems="10"
-                android:id="@+id/txt_initial_startDelay_hours"
+                android:id="@+id/txt_prefs_initial_startDelay"
                 android:hint="0h 0m 00s"
-                android:gravity="center"
+                android:gravity="center_vertical|center"
                 android:layout_margin="5dp"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:layout_weight="1" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:text="set"
-                android:id="@+id/btn_set_initialStartDelay" />
+                android:id="@+id/btn_prefs_set_pos0"
+                android:layout_weight=".5" />
 
         </LinearLayout>
 
@@ -52,30 +56,34 @@
             android:layout_margin="10dp" >
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Class Flag alone"
-                android:id="@+id/textView4"
-                android:layout_gravity="center_vertical" />
+                android:text="Class Up:"
+                android:id="@+id/lbl_prefs_classUp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical" />
 
             <TextView
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:inputType="number"
                 android:ems="10"
-                android:id="@+id/textView5"
+                android:id="@+id/txt_prefs_ClassUp"
                 android:hint="0h 0m 00s"
-                android:gravity="center"
+                android:gravity="center_vertical|center"
                 android:layout_margin="5dp"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:layout_weight="1" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:text="set"
-                android:id="@+id/button" />
+                android:id="@+id/btn_prefs_set_pos1"
+                android:layout_weight=".5" />
         </LinearLayout>
 
         <LinearLayout
@@ -85,36 +93,115 @@
             android:layout_margin="10dp" >
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Prep flag up"
-                android:id="@+id/textView8"
-                android:layout_gravity="center_vertical" />
+                android:text="Class and Prep:"
+                android:id="@+id/lbl_prefs_classAndPrep"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical" />
 
             <TextView
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:inputType="number"
                 android:ems="10"
-                android:id="@+id/textView9"
+                android:id="@+id/txt_prefs_ClassAndPrepUp"
                 android:hint="0h 0m 00s"
-                android:gravity="center"
+                android:gravity="center_vertical|center"
                 android:layout_margin="5dp"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:layout_weight="1" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:text="set"
-                android:id="@+id/button2" />
+                android:id="@+id/btn_prefs_set_pos2"
+                android:layout_weight=".5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Class Up Prep Down:"
+                android:id="@+id/textView15"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/txt_prefs_classUpPrepDown"
+                android:hint="0h 0m 00s"
+                android:gravity="center_vertical|center"
+                android:layout_margin="5dp"
+                android:textSize="30sp"
+                android:layout_weight="1" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="set"
+                android:id="@+id/btn_prefs_set_pos3"
+                android:layout_weight=".5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Post Recall Delay:"
+                android:id="@+id/textView17"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/txt_prefs_postRecallDelay"
+                android:hint="0h 0m 00s"
+                android:gravity="center_vertical|center"
+                android:layout_margin="5dp"
+                android:textSize="30sp"
+                android:layout_weight="1" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="set"
+                android:id="@+id/btn_prefs_set_pos4"
+                android:layout_weight=".5" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -191,7 +278,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set All"
+            android:text="Save"
             android:id="@+id/btn_prefs_set_all"
             android:layout_gravity="center_horizontal" />
 

@@ -75,6 +75,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
+    //go to the boats menu
     public void navigateToBoatMenu(View view){
         Intent intent = new Intent(this,BoatMenu.class);
         startActivity(intent);
@@ -82,6 +83,7 @@ public class MainActivity extends ActionBarActivity {
         Log.i("Main Menu ", " GotoBoat ");
     }
 
+    //go to the race menu
 
     public void navigateToRaceMenu(View view){
         Intent intent = new Intent(this, RaceMenu.class);
@@ -91,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
 
     // send the user to the preferences screen
     public void navigateToPreferences(View view){
-        Intent intent = new Intent(this, Preferences.class); //TODO: wire to settings activity
+        Intent intent = new Intent(this, Preferences.class);
         startActivity(intent);
 
 
@@ -99,7 +101,7 @@ public class MainActivity extends ActionBarActivity {
         Log.i("Main Menu ", " goto Preferences ");
     }
 
-    // TODO FOR TESTING
+    // TODO FOR TESTING the database content.
     public void onActionClickDDMS(){
         Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
         startActivity(dbmanager);

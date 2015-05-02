@@ -28,8 +28,9 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
     private Button update, cancel, setElapsedTime;
     private CheckBox didNotFinish, manualEntryMode;
     private EditText penalty, notes;
-    private TextView boatName, sailNum, boatClass, phrf, distance, elapsedTime, adjDuration, finishTime,
-                    classStart, notesCharRemaining;
+    private TextView boatName, sailNum, boatClass, phrf, distance, elapsedTime, adjDuration,
+            finishTime, classStart, notesCharRemaining;
+
 
     /////////DATABASE SECTION////////////
 
@@ -79,6 +80,26 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
             }
         });
 
+        penalty.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // if there is data in the penalty editor then recalculate the adjusted duration
+                try {
+                    if (Integer.parseInt(penalty.getText().toString()) > 0) {
+                        calculateAdjustedDuration();
+                    }
+                } catch (NumberFormatException e) {
+                    //do nothing, it wont harm the results editor if the number format is null.
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         // if elapsed time is entered manually, calculate the adjusted time
         elapsedTime.addTextChangedListener(new TextWatcher() {
             @Override
@@ -88,13 +109,10 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //if the there is text in the elapsed time and manual entry is checked
                 if (elapsedTime.length() > 0 && manualEntryMode.isChecked()) {
-                    adjDuration.setText(GlobalContent.calculateAdjDuration(
-                            Integer.parseInt(phrf.getText().toString()),
-                            GlobalContent.getDurationInMillis(elapsedTime.getText().toString()),
-                            Integer.parseInt(penalty.getText().toString()),
-                            Double.parseDouble(distance.getText().toString()),
-                            1 ));
+                    //calculate the adjusted duration.
+                    calculateAdjustedDuration();
                 }
             }
 
@@ -136,7 +154,8 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                     } else {
                         // grab values from text/edit fields
                         String elapsedTimeUD = elapsedTime.getText().toString();
-                        int penaltyUD = 0;
+                        int penaltyUD;
+                        //if penalty is null or bad format then make it 0
                         try {
                             penaltyUD = Integer.parseInt(penalty.getText().toString());
                         } catch (NumberFormatException e) {
@@ -197,6 +216,15 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         setElapsedTime.setEnabled(false);
 
         notesCharRemaining.setText(String.valueOf(totalChars)); // initial count of characters
+    }
+
+    private void calculateAdjustedDuration() {
+        adjDuration.setText(GlobalContent.calculateAdjDuration(
+                Integer.parseInt(phrf.getText().toString()),
+                GlobalContent.getDurationInMillis(elapsedTime.getText().toString()),
+                Integer.parseInt(penalty.getText().toString()),
+                Double.parseDouble(distance.getText().toString()),
+                1));
     }
 
     // prevent the user from using the devices back button
@@ -301,9 +329,8 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
 
     @Override
-    public void onDialogMessage(String message) {
-        if (!message.equals("X")) {
-            elapsedTime.setText(message);
-        }
+    public void onDialogMessage(long message) {
+            // set the elapsed time to the data from teh dialog
+            elapsedTime.setText(GlobalContent.convertMillisToFormattedTime(message,0));
     }
 }

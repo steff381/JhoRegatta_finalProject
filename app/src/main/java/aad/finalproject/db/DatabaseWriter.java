@@ -22,9 +22,9 @@ public class DatabaseWriter extends MainActivity {
     public static File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     // create a list of headers for each row
     private static String RESULTS_FIELDS_CSV_HEADER =
-                    DBAdapter.KEY_ID + "," +
-                    DBAdapter.KEY_RACE_ID + "," +
-                    DBAdapter.KEY_BOAT_ID  + "," +
+//                    DBAdapter.KEY_ID + "," +
+//                    DBAdapter.KEY_RACE_ID + "," +
+//                    DBAdapter.KEY_BOAT_ID  + "," +
 
                     DBAdapter.KEY_RACE_NAME + "," +
                     DBAdapter.KEY_RACE_DATE + "," +
@@ -32,7 +32,7 @@ public class DatabaseWriter extends MainActivity {
 
                     DBAdapter.KEY_BOAT_NAME + "," +
                     DBAdapter.KEY_BOAT_SAIL_NUM + "," +
-                    DBAdapter.KEY_BOAT_CLASS + "," +
+                    "fleet_color," +
                     DBAdapter.KEY_BOAT_PHRF + "," +
                     DBAdapter.KEY_RESULTS_MANUAL_ENTRY + "," +
 
@@ -44,7 +44,6 @@ public class DatabaseWriter extends MainActivity {
                     DBAdapter.KEY_RESULTS_NOTE + "," +
                     DBAdapter.KEY_RESULTS_PLACE + "," +
                     DBAdapter.KEY_RESULTS_NOT_FINISHED + "," +
-//                    DBAdapter.KEY_RESULTS_VISIBLE + "," +
                     DBAdapter.KEY_CREATED_AT
             ;
 
@@ -101,10 +100,10 @@ public class DatabaseWriter extends MainActivity {
 
                 for (Result r : results) {
 
-                    // IDs
-                    long id = r.getResultsId();
-                    long boat_id = r.getResultsBoatId();
-                    long RaceId = r.getResultsRaceId();
+//                    // IDs
+//                    long id = r.getResultsId();
+//                    long boat_id = r.getResultsBoatId();
+//                    long RaceId = r.getResultsRaceId();
                     //results
                     String ClassStartTime =  r.getResultsClassStartTime();
                     String BoatFinishTime =  r.getResultsBoatFinishTime();
@@ -113,7 +112,6 @@ public class DatabaseWriter extends MainActivity {
                     Double ResultsPenalty =  r.getResultsPenalty();
                     String ResultsNote =  r.getResultsNote();
                     Integer ResultsPlace =  r.getResultsPlace();
-//                    Integer ResultsVisible =  r.getResultsVisible();
                     Integer ResultsNotFinished =  r.getResultsNotFinished();
                     Integer ResultsManualEntry =  r.getResultsManualEntry();
                     //boats
@@ -126,7 +124,6 @@ public class DatabaseWriter extends MainActivity {
                     String RaceName = r.getRaceName();
                     String RaceDate = r.getRaceDate();
                     String Created = r.getResultsCreateDate();
-                    Log.i(LOGTAG, "Boat: " + BoatName + "IDs > result: " + id + " boat: " + boat_id + " race: " + RaceId);
 
                     /**Create the line to write in the .csv file.
                      * We need a String where values are comma separated.
@@ -134,9 +131,9 @@ public class DatabaseWriter extends MainActivity {
                      * is converted into String.
                      */
                     String record =
-                                    id + c +
-                                    RaceId + c +
-                                    boat_id + c +
+//                                    id + c +
+//                                    RaceId + c +
+//                                    boat_id + c +
 
                                     RaceName + c +
                                     RaceDate + c +

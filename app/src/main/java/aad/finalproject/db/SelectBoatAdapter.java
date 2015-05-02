@@ -1,4 +1,4 @@
-package aad.finalproject.jhoregatta;
+package aad.finalproject.db;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,9 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import aad.finalproject.db.Boat;
-import aad.finalproject.db.BoatDataSource;
-import aad.finalproject.db.DBAdapter;
+import aad.finalproject.jhoregatta.R;
 
 /**
  * Created by Daniel on 4/24/2015.
@@ -51,7 +49,7 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder holder = null; // make null
+        ViewHolder holder; // make null
         Log.i(LOGTAG, "convertView" + String.valueOf(position));
 
 
@@ -123,8 +121,6 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
 
             this.boatArrayList.addAll(tempResultFromSql);
 
-        } else {
-//            throw new NullPointerException("Data in tempResultFromSql is empty");
         }
         notifyDataSetChanged();
     }

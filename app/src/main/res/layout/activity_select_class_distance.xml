@@ -33,7 +33,8 @@
                 android:hint="distance in nm"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLength="8" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -64,7 +65,8 @@
                 android:hint="distance in nm"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLength="8"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -95,7 +97,8 @@
                 android:hint="distance in nm"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLength="8" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -126,7 +129,8 @@
                 android:hint="distance in nm"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLength="8" />
 
             <Button
                 android:layout_width="wrap_content"
@@ -157,7 +161,8 @@
                 android:hint="distance in nm"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLength="8"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -188,7 +193,8 @@
                 android:hint="distance in nm"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLength="8"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -197,11 +203,26 @@
                 android:id="@+id/btn_scd_class6_calculate" />
         </LinearLayout>
 
-        <Button
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Boats"
-            android:id="@+id/btn_scd_gotoSelectBoats"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:id="@+id/btn_scd_back"
+                android:layout_margin="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Boats"
+                android:id="@+id/btn_scd_gotoSelectBoats"
+                android:layout_margin="10dp" />
+        </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

@@ -213,7 +213,7 @@ public class BoatAddForm extends Form {
         if (GlobalContent.checkForCommas(getApplicationContext(),strBoatName, strBoatSailNum)){
             return false;
         }
-
+        // check if any fields are empty. If so then warn the user.
         Log.i(LOG, "rb Single = " + (rb_single == null) + " Text is " + strBoatClassColor);
         if (strBoatName.length() == 0
                 || strBoatPHRF.length() == 0
@@ -235,61 +235,59 @@ public class BoatAddForm extends Form {
                 boatDataSource.update(id, strBoatClassColor, strBoatName, strBoatSailNum,
                         Integer.parseInt(strBoatPHRF));
                 Log.i(LOG, "Validated UPDATE entry");
-
+                endBoatActivity(); // Exit the activity
             } else {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
                         Toast.LENGTH_LONG).show();
                 Log.i(LOG, "CURSOR ERROR>> BAD ID");
             }
-            cursor.close();
         }
+        cursor.close();
     }
 
     @Override
     public void onClickUpdate(View view){
         update(GlobalContent.getBoatRowID());
-        endBoatActivity(); // Exit the activity
     }
 
 
     @Override
     protected void delete() {
         Cursor cursor = boatDataSource.getRow(GlobalContent.getBoatRowID());
-        if (validateDataEntryFields()) {
+         if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+             //ask user if they really want to delete the item
+            builder.setTitle("WARNING!!!! CANNOT UNDO A DELETION!");
+            builder.setMessage("Warning:\n" +
+                    "You are about to delete this boat. You cannot undo this event");
+            builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    boatDataSource.psudoDelete(GlobalContent.getBoatRowID()); // delete item
+                    Log.i(LOG, "Validated PsudoDeleted entry");
 
-            if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("WARNING!!!! CANNOT UNDO A DELETION!");
-                builder.setMessage("Warning:\n" +
-                        "You are about to delete this boat. You cannot undo this event");
-                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        boatDataSource.psudoDelete(GlobalContent.getBoatRowID());
-                        Log.i(LOG, "Validated PsudoDeleted entry");
+                    dialog.dismiss();
+                    endBoatActivity(); // Exit the activity
+                }
+            });
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss(); //leave without deleting
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show(); // open up the dialog
 
-                        dialog.dismiss();
-                        endBoatActivity(); // Exit the activity
-                    }
-                });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-            } else {
-                Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
-                        Toast.LENGTH_LONG).show();
-                Log.i(LOG, "CURSOR ERROR>> BAD ID");
-            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
+                    Toast.LENGTH_LONG).show();
+            Log.i(LOG, "CURSOR ERROR>> BAD ID");
         }
+
     }
 
     protected void endBoatActivity() {
         try {
-            boatDataSource.close();
+            boatDataSource.close(); // close datasource
         } catch (Exception e) {
             Log.i(LOG, "Data source close caused error");
         }

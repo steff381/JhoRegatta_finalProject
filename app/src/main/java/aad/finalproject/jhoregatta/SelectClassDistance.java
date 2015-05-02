@@ -25,6 +25,7 @@ public class SelectClassDistance extends MainActivity {
     private ArrayList<LinearLayout> classLinearLayouts;
 
     private Button btnGoToSelectBoats;
+    private Button backBtn;
 
 
     int c; // counter accessible in annonymous inner class
@@ -35,12 +36,6 @@ public class SelectClassDistance extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_class_distance);
 
-        //TODO For testing. If no boats in the array then add these 3
-        if (BoatStartingListClass.BOAT_CLASS_START_ARRAY.size() == 0) {
-            BoatStartingListClass.addToBoatClassStartArray("Red");
-            BoatStartingListClass.addToBoatClassStartArray("Blue");
-            BoatStartingListClass.addToBoatClassStartArray("Purple");
-        }
 
         // create instances of the arraylists
         classColor = new ArrayList<>();
@@ -59,16 +54,17 @@ public class SelectClassDistance extends MainActivity {
         //prepare the display elements and widgets and load with correct functions / data
         setupDisplayAndWidgets();
 
-        // grab the button instance
+        // Wire buttons
         btnGoToSelectBoats = (Button) findViewById(R.id.btn_scd_gotoSelectBoats);
+        backBtn = (Button) findViewById(R.id.btn_scd_back);
+
 
         //set the button function
         btnGoToSelectBoats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int c = 0; // counter
-                String color; // class color holder
-                try {
+                if (validateEntries()) {
+                    int c = 0; // counter
                     // pass the distance to the Class's distace field
                     for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
                         //get the distance from the text field
@@ -81,15 +77,39 @@ public class SelectClassDistance extends MainActivity {
                     //start the select boats activity
                     Intent intent = new Intent(v.getContext(), SelectBoats.class);
                     startActivity(intent);
-                } catch (Exception e) {
-                    //grab the color of the class that caused the error
-                    color =  BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(c).getBoatColor();
-                    //inform user of the error
-                    Toast.makeText(v.getContext(), "Missing or invalid entry on class: " + color,
-                            Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+        //set back button functions
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish(); // close activity
+            }
+        });
+    }
+
+    // check to see if the entries are valid.
+    private boolean validateEntries() {
+        int c = 0; //counter
+        for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+            //if it's null then it will cause error and return false
+            try {
+                double d = Double.parseDouble(classDistance.get(c).getText().toString());
+                // if it's 0 or less then it will return false
+                if (d <= 0) {
+                    Toast.makeText(this, "Distance must be greater than 0", Toast
+                            .LENGTH_LONG).show();
+                    return false;
+                }
+            } catch (Exception e1) {
+                Toast.makeText(this, "All fields are required", Toast.LENGTH_LONG).show();
+                return false;
+            }
+            c++;
+        }
+        return true;
     }
 
     private void setupDisplayAndWidgets() {

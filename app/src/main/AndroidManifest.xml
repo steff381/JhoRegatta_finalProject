@@ -65,12 +65,7 @@
             android:label="@string/title_activity_regatta_timer"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name=".ResultsEditForm"
-            android:label="@string/title_activity_results_edit_form"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize" >
-        </activity>
+
         <activity
             android:name=".ListTemplateSelectBoats"
             android:label="@string/title_activity_list_template_select_boats" >

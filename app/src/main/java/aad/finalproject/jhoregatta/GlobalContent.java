@@ -39,7 +39,6 @@ public class GlobalContent {
 
     // Joda time formatters. Used by all applications for consistancy of date time formats
     private static DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("hh:mm:ss a");
-    private static DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("MM/dd/yyyy");
     public static String globalWhere; // where clause to be used by multiple interfaces
 
     //clear out the common resources among activities
@@ -66,16 +65,45 @@ public class GlobalContent {
         return dateTime.toString(timeFormatter);
     }
 
-    // get elapsed time in milliseconds
-    public static String convertMillisToElapsedTime(long millis) {
-        //format as string
-        return String.format("%02d:%02d:%02d",
-                TimeUnit.MILLISECONDS.toHours(millis),
-                TimeUnit.MILLISECONDS.toMinutes(millis) -
-                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
-                TimeUnit.MILLISECONDS.toSeconds(millis) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+    // convert millis in long format and get elapsed time formatted
+    public static String convertMillisToFormattedTime(long millis, int format) {
+
+        // 0 is elapsed time format
+        if (format == 0) {
+            //format as string
+            return String.format("%02d:%02d:%02d",
+                    TimeUnit.MILLISECONDS.toHours(millis),
+                    TimeUnit.MILLISECONDS.toMinutes(millis) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+                    TimeUnit.MILLISECONDS.toSeconds(millis) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+        // 1 is 00h 00m 00s format
+        } else if(format == 1) {
+            if (millis >= 3600000) { // format with hours
+                return String.format("%2dh %2dm %2ds",
+                        TimeUnit.MILLISECONDS.toHours(millis),
+                        TimeUnit.MILLISECONDS.toMinutes(millis) %
+                                TimeUnit.HOURS.toMinutes(1),
+                        TimeUnit.MILLISECONDS.toSeconds(millis) %
+                                TimeUnit.MINUTES.toSeconds(1));
+            } else if (millis >= 60000) { //format with mins
+                return String.format("%2dm %2ds",
+                        TimeUnit.MILLISECONDS.toMinutes(millis) %
+                                TimeUnit.HOURS.toMinutes(1),
+                        TimeUnit.MILLISECONDS.toSeconds(millis) %
+                                TimeUnit.MINUTES.toSeconds(1));
+            } else { //format with just seconds
+                return String.format("%2ds",
+                        TimeUnit.MILLISECONDS.toSeconds(millis) %
+                                TimeUnit.MINUTES.toSeconds(1));
+            }
+
+        } else {
+            Log.i(LOGTAG, " Convert Millis to Formatted Time = Wrong format specified");
+            return null;
+        }
     }
+
 
     //elapsed time string to millis
     public static long getDurationInMillis(String startTimeString, String finishTimeString) {
@@ -128,12 +156,12 @@ public class GlobalContent {
         long tmpAdjDuration = durationInMillis - taInMillis;
         Log.i(LOGTAG, "AdjDuration pre penalty " + tmpAdjDuration);
         //apply any penalty
-        long adjDurationWPenalty = (long)(tmpAdjDuration - (tmpAdjDuration * penalty));
+        long adjDurationWPenalty = (long)(tmpAdjDuration + (tmpAdjDuration * penalty));
         Log.i(LOGTAG, "AdjDuration with penalty " + tmpAdjDuration);
 
         //convert result to formatted duration
 
-        result = convertMillisToElapsedTime(adjDurationWPenalty);
+        result = convertMillisToFormattedTime(adjDurationWPenalty, 0);
         Log.i(LOGTAG, "AdjDuration with penalty formatted " + result);
 
         return result;
@@ -229,7 +257,7 @@ public class GlobalContent {
         GlobalContent.resultsRowID = resultsRowID;
     }
 
-
+    //establishes the current active race instance
     public static void setActiveRace(Race activeRace, long id) {
         GlobalContent.activeRace = activeRace;
         activeRace.setId(id);

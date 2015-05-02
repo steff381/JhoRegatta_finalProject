@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,11 +21,14 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import aad.finalproject.db.DBAdapter;
+import aad.finalproject.db.DatabaseWriter;
 import aad.finalproject.db.Race;
 import aad.finalproject.db.RaceDataSource;
+import aad.finalproject.db.ResultDataSource;
 
 
 public class RaceAddForm extends Form {
@@ -140,6 +145,13 @@ public class RaceAddForm extends Form {
                 Intent intent = new Intent(v.getContext(), ResultsMenu.class);
                 startActivity(intent);
 
+            }
+        });
+
+        emailResults.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendResultTableByEmail();
             }
         });
 
@@ -413,7 +425,7 @@ public class RaceAddForm extends Form {
                         intRaceClass_TBD_);
                 Log.i(LOG, "Validated UPDATE entry");
                 // open the select boats list
-                Intent intent = new Intent(this, DistanceCalculator.class);
+                Intent intent = new Intent(this, SelectClassDistance.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
@@ -565,6 +577,33 @@ public class RaceAddForm extends Form {
             // hide the results buttons too
             linlayResultsButtons.setVisibility(View.GONE);
         }
+    }
+
+    private void sendResultTableByEmail() {
+        ResultDataSource resultDataSource = new ResultDataSource(this);
+        resultDataSource.open();
+        //create a file name for the csv file
+        String fileName = "Regatta_num_" + GlobalContent.getRaceRowID() + ".csv";
+
+        //write the database to a csv file.
+        DatabaseWriter.exportDatabase(fileName, resultDataSource);
+
+
+        //get the URI of the file just created
+        Uri uri = Uri.fromFile(new File(Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/" + fileName));
+
+
+//                Create a new email and
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Regatta Results for " + fileName);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "These are the results for " + fileName);
+        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);//send file by email
+
+        //dialog that asks the user to choose their mailing program preference
+        startActivity(Intent.createChooser(emailIntent, "Choose your Email App:"));
     }
 
 }

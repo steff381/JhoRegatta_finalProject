@@ -164,7 +164,18 @@ public class ResultsAdapter extends BaseAdapter {
 
         // on refresh of list.
         // If there is a finish time present then make the row red
-        if (r.getResultsBoatFinishTime() != null) {
+        if (r.getResultsNotFinished() == 1) {//if the boat didn't finish the race
+            //hide the finish button and show the reset button instead.
+            btnFinish.setVisibility(View.INVISIBLE);
+            btnReset.setVisibility(View.GONE);
+            //set the row color to black
+            view.setBackgroundColor(view.getResources().getColor(R.color.black));
+            //set the text of each text box white
+            for (TextView t : textViews) {
+                t.setTextColor(Color.parseColor("#ffffff")); // make the text white
+            }
+            tv8.setText("DNF");
+        } else if (r.getResultsBoatFinishTime() != null) {
 
             //hide the finish button and show the reset button instead.
             btnFinish.setVisibility(View.GONE);
@@ -177,17 +188,6 @@ public class ResultsAdapter extends BaseAdapter {
             for (TextView t : textViews) {
                 t.setTextColor(Color.parseColor("#ffffff")); // make the text white
             }
-        } else if (r.getResultsNotFinished() == 1) {//if the boat didn't finish the race
-            //hide the finish button and show the reset button instead.
-            btnFinish.setVisibility(View.INVISIBLE);
-            btnReset.setVisibility(View.GONE);
-            //set the row color to black
-            view.setBackgroundColor(view.getResources().getColor(R.color.black));
-            //set the text of each text box white
-            for (TextView t : textViews) {
-                t.setTextColor(Color.parseColor("#ffffff")); // make the text white
-            }
-            tv8.setText("DNF");
         } else {
             // change the row color blank
             view.setBackgroundColor(Color.parseColor("#00000000"));
