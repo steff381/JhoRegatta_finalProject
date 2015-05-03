@@ -5,8 +5,7 @@ package aad.finalproject.jhoregatta;
  */
 public class Coordinates {
 
-    private double latitudeDouble;
-    private double longitudeDouble;
+
     public String latitudeString;
     public String longitudeString;
 
@@ -14,17 +13,13 @@ public class Coordinates {
         return convertLatLonToDecimal(getLatitudeString());
     }
 
-    public void setLatitudeDouble(double latitudeDouble) {
-        this.latitudeDouble = latitudeDouble;
-    }
+
 
     public double getLongitudeDouble() {
         return convertLatLonToDecimal(getLongitudeString());
     }
 
-    public void setLongitudeDouble(double longitudeDouble) {
-        this.longitudeDouble = longitudeDouble;
-    }
+
 
     public String[] getLatitudeString() {
         return latitudeString.split(" - ");

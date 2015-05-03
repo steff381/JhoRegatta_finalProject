@@ -16,7 +16,6 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import aad.finalproject.jhoregatta.GlobalContent;
 import aad.finalproject.jhoregatta.R;
@@ -297,42 +296,14 @@ public class ResultsAdapter extends BaseAdapter {
 
     // sync the list in the ResultsAdapter with what is in the Results SQL table.
     public void syncArrayListWithSql(List<Result> tempResultFromSql) {
-
-        //TODO For testing
-        for (Result r : tempResultFromSql) {
-            Log.i(LOGTAG, "SYNC boat " + r.getBoatName());
-        }
         // Make sure the data coming from sql isn't blank. Otherwise throw error
         if (tempResultFromSql.size() > 0) {
-
-            this.arraylist.clear();
-
-            this.arraylist.addAll(tempResultFromSql);
+            this.arraylist.clear(); //empty out the array list
+            this.arraylist.addAll(tempResultFromSql);// add the temp sql stuff to the array list
         } else {
             throw new NullPointerException("Data in tempResultFromSql is empty");
         }
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // force refresh of the listview
     }
 
-    //filter results based on text entered into text box in the Results menu
-    public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-
-        try {
-            mainDataList.clear();
-        } catch (Exception e) {
-            Log.i(LOGTAG, "Exception =------------------------------------------------------------");
-        }
-        if (charText.length() == 0) {
-            mainDataList.addAll(arraylist);
-        } else {
-            for (Result result : arraylist) {
-                if (result.getBoatName().toLowerCase(Locale.getDefault()).contains(charText) ||
-                    result.getBoatSailNum().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    mainDataList.add(result);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
 }

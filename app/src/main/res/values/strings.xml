@@ -3,6 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Preferences</string>
+    <string name="action_reset">Reset Timer</string>
     <string name="title_activity_boat_menu">Boats</string>
     <string name="title_activity_list_template_boats">ListTemplateBoats</string>
     <string name="title_activity_boat_add_form">Add/Edit Boat</string>
@@ -33,7 +34,6 @@
     <string name="title_activity_results_menu">Finish Line</string>
     <string name="title_activity_main_activity2">MainActivity2Activity</string>
 
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_distance_calculator">Distance Calculator</string>
     <string name="title_activity_list_template_distance_calculator">listTemplateDistanceCalculator

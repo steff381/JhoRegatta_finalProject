@@ -110,10 +110,6 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
         // create a temporary placeholder for the data from SQL
         List<Boat> tempResultFromSql;
         tempResultFromSql = boatDataSource.getAllBoats(where, orderBy, null);
-        //TODO For testing
-        for (Boat b : tempResultFromSql) {
-            Log.i(LOGTAG, "boat " + b.getBoatName());
-        }
         // Make sure the data coming from sql isn't blank. Otherwise throw error
         if (tempResultFromSql.size() > 0) {
 

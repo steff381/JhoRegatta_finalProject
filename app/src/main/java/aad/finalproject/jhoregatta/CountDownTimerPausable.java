@@ -68,6 +68,7 @@ public abstract class CountDownTimerPausable {
      */
     public synchronized final CountDownTimerPausable start(){
         if(isPaused){
+            //build and start the timer.
             createCountDownTimer();
             countDownTimer.start();
             isPaused = false;
@@ -75,7 +76,6 @@ public abstract class CountDownTimerPausable {
             Log.i(LOGTAG, "Timer Starting");
             RegattaTimer.startResume.setText("Start");
             RegattaTimer.startResume.setVisibility(View.INVISIBLE);
-//            RegattaTimer.masterPause.setText("Pause");// TODO TRASH
         } else{
         }
         return this;
@@ -89,9 +89,6 @@ public abstract class CountDownTimerPausable {
             countDownTimer.cancel();
             Log.i(LOGTAG, "Timer Pausing");
             startResumeButtonMethod();
-
-
-//            RegattaTimer.masterPause.setText("Resume");//TODO TRASH
 
         } else{
             throw new IllegalStateException("CountDownTimerPausable is already in pause state," +

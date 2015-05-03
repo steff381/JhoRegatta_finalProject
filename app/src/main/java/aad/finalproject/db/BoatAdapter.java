@@ -22,14 +22,13 @@ public class BoatAdapter extends BaseAdapter{
     Context mContext;
     LayoutInflater inflater;
     private List<Boat> mainDataList = null;
-    private ArrayList<Boat> arraylist;
 
     public BoatAdapter(Context context, List<Boat> mainDataList) {
         mContext = context;
         this.mainDataList = mainDataList;
         inflater = LayoutInflater.from(mContext);
-        this.arraylist = new ArrayList<Boat>();
-        this.arraylist.addAll(mainDataList);
+        ArrayList<Boat> arraylist = new ArrayList<Boat>();
+        arraylist.addAll(mainDataList);
     }
 
     static class ViewHolder {

@@ -276,17 +276,7 @@ public class ResultsMenu extends MainActivity {
         }
         return true;
     }
-    //TODO develop finilzer for the results table
-    //perform calculations needed to finialize the race database.
-    private void finalizeActiveRace() {
-        // for each boat in the result list.
-        // check if the boat is visible.
-        // If the boat DNF then set place to [total boats] + 1
-        // get the adjusted duration.
-        // Then calculate place for the class????
-        // Set the listview to uneditable to prevent any changes being made from now on.
 
-    }
 
     private void sendResultTableByEmail() {
         //create a file name for the csv file
@@ -328,7 +318,7 @@ public class ResultsMenu extends MainActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_ddms:
-                onActionClickDDMS(); //TODO: Get rid of me
+                onActionClickDDMS(); //TODO: Get rid of DDMS
                 return true;
 //            case R.id.action_settings:
 //                return true;

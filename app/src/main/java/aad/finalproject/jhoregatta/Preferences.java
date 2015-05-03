@@ -3,7 +3,6 @@ package aad.finalproject.jhoregatta;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 
-public class Preferences extends ActionBarActivity implements TimePickerDialog.Communicator{
+public class Preferences extends MainActivity implements TimePickerDialog.Communicator{
 
     private ArrayList<TextView> durationTextViews;
     private ArrayList<Long> milliseconds;
@@ -27,6 +26,7 @@ public class Preferences extends ActionBarActivity implements TimePickerDialog.C
 
     //button wigets
     Button setAll;
+    Button cancelChanges;
 
     //create shared preferences and an editor
     SharedPreferences timePreferences;
@@ -37,6 +37,10 @@ public class Preferences extends ActionBarActivity implements TimePickerDialog.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
+
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false); // hide the return/up button
+
 
         //get the shared prefereces file
         timePreferences = getSharedPreferences(PREFS, 0);
@@ -136,20 +140,56 @@ public class Preferences extends ActionBarActivity implements TimePickerDialog.C
         setAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // grab each milli value and assign it to the appropriate preference
-                for (int i = 0; i < prefKey.size(); i++) {
-                    editor.putInt(prefKey.get(i), (int) (milliseconds.get(i) / 1000));
-                    Log.i("Prefs", "Pref: " + prefKey.get(i) + " is " + GlobalContent
-                            .convertMillisToFormattedTime(milliseconds.get(i), 1));
-                }
-                editor.apply(); //commit the changes
-                Toast.makeText(v.getContext(), " Values Assigned", Toast.LENGTH_LONG).show();
-                finish();
+                if (validateForm()) {
+                    // grab each milli value and assign it to the appropriate preference
+                    for (int i = 0; i < prefKey.size(); i++) {
 
+                        editor.putInt(prefKey.get(i), (int) (milliseconds.get(i) / 1000));
+                        Log.i("Prefs", "Pref: " + prefKey.get(i) + " is " + GlobalContent
+                                .convertMillisToFormattedTime(milliseconds.get(i), 1));
+                    }
+                    editor.apply(); //commit the changes
+                    Toast.makeText(v.getContext(), " Values Assigned", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+
+            }
+        });
+
+        //wire the cancel button
+
+        cancelChanges = (Button) findViewById(R.id.btn_prefs_cancelChanges);
+
+        // simply close the activity if the user doesn't want to commit the changes.
+        cancelChanges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
 
+    //form validator
+    private boolean validateForm() {
+        if (milliseconds.get(1) == 0) {
+            Toast.makeText(this, "Class Flag up duration" +
+                    " cannot be 0", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (milliseconds.get(2) == 0) {
+            Toast.makeText(this, "Class and Prep Flag up duration" +
+                    " cannot be 0", Toast.LENGTH_LONG).show();
+            return false;
+
+        }
+        if (milliseconds.get(3) == 0) {
+            Toast.makeText(this, "Class up Prep down duration" +
+                    " cannot be 0", Toast.LENGTH_LONG).show();
+            return false;
+
+        }
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -182,4 +222,7 @@ public class Preferences extends ActionBarActivity implements TimePickerDialog.C
         // set the text box to the duration specified
         durationTextViews.get(arrayPositionToModify).setText(duration);
     }
+
+
+
 }

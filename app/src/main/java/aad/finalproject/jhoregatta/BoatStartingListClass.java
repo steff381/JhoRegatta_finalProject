@@ -20,13 +20,7 @@ public class BoatStartingListClass {
         BOAT_CLASS_START_ARRAY.add(bc);
     }
 
-    public static void removeBoatFromBoatClassStartArray(int boatIndexLocation) {
-        BOAT_CLASS_START_ARRAY.remove(boatIndexLocation);
-    }
 
-    public static void clearBoatClassStartArray() {
-        BOAT_CLASS_START_ARRAY.clear();
-    }
 
 
 

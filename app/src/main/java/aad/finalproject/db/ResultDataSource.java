@@ -59,8 +59,6 @@ public class ResultDataSource {
             values.put(DBAdapter.KEY_BOAT_CLASS, b.getBoatClass());
             values.put(DBAdapter.KEY_BOAT_PHRF, b.getBoatPHRF());
             values.put(DBAdapter.KEY_RACE_DISTANCE, GlobalContent.activeRace.getDistance());
-//            values.put(DBAdapter.KEY_RACE_DISTANCE, GlobalContent.activeRace.getDistance());
-            //TODO find some way to change distance by Distance value in BoatClass
             values.put(DBAdapter.KEY_RACE_NAME, GlobalContent.activeRace.getName());
             values.put(DBAdapter.KEY_RACE_DATE, GlobalContent.activeRace.getDate());
             values.put(DBAdapter.KEY_CREATED_AT, DBAdapter.getDateTime());
@@ -160,17 +158,6 @@ public class ResultDataSource {
 
 
     // add the finish time to the results list for the chosen class
-    public void updateClassStartTime(long raceId, String boatClass, String timeFormatted) {
-        ContentValues newValues = new ContentValues(); // create a content values instance
-        //Put the new values into the contentValues variable
-        newValues.put(DBAdapter.KEY_RESULTS_CLASS_START, timeFormatted);
-        // enter update statement in sql
-        db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS + " SET " + DBAdapter.KEY_RESULTS_CLASS_START
-                + "='" + timeFormatted + "' WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId
-                + " AND " + DBAdapter.KEY_BOAT_CLASS + " = '" + boatClass + "';");
-
-    }
-    // add the finish time to the results list for the chosen class
     public void updateClassStartTime(long raceId, String boatClass, String timeFormatted,
                                      double distance) {
         ContentValues newValues = new ContentValues(); // create a content values instance
@@ -178,11 +165,20 @@ public class ResultDataSource {
         newValues.put(DBAdapter.KEY_RESULTS_CLASS_START, timeFormatted);
         newValues.put(DBAdapter.KEY_RACE_DISTANCE, distance);
         // enter update statement in sql
-        db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS
-                + " SET " + DBAdapter.KEY_RESULTS_CLASS_START + "='" + timeFormatted + "' , "
-                + DBAdapter.KEY_RACE_DISTANCE + "=" + distance
-                + " WHERE " + DBAdapter.KEY_RACE_ID + " = " + raceId + " AND "
-                + DBAdapter.KEY_BOAT_CLASS + " = '" + boatClass + "';");
+        //if the boat or boats arent classless then execute this update
+        if (!boatClass.equals("Classless")) {
+            db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS
+                    + " SET " + DBAdapter.KEY_RESULTS_CLASS_START + "='" + timeFormatted + "' , "
+                    + DBAdapter.KEY_RACE_DISTANCE + "=" + distance
+                    + " WHERE " + DBAdapter.KEY_RACE_ID + " = " + raceId + " AND "
+                    + DBAdapter.KEY_BOAT_CLASS + " = '" + boatClass + "';");
+        } else {
+            //if boats are classless then use this update.
+            db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS
+                    + " SET " + DBAdapter.KEY_RESULTS_CLASS_START + "='" + timeFormatted + "' , "
+                    + DBAdapter.KEY_RACE_DISTANCE + "=" + distance
+                    + " WHERE " + DBAdapter.KEY_RACE_ID + " = " + raceId + ";");
+        }
 
     }
 
@@ -205,8 +201,15 @@ public class ResultDataSource {
 //    // clear the finish time for all results in the given race.
     public void clearSingleClassStartTimesAndDurations(long raceId, String className) {
         // select what race to affect
-        String where = " WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId
-                + " AND " + DBAdapter.KEY_BOAT_CLASS + " = '" + className + "';";
+        String where;
+        //specify class only if the boats have a class.
+        if (!className.equals("Classless")) {
+            where = " WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId
+                    + " AND " + DBAdapter.KEY_BOAT_CLASS + " = '" + className + "';";
+        } else {
+            //when race is classless then do not specify a class.
+            where = " WHERE "  + DBAdapter.KEY_RACE_ID + " = " + raceId + ";";
+        }
         ContentValues newValues = new ContentValues(); // create a content values instance
         //Put the new values into the contentValues variable
         newValues.putNull(DBAdapter.KEY_RESULTS_CLASS_START);
@@ -242,14 +245,6 @@ public class ResultDataSource {
         // return update the table through the return statement
         return db.update(DBAdapter.TABLE_RESULTS, newValues, whereClause, null) != 0;
 
-    }
-
-    // FOR FUTURE EXPANSION. May need to delete results
-    public boolean psudoDelete(long id) {
-        String whereClause = DBAdapter.KEY_ID + " = " + id;
-        ContentValues newValues = new ContentValues();
-        newValues.put(DBAdapter.KEY_RESULTS_VISIBLE, 0);
-        return db.update(DBAdapter.TABLE_RESULTS, newValues, whereClause, null) != 0;
     }
 
     //get single row of data
@@ -333,7 +328,5 @@ public class ResultDataSource {
             }
         }
         // check to see if the right data is present
-
-
     }
 }

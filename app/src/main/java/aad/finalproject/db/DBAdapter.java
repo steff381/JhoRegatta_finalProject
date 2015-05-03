@@ -45,17 +45,6 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_BOAT_VISIBLE = "visible";
 
 
-    //TODO, get rid of this, it's useless
-    public static final String[] BOATS_ALL_FIELDS = new String[]{
-            KEY_ID,
-            KEY_BOAT_NAME,
-            KEY_BOAT_SAIL_NUM,
-            KEY_BOAT_CLASS,
-            KEY_BOAT_PHRF,
-            KEY_BOAT_VISIBLE,
-            KEY_BOAT_SELECTED
-    };
-
     //RACES table
     public static final String KEY_RACE_NAME = "race_name";
     public static final String KEY_RACE_DATE = "date";

@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity {
         Log.i("Main Menu ", " goto Preferences ");
     }
 
-    // TODO FOR TESTING the database content.
+    // TODO get rid of DDMS
     public void onActionClickDDMS(){
         Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
         startActivity(dbmanager);

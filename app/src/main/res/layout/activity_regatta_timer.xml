@@ -116,13 +116,7 @@
                                     android:onClick="onClickFinishLine"
                                     android:layout_gravity="right|top" />
 
-                                <Button
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/btnMasterStart"
-                                    android:onClick="onClickMasterStart"
-                                    android:layout_gravity="left|bottom"
-                                    android:visibility="gone" />
+
 
 
                             </FrameLayout>

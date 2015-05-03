@@ -53,9 +53,8 @@ public class RaceAddForm extends Form {
     // linear layout
     LinearLayout linlayResultsButtons;
 //    public static EditText raceDistance; // make accessible by the calculator
-// TODO Trash
     //checkboxes for class selection
-    CheckBox raceClassRed;
+    CheckBox raceClassless;
     CheckBox raceClassBlue;
     CheckBox raceClassPurple;
     CheckBox raceClassYellow;
@@ -80,8 +79,7 @@ public class RaceAddForm extends Form {
     int strraceDateYYYY;
     int strraceDateDD;
     int strraceDateMM;
-    String strraceDistance;
-    int intRaceClassRed;
+    int intRaceClassless;
     int intRaceClassBlue;
     int intRaceClassPurple;
     int intRaceClassYellow;
@@ -115,7 +113,7 @@ public class RaceAddForm extends Form {
 
         isBoatClassUpdate = false; // opening up the menu for the first time makes false
 
-        BoatStartingListClass.clearBoatClassStartArray(); // empty the array of all data
+        BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear(); // empty the array of all data
         wireWidgetsAndLoadArrays();
 
 
@@ -186,7 +184,7 @@ public class RaceAddForm extends Form {
             //check if the variable in SQLite is 1 or 0, if one set the checkbox to checked
             if (Integer.parseInt(updateRowFromCursor.getString(updateRowFromCursor
                     .getColumnIndex(DBAdapter.KEY_RACE_CLASS_RED))) == 1) {
-                raceClassRed.setChecked(true);
+                raceClassless.setChecked(true);
             }
             if (Integer.parseInt(updateRowFromCursor.getString(updateRowFromCursor
                     .getColumnIndex(DBAdapter.KEY_RACE_CLASS_BLUE))) == 1) {
@@ -238,8 +236,7 @@ public class RaceAddForm extends Form {
     private void wireWidgetsAndLoadArrays() {
         //load up text and other fields into widgets
         raceTitle = (EditText) findViewById(R.id.txt_inpt_RaceTitle);
-//        raceDistance = (EditText) findViewById(R.id.txt_inpt_RaceDistance);// TODO Trash
-        raceClassRed = (CheckBox) findViewById(R.id.ckbx_inpt_RaceClassless);
+        raceClassless = (CheckBox) findViewById(R.id.ckbx_inpt_RaceClassless);
         raceClassBlue = (CheckBox) findViewById(R.id.ckbx_inpt_RaceClassBlue);
         raceClassPurple = (CheckBox) findViewById(R.id.ckbx_inpt_RaceClassPurple);
         raceClassGreen = (CheckBox) findViewById(R.id.ckbx_inpt_RaceClassGreen);
@@ -247,7 +244,7 @@ public class RaceAddForm extends Form {
         raceClass_TBD_ = (CheckBox) findViewById(R.id.ckbx_inpt_RaceClass_TBD_);
 
         // add each checkbox to the check box array
-        checkBoxArrayList.add(raceClassRed);
+        checkBoxArrayList.add(raceClassless);
         checkBoxArrayList.add(raceClassBlue);
         checkBoxArrayList.add(raceClassPurple);
         checkBoxArrayList.add(raceClassGreen);
@@ -275,7 +272,7 @@ public class RaceAddForm extends Form {
     // create method to assign checkbox listeners to the class check boxes
     public void setCheckboxListeners() {
 
-        for (int i = 0; i < checkBoxArrayList.size(); i++) {
+        for (int i = 1; i < checkBoxArrayList.size(); i++) {
             boatCheckBoxName = checkBoxArrayList.get(i).getText().toString().trim();
             final String BCBN = boatCheckBoxName;
             Log.i(LOG, " Adding Listener to " + boatCheckBoxName );
@@ -300,9 +297,41 @@ public class RaceAddForm extends Form {
                     bindTextViewWithClassColors(); // update the class order text views.
                 }
             });
+
+
             boatCheckBoxName = null;
 
         }
+
+        //set a special re assignment for the first class
+        checkBoxArrayList.get(0).setOnCheckedChangeListener(new CompoundButton
+                .OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+                    //clear the boat class array of all other boats
+                    BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
+                    //if the classless cb is check then uncheck al other boxes and disable them
+                    for (int i = 1; i < checkBoxArrayList.size(); i++) {
+                        checkBoxArrayList.get(i).setChecked(false);
+                        checkBoxArrayList.get(i).setEnabled(false);
+                    }
+                    //add the classless class to the class array
+                    BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new
+                            BoatClass(checkBoxArrayList.get(0).getText().toString().trim()));
+                } else {
+                    //clear the boat class array of all other boats
+                    BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
+                    for (int i = 1; i < checkBoxArrayList.size(); i++) {
+                        checkBoxArrayList.get(i).setEnabled(true);
+                    }
+                }
+                bindTextViewWithClassColors(); // update the class order text views.
+            }
+        });
+
+        //set the listener for the first check box
     }
 
 
@@ -368,7 +397,7 @@ public class RaceAddForm extends Form {
             // load new race instance with data from validated fields
             newRace.setName(strraceTitle);
             newRace.setDate(strraceDate);
-            newRace.setClsRed(intRaceClassRed);
+            newRace.setClsRed(intRaceClassless);
             newRace.setClsBlue(intRaceClassBlue);
             newRace.setClsPurple(intRaceClassPurple);
             newRace.setClsYellow(intRaceClassYellow);
@@ -392,7 +421,6 @@ public class RaceAddForm extends Form {
 
             // remove the ADD functions and replace with "Update" functions
             create.setVisibility(View.GONE);
-            //update.setVisibility(View.VISIBLE);
             delete.setVisibility(View.VISIBLE);
             Log.i("BoatAddForm ", "Validated entry added");
         }
@@ -415,13 +443,11 @@ public class RaceAddForm extends Form {
                 raceDataSource.update(id,
                         strraceTitle,
                         strraceDate,
-//                        Double.parseDouble(strraceDistance),
-
                         intRaceClassBlue,
                         intRaceClassGreen,
                         intRaceClassPurple,
                         intRaceClassYellow,
-                        intRaceClassRed,
+                        intRaceClassless,
                         intRaceClass_TBD_);
                 Log.i(LOG, "Validated UPDATE entry");
                 // open the select boats list
@@ -472,7 +498,6 @@ public class RaceAddForm extends Form {
             } else {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
                         Toast.LENGTH_LONG).show();
-//                cursor.close();
                 Log.i(LOG, "CURSOR ERROR>> BAD ID");
             }
 
@@ -483,11 +508,10 @@ public class RaceAddForm extends Form {
     protected boolean validateDataEntryFields() {
         setTempDataFields(); // repopulate text strings to field values
         // Ensure fields are not null or class a class has been selected prior to data input
-        if (!raceTitle.getText().toString().equals("") &&
-                !raceDateMM.getText().toString().equals("") &&
-                !raceDateDD.getText().toString().equals("") &&
-                !raceDateYYYY.getText().toString().equals("")) {
-        } else {
+        if (raceTitle.getText().toString().equals("") ||
+                raceDateMM.getText().toString().equals("") ||
+                raceDateDD.getText().toString().equals("") ||
+                raceDateYYYY.getText().toString().equals("")) {
             Toast.makeText(this, "All fields are required",
                     Toast.LENGTH_LONG).show();
             return false;
@@ -495,14 +519,13 @@ public class RaceAddForm extends Form {
 
         //make sure at least 1 class is selected
         if (
-                (raceClassRed.isChecked() ||
-                        raceClassBlue.isChecked() ||
-                        raceClassPurple.isChecked() ||
-                        raceClassYellow.isChecked() ||
-                        raceClassGreen.isChecked() ||
-                        raceClass_TBD_.isChecked()
+                (!raceClassless.isChecked() &&
+                        !raceClassBlue.isChecked() &&
+                        !raceClassPurple.isChecked() &&
+                        !raceClassYellow.isChecked() &&
+                        !raceClassGreen.isChecked() &&
+                        !raceClass_TBD_.isChecked()
                 )) {
-        } else {
             Toast.makeText(this, "You must select at least 1 boat class",
                     Toast.LENGTH_LONG).show();
             return false;
@@ -515,6 +538,7 @@ public class RaceAddForm extends Form {
                 && Integer.parseInt(raceDateDD.getText().toString()) <= 31
                 && Integer.parseInt(raceDateYYYY.getText().toString()) > 999
                 && Integer.parseInt(raceDateYYYY.getText().toString()) < 2081) {
+            //then all is well and good.
         } else {
             Toast.makeText(this, " Check your date format. \n mm / dd / yyyy",
                     Toast.LENGTH_LONG).show();
@@ -522,10 +546,7 @@ public class RaceAddForm extends Form {
         }
 
         //check if any commas are in fields used when writing to the sql CSV file
-        if (GlobalContent.checkForCommas(this, raceTitle.getText().toString())) {
-            return false;
-        }
-        return true;
+        return !GlobalContent.checkForCommas(this, raceTitle.getText().toString());
     }
 
     @Override
@@ -537,7 +558,7 @@ public class RaceAddForm extends Form {
             strraceDateDD = Integer.parseInt(raceDateDD.getText().toString());
             strraceDateYYYY = Integer.parseInt(raceDateYYYY.getText().toString());
             strraceDate = strraceDateMM + "/" + strraceDateDD + "/" + strraceDateYYYY;
-            intRaceClassRed = (raceClassRed.isChecked()) ? 1 : 0;
+            intRaceClassless = (raceClassless.isChecked()) ? 1 : 0;
             intRaceClassBlue = (raceClassBlue.isChecked()) ? 1 : 0;
             intRaceClassPurple = (raceClassPurple.isChecked()) ? 1 : 0;
             intRaceClassYellow = (raceClassYellow.isChecked()) ? 1 : 0;
@@ -594,7 +615,7 @@ public class RaceAddForm extends Form {
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/" + fileName));
 
 
-//                Create a new email and
+        //Create a new email
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("plain/text");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});

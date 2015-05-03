@@ -24,7 +24,7 @@ public class BoatMenu extends MainActivity {
     // parameters for methods using sql quiery parameters
     private String whereClauseIsVisible = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
     private String orderByClause = DBAdapter.KEY_BOAT_CLASS + ", "
-            + DBAdapter.KEY_BOAT_NAME + " DESC";
+            + DBAdapter.KEY_BOAT_NAME ;
     private String havingClause = null;
 
     ListView myList; // initialize the listview
@@ -123,14 +123,14 @@ public class BoatMenu extends MainActivity {
     // create lorim ipsum data
     public void createData() {
         String[][] boatString = {
-                {	"_TBD_",	"Striptease",	"4808*",	"0"	},
-                {	"_TBD_",	"Blondie",	"579",	"0"	},
-                {	"_TBD_",	"Wei??? Wai???",	"None",	"0"	},
-                {	"_TBD_",	"2",	"4204",	"168"	},
-                {	"_TBD_",	"Srange Crew",	"None",	"168"	},
-                {	"_TBD_",	"151",	"151",	"168"	},
-                {	"_TBD_",	"Danger Zone",	"4808*",	"168"	},
-                {	"_TBD_",	"Insatiable",	"4808*",	"168"	},
+                {	"Yellow",	"Striptease",	"4808*",	"0"	},
+                {	"Yellow",	"Blondie",	"579",	"0"	},
+                {	"Yellow",	"Wei??? Wai???",	"None",	"0"	},
+                {	"Yellow",	"2",	"4204",	"168"	},
+                {	"Yellow",	"Srange Crew",	"None",	"168"	},
+                {	"Yellow",	"151",	"151",	"168"	},
+                {	"Yellow",	"Danger Zone",	"4808*",	"168"	},
+                {	"Yellow",	"Insatiable",	"4808*",	"168"	},
                 {	"Blue",	"Northern Lights",	"111",	"0"	},
                 {	"Blue",	"Tweedy Bird",	"30714",	"0"	},
                 {	"Blue",	"Falcon",	"6019",	"0"	},

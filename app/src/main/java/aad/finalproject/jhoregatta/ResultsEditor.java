@@ -126,17 +126,21 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         setElapsedTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //create a bundle for the time picker to use
                 Bundle bundle = new Bundle();
+                //check if the time requirement is met
                 if (elapsedTime.getText().toString().length() > 0) {
                     bundle.putString("Value1", elapsedTime.getText().toString());
                 } else {
                     bundle.putString("Value1", "00:00:00");
                 }
 
+                //set up time picker and ste the bundle
                 FragmentManager manager = getFragmentManager();
                 TimePickerDialog picker = new TimePickerDialog();
                 picker.setArguments(bundle);
 
+                //open the time picker
                 picker.show(manager, "HH:MM:SS");
             }
         });
@@ -218,6 +222,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         notesCharRemaining.setText(String.valueOf(totalChars)); // initial count of characters
     }
 
+    //calculate the adjusted duration using the values in the text boxes
     private void calculateAdjustedDuration() {
         adjDuration.setText(GlobalContent.calculateAdjDuration(
                 Integer.parseInt(phrf.getText().toString()),

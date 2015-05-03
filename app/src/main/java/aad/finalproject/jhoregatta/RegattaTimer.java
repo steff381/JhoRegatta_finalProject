@@ -56,7 +56,6 @@ public class RegattaTimer extends MainActivity {
     public static Button startResume;
     private TextView txtCountDown; // accessible instance of countdown
     private int flagToDisplay; // which flag case to implement
-    private int heldPosition; // when user clicks recall, get the held position.
 
     //text options for start resume
     String startText = "Start";
@@ -84,6 +83,7 @@ public class RegattaTimer extends MainActivity {
     int numberOfSelectedBoatClasses; // initialize the number of selected Classes variable
     int currentPosition = 0;
 
+    private double drift = 0.005;
 
     @SuppressLint("SimpleDateFormat")
     @Override
@@ -116,7 +116,7 @@ public class RegattaTimer extends MainActivity {
             hornMid.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             hornMid.prepare();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //could be tricky!
         }
 
 
@@ -133,8 +133,17 @@ public class RegattaTimer extends MainActivity {
                         masterTimerEventHandler(); // start the timer event!
                         break;
                     case "Resume":
-                        //Create a new timer instance and pause it. User will unpause
-                        myCountdownMethod(0, 0, sharedPreferences.getInt("postRecallDelay",45)," Resume Class: ");
+                        //get the integer of the number of seconds to delay
+                        int postRecallDelay = sharedPreferences.getInt("postRecallDelay",45);
+                        //if the value is 0 then create a 50millisecond delay.
+                        if (postRecallDelay > 0) {
+                            // start new timer with given time limit
+                            myCountdownMethod(0, 0, sharedPreferences.getInt("postRecallDelay", 45),
+                                    " Resume Case ");
+                        } else {
+                            //create a timer without a post recall delay (well a 50 ms delay)
+                            myCountdownMethod(0, 0, drift," Resume Case ");
+                        }
                         break;
                 }
             }
@@ -318,6 +327,7 @@ public class RegattaTimer extends MainActivity {
 
                             Log.i(LOGTAG, "Try invalidating static myList");
                             refreshResultsList(); //self explainitory
+
                         }
                     });
     //---------------------------BEGIN NO FUNCTION -------------------------------------------------
@@ -366,18 +376,21 @@ public class RegattaTimer extends MainActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_ddms:
-                onActionClickDDMS(); // TODO: Get rid of me
+                onActionClickDDMS(); // TODO: Get rid of DDMS
                 return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, Preferences.class);
                 startActivity(intent);
+                return true;
+            case R.id.action_reset:
+                verifyIntentToResetMasterTime();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-        //TODO get rid of me
+        //TODO get rid of DDMS
     public void onActionClickDDMS(){
         Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
         startActivity(dbmanager);
@@ -412,9 +425,11 @@ public class RegattaTimer extends MainActivity {
     private void raceFlagSwitcher(int flagToDisplay){
         String caseString;
         if(this.flagToDisplay == flagToDisplay){
-            caseString = " CASE: [" + this.flagToDisplay + "] currentPosition: [" + this.currentPosition + "]";
+            caseString = " CASE: [" + this.flagToDisplay + "] currentPosition: [" +
+                    "" + this.currentPosition + "]";
         } else {
-            caseString = "WARNING WARNING!!!\n\nthis.flagToDisplay and the raceFlagSwitcher local flagToDisplay do not match!";
+            caseString = "WARNING WARNING!!!\n\nthis.flagToDisplay and the raceFlagSwitcher " +
+                    "local flagToDisplay do not match!";
         }
         //each case sets the Current flag and the Next flag, increments the counter for the next run
         // then calls the countdown method with the appropriate time interval for the flag set
@@ -422,20 +437,32 @@ public class RegattaTimer extends MainActivity {
             case -1: // for -1 case show no current flag and display the class up as the next flag
                 Log.i(LOGTAG, caseString);
                 resetFlagAndClassHolders(); // reset all the flags and holders
-                myCountdownMethod(0, 0, 3," Case -1: current Pos: " + currentPosition);// start new timer with given time limit
+                // start new timer with given time limit
+                myCountdownMethod(0, 0, 3," Case -1: current Pos: " + currentPosition);
 
                 break;
             case 0: // for 0 case show no current flag and display the class up as the next flag
                 Log.i(LOGTAG, caseString);
-//                currentClassColor.setBackgroundColor(BoatStartingListClass
-//                        .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getClassColorSolid());
+//                keep the button disabled until the case 1
+                classRecallButtonArrayList.get(currentPosition).setEnabled(true);
                 currentFlagImage.setVisibility(View.INVISIBLE); // no current flag so invis
 
                 nextFlagImage.setVisibility(View.VISIBLE); // show the next flag holder
                 nextFlagImage.setImageResource(R.drawable.class_up); // put flag in next flag
 
-                // start new timer with given time limit
-                myCountdownMethod(0, 0, sharedPreferences.getInt("initialDelay", 15)," Case 0: current Pos: " + currentPosition);
+                //get the initial start time as an int
+                int initialDelay = sharedPreferences.getInt("initialDelay", 15);
+
+                //Because this value cannot actually be 0 then add a delay in the timer of 50 milliseconds
+                if (initialDelay > 0) {
+                    // start new timer with given time limit
+                    myCountdownMethod(0, 0, sharedPreferences.getInt("initialDelay", 15),
+                            " Case 0: current Pos: " + currentPosition);
+                } else {
+                    myCountdownMethod(0, 0, drift," Case 0: current Pos: " + currentPosition);
+
+                }
+
                 break;
             case 1:
                 Log.i(LOGTAG, caseString);
@@ -451,7 +478,8 @@ public class RegattaTimer extends MainActivity {
                 currentFlagImage.setImageResource(R.drawable.class_up); // up for 1 min
                 nextFlagImage.setImageResource(R.drawable.class_up_prep_up);
                 // start new timer with given time limit
-                myCountdownMethod(0, 0, sharedPreferences.getInt("classUp",65)," Case 1: current Pos: " + currentPosition);
+                myCountdownMethod(0, 0, sharedPreferences.getInt("classUp",65),
+                        " Case 1: current Pos: " + currentPosition);
                 break;
             case 2:
                 currentFlagImage.setVisibility(View.VISIBLE);
@@ -462,7 +490,8 @@ public class RegattaTimer extends MainActivity {
                 nextFlagImage.setImageResource(R.drawable.class_up_prep_down);
 
                 // start new timer with given time limit
-                myCountdownMethod(0, 0, sharedPreferences.getInt("classUpPrepUp",185)," Case 2: current Pos: " + currentPosition);
+                myCountdownMethod(0, 0, sharedPreferences.getInt("classUpPrepUp",185),
+                        " Case 2: current Pos: " + currentPosition);
                 break;
             case 3:
                 currentFlagImage.setVisibility(View.VISIBLE);
@@ -479,7 +508,8 @@ public class RegattaTimer extends MainActivity {
                     nextFlagImage.setImageResource(R.drawable.no_flags);
                 }
                 // start new timer with given time limit
-                myCountdownMethod(0, 0,sharedPreferences.getInt("classUpPrepDown",65)," Case 3: current Pos: " + currentPosition);
+                myCountdownMethod(0, 0,sharedPreferences.getInt("classUpPrepDown",65),
+                        " Case 3: current Pos: " + currentPosition);
                 break;
             case 4:
 
@@ -493,24 +523,19 @@ public class RegattaTimer extends MainActivity {
 
                 BoatClass currentBoatClass = BoatStartingListClass.BOAT_CLASS_START_ARRAY
                         .get(currentPosition);
-                // send the class's start time to the sql database
+
+                //TODO get rid of it, redundant
+//                // send the class's start time to the sql database
+//                resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
+//                        currentBoatClass.getBoatColor(), now);
+
+
+                // send the class's start time and class distance to the sql database
                 resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
-                        currentBoatClass.getBoatColor(), now);
+                        currentBoatClass.getBoatColor(), now, currentBoatClass.getClassDistance());
+                Log.i(LOGTAG, "Distance Version of updateClassStartTime Used. Distance is " +
+                        currentBoatClass.getClassDistance());
 
-                //very risky method. so we have a backup
-                try {
-                    // send the class's start time and class distance to the sql database
-                    resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
-                            currentBoatClass.getBoatColor(), now, currentBoatClass.getClassDistance());
-                    Log.i(LOGTAG, "Distance Version of updateClassStartTime Used. Distance is " +
-                            currentBoatClass.getClassDistance());
-                } catch (Exception e) {
-                    // send the class's start time to the sql database
-                    resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
-                            currentBoatClass.getBoatColor(), now);
-                    Log.i(LOGTAG, "NON - Distance Version of updateClassStartTime Used");
-
-                }
                 // write the current time to the BoatClass variable for storage
                 BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(currentPosition)
                         .setStartTime(now);
@@ -558,11 +583,11 @@ public class RegattaTimer extends MainActivity {
     }
 
 
-    private void myCountdownMethod(int hours, int minutes, int seconds, String caller) {
+    private void myCountdownMethod(int hours, int minutes, double seconds, String caller) {
         //convert hours mins and seconds to milliseconds
         long milliHours = hours * 3600000;
         long milliMinutes = minutes * 60000;
-        final long milliSeconds = seconds * 1000;
+        final long milliSeconds = (long) (seconds * 1000);
 
         // add all milliseconds up
         totalTime = milliHours + milliMinutes + milliSeconds;
@@ -575,7 +600,7 @@ public class RegattaTimer extends MainActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 // set the string to the top of the current second
-                String timeString = bestTickTockTime(millisUntilFinished+1000, totalTime);
+                String timeString = bestTickTockTime(millisUntilFinished+1000);
                 txtCountDown.setText(timeString); // Update text to display current time remaining
                 // play sound every second for the last 10 seconds.
                 if (millisUntilFinished < 10001 & (millisUntilFinished %1000 > 501)) {
@@ -593,7 +618,7 @@ public class RegattaTimer extends MainActivity {
     }
 
     // change the display format based on if amount of time to track.
-    public String bestTickTockTime(long millisUntilFinished, long totalTime) {
+    public String bestTickTockTime(long millisUntilFinished) {
         String timeString;
         if (millisUntilFinished >= 3600000) {
             timeString = String.format("%2dh %2dm %02ds",
@@ -634,7 +659,6 @@ public class RegattaTimer extends MainActivity {
         startActivity(intent);
     }
 
-    //TODO Move to preferences!!!
     private void verifyIntentToResetMasterTime() {
 
         if (!myCountDownTimer.isPaused()) {

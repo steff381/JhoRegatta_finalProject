@@ -27,17 +27,12 @@ public class SelectBoats extends MainActivity {
 
     // List stuff
     ListView myList; // initialize the listview
-//    BoatAdapter objAdapter; // initialize custom adapter
     SelectBoatAdapter objAdapter;
 
     //arraylist of boats to put in the list
     ArrayList<Boat> allTheBoats;
 
 
-    // parameters for methods using sql query parameters
-    private String whereClauseIsVisible = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
-    private String orderByClause = DBAdapter.KEY_BOAT_CLASS + ", "
-            + DBAdapter.KEY_BOAT_NAME;
     private String havingClause = null;
 
     CheckBox selectBoatCkBox; // create an accessible instance of the checkbox widget
@@ -61,6 +56,8 @@ public class SelectBoats extends MainActivity {
         appendWhereClause();
 
         //get a list of all the boats in the selected classes
+        String orderByClause = DBAdapter.KEY_BOAT_CLASS + ", "
+                + DBAdapter.KEY_BOAT_NAME;
         allTheBoats = boatDataSource
                 .getAllBoatsArrayList(GlobalContent.globalWhere, orderByClause, havingClause);
 
@@ -74,6 +71,7 @@ public class SelectBoats extends MainActivity {
         /// wire the custom view adapter to the view
         Log.i(LOG, "Setting obj Adapter");
 
+        //set the listview adapter
         objAdapter = new SelectBoatAdapter(this, R.layout.activity_list_template_select_boats,
                 allTheBoats, GlobalContent.globalWhere);
 
@@ -81,20 +79,24 @@ public class SelectBoats extends MainActivity {
 
     // build a sql query that includes only the classes chosen by the user in the prvious form.
     private void appendWhereClause() {
-        StringBuilder sb = new StringBuilder();
-        whereClauseIsVisible = null;
-        sb.append(DBAdapter.KEY_BOAT_VISIBLE + " = 1"); // grab the original statement and append
-        // it to the new one
-        sb.append(" AND " + DBAdapter.KEY_BOAT_CLASS + " in(");
-        for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
-            sb.append("\"" + bc.getBoatColor() + "\"");
-            sb.append(", ");
+        //check if the boat class in the array is the "Classless" class
+        if (!BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(0).getBoatColor().equals("Classless")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(DBAdapter.KEY_BOAT_VISIBLE + " = 1"); // grab the original statement and append
+            // it to the new one
+            sb.append(" AND " + DBAdapter.KEY_BOAT_CLASS + " in(");
+            for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+                sb.append("\"" + bc.getBoatColor() + "\"");
+                sb.append(", ");
+            }
+            String substring = sb.substring(0, sb.length() - 2); // chop off the last comma.
+            substring += ")"; // include the last brace
+            GlobalContent.globalWhere = substring; //assign the where clause to the global where
+            Log.i(LOG, substring);
+        } else {
+            //if the only boat class in the list is the classless class choose all boats.
+            GlobalContent.globalWhere = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
         }
-        String substring = sb.substring(0, sb.length() - 2); // chop off the last comma.
-        substring += ")"; // include the last brace
-        whereClauseIsVisible = substring;// replace old string with newly built string
-        GlobalContent.globalWhere = substring;
-        Log.i(LOG, substring);
     }
 
 
