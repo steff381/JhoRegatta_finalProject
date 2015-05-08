@@ -12,8 +12,8 @@ import java.util.List;
 
 import aad.finalproject.jhoregatta.GlobalContent;
 
-/**
- * Created by Daniel on 4/11/2015.
+/*
+This class handles the connection between the app and the database for the results
  */
 public class ResultDataSource {
     // log cat tagging
@@ -63,6 +63,7 @@ public class ResultDataSource {
             values.put(DBAdapter.KEY_RACE_DATE, GlobalContent.activeRace.getDate());
             values.put(DBAdapter.KEY_CREATED_AT, DBAdapter.getDateTime());
             values.put(DBAdapter.KEY_RACE_VISIBLE, 1);
+            //insert the data into the sql db
             long insertId = db.insert(DBAdapter.TABLE_RESULTS, null, values);
             result.setResultsId(insertId); // insert data
             Log.i(LOG, " Added result ID: " + result.getResultsId() + " Boat name: " +
@@ -75,7 +76,7 @@ public class ResultDataSource {
     public List<Result> getAllResults(String where, String orderBy, String having ){
         List<Result> results = new ArrayList<>();
 
-
+        //load cursor with the data from sqlite
         Cursor cursor = db.query(DBAdapter.TABLE_RESULTS, DBAdapter.RESULTS_ALL_FIELDS, where,
                 null, null, having, orderBy);
 
@@ -144,7 +145,7 @@ public class ResultDataSource {
 
     //clear the fields of result time, duration and adjusted duration
     public boolean clearStartAndDurations(long resultId) {
-        String value = null;
+        String value = null; // THIS IS REQUIRED BECAUSE I CANNOT PASS NULL IN DIRECTLY!!!
         String where = DBAdapter.KEY_ID + " = " + resultId; // select what item to update
         ContentValues newValues = new ContentValues(); // create a content values instance
         //Put the new values into the contentValues variable
@@ -198,7 +199,7 @@ public class ResultDataSource {
 
     }
 
-//    // clear the finish time for all results in the given race.
+    // clear the finish time for all results in the given race.
     public void clearSingleClassStartTimesAndDurations(long raceId, String className) {
         // select what race to affect
         String where;

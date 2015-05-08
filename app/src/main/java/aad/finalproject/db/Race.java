@@ -1,7 +1,7 @@
 package aad.finalproject.db;
 
-/**
- * Created by Daniel on 3/28/2015.
+/*
+This class defines the fields of a race
  */
 public class Race {
 
@@ -15,7 +15,6 @@ public class Race {
     int clsYellow;
     int clsRed;
     int cls_TBD_;
-    int raceVisible = 1;
 
     public long getId() {
         return id;

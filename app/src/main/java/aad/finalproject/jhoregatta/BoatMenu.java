@@ -27,11 +27,11 @@ public class BoatMenu extends MainActivity {
             + DBAdapter.KEY_BOAT_NAME ;
     private String havingClause = null;
 
-    ListView myList; // initialize the listview
+    private ListView myList; // initialize the listview
 
     public static String ACCESS_METHOD_KEY = "Key";
 
-    BoatDataSource boatDataSource; // call the boat datasource
+    private BoatDataSource boatDataSource; // call the boat datasource
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +98,10 @@ public class BoatMenu extends MainActivity {
         startActivity(intent);
     }
 
-    public void navigateToMainMenu(View view){
-        Intent intent = new Intent(this,MainActivity.class); // open main menu and nav to
-        startActivity(intent);
+    public void navigateBack(View view){
+        //todo trash
+//        Intent intent = new Intent(this,MainActivity.class); // open main menu and nav to
+//        startActivity(intent);
         endBoatActivity(); // close db and exit activity
     }
 
@@ -183,6 +184,7 @@ public class BoatMenu extends MainActivity {
         }
     }
 
+    //set the adapter and refresh the listview
     public void populateListView(){
 
         Cursor cursor = boatDataSource.getAllBoatsCursor(whereClauseIsVisible, orderByClause, havingClause);

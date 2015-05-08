@@ -48,18 +48,20 @@
             android:layout_height="match_parent"
             android:text="Class"
             android:id="@+id/txt_hd_sb_Class"
-            android:layout_weight="1.5"
+            android:layout_weight="1.8"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="Name"
             android:id="@+id/txt_hd_sb_Name"
-            android:layout_weight="3"
+            android:layout_weight="5"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -68,7 +70,8 @@
             android:id="@+id/txt_hd_sb_SailNum"
             android:layout_weight="3"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical|right"
+            android:textSize="20sp" />
     </TableRow>
 
 </RelativeLayout>

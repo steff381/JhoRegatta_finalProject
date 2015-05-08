@@ -15,7 +15,7 @@ import aad.finalproject.db.AndroidDatabaseManager;
 public class MainActivity extends ActionBarActivity {
 
     // set up buttons for click assignment
-    Button testButton;
+//    Button testButton;
     Button calculator;
 
 
@@ -26,7 +26,6 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // wire buttons
-        testButton = (Button)findViewById(R.id.btn_ma_test);
         calculator = (Button) findViewById(R.id.btn_nav_Calculator);
 
 
@@ -39,12 +38,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        // assign click listeners
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
     }
 
 

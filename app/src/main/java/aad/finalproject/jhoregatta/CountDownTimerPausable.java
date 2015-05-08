@@ -4,19 +4,26 @@ import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 
+/*
+This is a drop in code from Github that is just a pausable version of the countdown timer interface.
+ */
 public abstract class CountDownTimerPausable {
 
     private static String LOGTAG = "LogTag: CountDownTimerPausable: ";
+    //timer elements
     long millisInFuture = 0;
     long countDownInterval = 0;
     long millisRemaining =  0;
 
+    //instance of the countdown timer
     CountDownTimer countDownTimer = null;
 
-    boolean isPaused = true;
+    //status of the timer variable
+    boolean isPaused = true; //initially true, not sure why
 
     public CountDownTimerPausable(long millisInFuture, long countDownInterval) {
         super();
+        //create a special instance of the timer with new variables
         this.millisInFuture = millisInFuture;
         this.countDownInterval = countDownInterval;
         this.millisRemaining = this.millisInFuture;
@@ -74,9 +81,11 @@ public abstract class CountDownTimerPausable {
             isPaused = false;
             //when the timer is resumed or started change text back to "Start" and hide it
             Log.i(LOGTAG, "Timer Starting");
+            //switch the text of the button in the regatta timer to "Start'
             RegattaTimer.startResume.setText("Start");
             RegattaTimer.startResume.setVisibility(View.INVISIBLE);
         } else{
+            //not sure why this is left blank
         }
         return this;
     }
@@ -88,7 +97,7 @@ public abstract class CountDownTimerPausable {
         if(!isPaused){
             countDownTimer.cancel();
             Log.i(LOGTAG, "Timer Pausing");
-            startResumeButtonMethod();
+            startResumeButtonMethod(); //swtich from sstart to resume button
 
         } else{
             throw new IllegalStateException("CountDownTimerPausable is already in pause state," +
@@ -104,6 +113,6 @@ public abstract class CountDownTimerPausable {
     }
 
     public boolean isPaused() {
-        return isPaused;
+        return isPaused; //tell the state of the timer.
     }
 }

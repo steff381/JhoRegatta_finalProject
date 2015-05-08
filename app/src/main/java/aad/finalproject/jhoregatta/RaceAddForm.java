@@ -71,6 +71,7 @@ public class RaceAddForm extends Form {
     TextView raceClass5Holder;
     TextView raceClass6Holder;
 
+    //
     ArrayList<TextView> boatClassHolderArrayList = new ArrayList<>();
 
     // create create field data containers
@@ -114,7 +115,8 @@ public class RaceAddForm extends Form {
         isBoatClassUpdate = false; // opening up the menu for the first time makes false
 
         BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear(); // empty the array of all data
-        wireWidgetsAndLoadArrays();
+
+        wireWidgetsAndLoadArrays();// set up the instances with data
 
 
         // set the oncheck listeners for each of the check boxes
@@ -146,6 +148,7 @@ public class RaceAddForm extends Form {
             }
         });
 
+        //send the data to the data table writer to get a CSV for this race then send it by email
         emailResults.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,6 +161,9 @@ public class RaceAddForm extends Form {
             create.setVisibility(View.GONE);
             linlayResultsButtons.setVisibility(View.VISIBLE);
             delete.setVisibility(View.VISIBLE);
+
+            //make sure the editable fields and boxes are enabled
+            setEnabledOfEditables(false);
 
             //make the starting order text views invisible during edit mode.
             findViewById(R.id.linlay_class_start_order_textviews).setVisibility(View.INVISIBLE);
@@ -219,11 +225,6 @@ public class RaceAddForm extends Form {
             linlayResultsButtons.setVisibility(View.INVISIBLE);
             //make the starting order text views visible during add mode.
             findViewById(R.id.linlay_class_start_order_textviews).setVisibility(View.VISIBLE);
-
-            for (TextView tv : boatClassHolderArrayList) {
-                Log.i(LOG, tv.getText().toString());
-
-            }
 
             Log.i(LOG, "create mode buttons activated");
         } else {
@@ -297,10 +298,7 @@ public class RaceAddForm extends Form {
                     bindTextViewWithClassColors(); // update the class order text views.
                 }
             });
-
-
-            boatCheckBoxName = null;
-
+            boatCheckBoxName = null; //clear the name in the checkbox holder
         }
 
         //set a special re assignment for the first class
@@ -337,10 +335,8 @@ public class RaceAddForm extends Form {
 
     //Shows the user the order of boat classes in text views. User can change them by
     // selecting checkboxes in the order they wish to start each class in the race
-
     protected void bindTextViewWithClassColors() {
         int i = 0;
-
         for (TextView tv : boatClassHolderArrayList) {
             try {
                 //create boat class instance for each iteration
@@ -430,7 +426,7 @@ public class RaceAddForm extends Form {
 
     @Override
     public void onClickUpdate(View view) {
-        update(GlobalContent.getRaceRowID()); // update the data
+        update(GlobalContent.getRaceRowID()); // update the data in the race sql table
 
     }
 
@@ -471,8 +467,6 @@ public class RaceAddForm extends Form {
     @Override
     void delete() {
         Cursor cursor = raceDataSource.getRow(GlobalContent.getRaceRowID());
-
-
             if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("WARNING!!!! CANNOT UNDO A DELETION!");
@@ -597,6 +591,9 @@ public class RaceAddForm extends Form {
             update.setVisibility(View.VISIBLE);
             // hide the results buttons too
             linlayResultsButtons.setVisibility(View.GONE);
+
+            //make sure the editable fields and boxes are enabled
+//            setEnabledOfEditables(true);
         }
     }
 
@@ -627,4 +624,19 @@ public class RaceAddForm extends Form {
         startActivity(Intent.createChooser(emailIntent, "Choose your Email App:"));
     }
 
+    //either disable or enable the editable fields and checkboxes in the form.
+    private void setEnabledOfEditables(boolean isEnabled) {
+        // create empty instances for widgets
+        raceTitle.setEnabled(isEnabled);
+        raceDateMM.setEnabled(isEnabled);
+        raceDateDD.setEnabled(isEnabled);
+        raceDateYYYY.setEnabled(isEnabled);
+
+        raceClassless.setEnabled(isEnabled);
+        raceClassBlue.setEnabled(isEnabled);
+        raceClassPurple.setEnabled(isEnabled);
+        raceClassYellow.setEnabled(isEnabled);
+        raceClassGreen.setEnabled(isEnabled);
+        raceClass_TBD_.setEnabled(isEnabled);
+    }
 }

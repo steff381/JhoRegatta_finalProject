@@ -18,6 +18,9 @@ import aad.finalproject.db.Boat;
 import aad.finalproject.db.BoatDataSource;
 import aad.finalproject.db.DBAdapter;
 
+/*
+THis form allows the user to add and edit rows of data in the boats table.
+ */
 
 public class BoatAddForm extends Form {
 
@@ -33,8 +36,6 @@ public class BoatAddForm extends Form {
     private RadioGroup rbgrpBoatClass;
     private RadioButton rb_single;
 
-    //create a bundle instance to help pass vairables between activities
-    Bundle extras;
 
     // initialize strings for use by other methods
     private String strBoatName;
@@ -103,6 +104,7 @@ public class BoatAddForm extends Form {
             String boatClassFromSQL = updateRowFromCursor.getString(updateRowFromCursor
                     .getColumnIndex(DBAdapter.KEY_BOAT_CLASS));
 
+            //set the selected radio button based on the selection in the DB.
             switch (boatClassFromSQL) {
                 case "Yellow":
                     rb_single = (RadioButton) findViewById(R.id.rb_baf_yellow);
@@ -127,6 +129,7 @@ public class BoatAddForm extends Form {
                 rb_single.setChecked(true);
             }
 
+            //set the text fields from the data in the db
             boatName.setText(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
                     DBAdapter.KEY_BOAT_NAME)));
             boatSailNum.setText(updateRowFromCursor.getString(updateRowFromCursor.getColumnIndex(
@@ -189,6 +192,7 @@ public class BoatAddForm extends Form {
         }
     }
 
+    //allocate the data from the data entry fields into temporary storage for use by the class
     @Override
     protected void setTempDataFields() {
         //get the selected text value from the radio button
@@ -205,6 +209,7 @@ public class BoatAddForm extends Form {
         strBoatPHRF = boatPHRF.getText().toString();
     }
 
+    //check to make sure that all entries the user has made are valid.
     @Override
     protected boolean validateDataEntryFields(){
         setTempDataFields(); // repopulate text strings to field values
@@ -223,15 +228,16 @@ public class BoatAddForm extends Form {
                     Toast.LENGTH_LONG).show();
             return false; // not valid
         }
-
        return true;
     }
 
+    //update the data in sql using the data the user has provided.
     @Override
     protected void update(long id) {
         Cursor cursor = boatDataSource.getRow(id); // create cursor
         if (validateDataEntryFields()) {
             if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
+                //call he db update method
                 boatDataSource.update(id, strBoatClassColor, strBoatName, strBoatSailNum,
                         Integer.parseInt(strBoatPHRF));
                 Log.i(LOG, "Validated UPDATE entry");
@@ -245,6 +251,7 @@ public class BoatAddForm extends Form {
         cursor.close();
     }
 
+    //separate method for handling the click event
     @Override
     public void onClickUpdate(View view){
         update(GlobalContent.getBoatRowID());
@@ -278,6 +285,7 @@ public class BoatAddForm extends Form {
             dialog.show(); // open up the dialog
 
         } else {
+             //let the user know there was an error
             Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
                     Toast.LENGTH_LONG).show();
             Log.i(LOG, "CURSOR ERROR>> BAD ID");
@@ -285,6 +293,7 @@ public class BoatAddForm extends Form {
 
     }
 
+    //generic activiy ender
     protected void endBoatActivity() {
         try {
             boatDataSource.close(); // close datasource

@@ -1,7 +1,7 @@
 package aad.finalproject.db;
 
-/**
- * Created by Daniel on 3/28/2015.
+/*
+This class handles data related to the results data table.
  */
 public class Result {
 
@@ -196,8 +196,5 @@ public class Result {
         this.resultsNotFinished = resultsNotFinished;
     }
 
-    public void setResultsCreateDate(String resultsCreateDate) {
-        this.resultsCreateDate = resultsCreateDate;
-    }
 
 }

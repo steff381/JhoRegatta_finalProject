@@ -26,20 +26,15 @@ public class SelectBoats extends MainActivity {
     private static final String LOG = "LogTag: SelectBoats";
 
     // List stuff
-    ListView myList; // initialize the listview
-    SelectBoatAdapter objAdapter;
+    private ListView myList; // initialize the listview
+    private SelectBoatAdapter objAdapter;
 
-    //arraylist of boats to put in the list
-    ArrayList<Boat> allTheBoats;
-
-
-    private String havingClause = null;
 
     CheckBox selectBoatCkBox; // create an accessible instance of the checkbox widget
 
     // data base stuff
-    BoatDataSource boatDataSource; // call the boat datasource
-    ResultDataSource resultDataSource; // instance of results daasource
+    private BoatDataSource boatDataSource; // call the boat datasource
+    private ResultDataSource resultDataSource; // instance of results daasource
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +53,8 @@ public class SelectBoats extends MainActivity {
         //get a list of all the boats in the selected classes
         String orderByClause = DBAdapter.KEY_BOAT_CLASS + ", "
                 + DBAdapter.KEY_BOAT_NAME;
-        allTheBoats = boatDataSource
-                .getAllBoatsArrayList(GlobalContent.globalWhere, orderByClause, havingClause);
+        ArrayList<Boat> allTheBoats = boatDataSource
+                .getAllBoatsArrayList(GlobalContent.globalWhere, orderByClause, null);
 
         // set the lv to the current listview
         myList = (ListView) findViewById(R.id.lvSelectBoatList);
@@ -75,11 +70,17 @@ public class SelectBoats extends MainActivity {
         objAdapter = new SelectBoatAdapter(this, R.layout.activity_list_template_select_boats,
                 allTheBoats, GlobalContent.globalWhere);
 
+
+
+
     }
 
     // build a sql query that includes only the classes chosen by the user in the prvious form.
     private void appendWhereClause() {
         //check if the boat class in the array is the "Classless" class
+        for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+            Log.i(LOG, b.getBoatColor());
+        }
         if (!BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(0).getBoatColor().equals("Classless")) {
             StringBuilder sb = new StringBuilder();
             sb.append(DBAdapter.KEY_BOAT_VISIBLE + " = 1"); // grab the original statement and append

@@ -354,7 +354,9 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
                     spinnertablevalues.add("Add row to this table");
                     spinnertablevalues.add("Delete this table");
                     spinnertablevalues.add("Drop this table");
-                    ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, spinnertablevalues);
+                    ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>
+                            (getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,
+                                    spinnertablevalues);
                     spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
 
                     // a array adapter which add values to the spinner which helps in user making changes to the table

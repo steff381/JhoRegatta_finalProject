@@ -32,9 +32,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text=" Main Menu "
+                        android:text="Back"
                         android:id="@+id/btn_nav_MainMenu"
-                        android:onClick="navigateToMainMenu"
+                        android:onClick="navigateBack"
                         android:layout_weight="2"
                         android:layout_marginRight="35dp"/>
 
@@ -62,27 +62,31 @@
                 android:layout_height="wrap_content"
                 android:text="Class"
                 android:id="@+id/txt_hd_Class"
-                android:layout_weight="1.5"
+                android:layout_weight="2"
                 android:textColor="#ff000000"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginLeft="15dp"
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Name"
                 android:id="@+id/txt_hd_Name"
-                android:layout_weight="3"
+                android:layout_weight="5"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Sail Num"
                 android:id="@+id/txt_hd_SailNum"
-                android:layout_weight="3"
+                android:layout_weight="2.5"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="20sp" />
         </TableRow>
 
         <ListView

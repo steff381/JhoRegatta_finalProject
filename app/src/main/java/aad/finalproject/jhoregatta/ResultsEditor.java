@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -34,12 +35,14 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
     /////////DATABASE SECTION////////////
 
-    Cursor updateFieldsFromCursor;
+    //cursor that holds all the data from the sql table.
+    private Cursor updateFieldsFromCursor;
 
     // main linear layout
-    LinearLayout myLayout;
+    private LinearLayout myLayout;
+
     //datasource instance
-    ResultDataSource resultDataSource;
+    private ResultDataSource resultDataSource;
     private int totalChars = 256; //set max char width of notes EditText box
 
 
@@ -47,6 +50,9 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results_editor);
+
+        //Keep awake during activity
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Log.i(LOGTAG, " Result row is " + GlobalContent.getResultsRowID());
         //assign editable datasource
@@ -92,7 +98,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                         calculateAdjustedDuration();
                     }
                 } catch (NumberFormatException e) {
-                    //do nothing, it wont harm the results editor if the number format is null.
+                    //do nothing, it wont harm the results editor if the number field is empty.
                 }
             }
 
@@ -118,7 +124,10 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if (elapsedTime.length() == 0) {
+                    //if the text box is empty set to 0
+                    elapsedTime.setText("0");
+                }
             }
         });
 
@@ -236,7 +245,6 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
     @Override
     public void onBackPressed() {
 //        super.onBackPressed(); // prevent the back button from being used to go back
-
         myLayout.requestFocus(); //should effectivly hide the keyboard
     }
 

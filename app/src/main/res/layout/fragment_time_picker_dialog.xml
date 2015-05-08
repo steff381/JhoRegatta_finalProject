@@ -3,46 +3,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="aad.finalproject.jhoregatta.TimePickerDialog"
-    android:padding="25dp">
+    android:padding="25dp"
+    android:gravity="center_horizontal">
 
 
-    <Button
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set"
-        android:id="@+id/btn_tpd_set_time"
-        android:layout_below="@+id/np_tpd_minute"
-        android:layout_alignEnd="@+id/np_tpd_second" />
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/btn_tpd_cancel"
-        android:onClick=""
-        android:layout_below="@+id/np_tpd_minute"
-        android:layout_alignStart="@+id/np_tpd_hour" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-    <NumberPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/np_tpd_second"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/np_tpd_minute" />
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/np_tpd_hour"
+                android:gravity="center_vertical" />
 
-    <NumberPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/np_tpd_minute"
-        android:layout_alignTop="@+id/np_tpd_second"
-        android:layout_centerHorizontal="true" />
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/np_tpd_minute"
+                 />
 
-    <NumberPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/np_tpd_hour"
-        android:gravity="center_vertical"
-        android:layout_alignTop="@+id/np_tpd_minute"
-        android:layout_toStartOf="@+id/np_tpd_minute" />
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/np_tpd_second"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Set"
+                android:id="@+id/btn_tpd_set_time"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:id="@+id/btn_tpd_cancel"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

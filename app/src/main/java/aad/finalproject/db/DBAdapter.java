@@ -57,6 +57,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_RACE_CLASS_TBD = "cl_tbd";
     public static final String KEY_RACE_VISIBLE = "visible";
 
+    //array with all fields for the race in it
     public static final String[] RACES_ALL_FIELDS = new String[]{
             KEY_ID,
             KEY_RACE_NAME,

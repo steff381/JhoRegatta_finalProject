@@ -20,16 +20,10 @@ public class RaceMenu extends MainActivity {
     // log cat tagging
     private static final String LOG = "LogTag: RaceMenu";
 
-
-    // parameters for methods using sql quiery parameters
-    private String whereClauseIsVisible = DBAdapter.KEY_RACE_VISIBLE + " = 1";
-    private String orderByClause = DBAdapter.KEY_RACE_DATE+ " ASC";
-    private String havingClause = null;
-
-    ListView myListRace; // initialize the listview
+    private ListView myListRace; // initialize the listview
 
 
-    RaceDataSource raceDataSource; // call the race datasource
+    private RaceDataSource raceDataSource; // call the race datasource
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +36,7 @@ public class RaceMenu extends MainActivity {
 
         myListRace = (ListView) findViewById(R.id.lvRaceList); // set the lv to the current listview
 
-    //set the onclick listener for when user selects an item from the list
+        //set the onclick listener for when user selects an item from the list
         myListRace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -55,8 +49,10 @@ public class RaceMenu extends MainActivity {
             }
         });
         //get a sql cursor of all the races in the database
+        String whereClauseIsVisible = DBAdapter.KEY_RACE_VISIBLE + " = 1";
+        String orderByClause = DBAdapter.KEY_RACE_DATE + " ASC";
         Cursor races = raceDataSource.getAllRacesCursor(whereClauseIsVisible,
-                orderByClause, havingClause);
+                orderByClause, null);
 
     }
 
@@ -79,7 +75,6 @@ public class RaceMenu extends MainActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -90,10 +85,11 @@ public class RaceMenu extends MainActivity {
         startActivity(intent);
     }
 
-    public void navigateToMainMenu(View view){
 
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
+    public void navigateRaceBack(View view){
+//TODO Trash
+//        Intent intent = new Intent(this,MainActivity.class);
+//        startActivity(intent);
         endActivity(); // exit activity and close db
     }
 
@@ -130,8 +126,8 @@ public class RaceMenu extends MainActivity {
                 DBAdapter.KEY_RACE_CLASS_RED,
                 DBAdapter.KEY_RACE_CLASS_TBD
         };
-
-        int[] toViewIDs = new int[] { // names of txt fields to populate
+        // ids of txt fields to populate
+        int[] toViewIDs = new int[] {
                 R.id.txt_raceId,
                 R.id.txt_raceName,
                 R.id.txt_raceDate,

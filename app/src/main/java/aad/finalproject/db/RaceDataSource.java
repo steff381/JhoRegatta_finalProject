@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/**
- * Created by Daniel on 3/29/2015.
+/*
+This class handles the datasource connection for the race table
  */
 public class RaceDataSource {
 
@@ -61,6 +61,7 @@ public class RaceDataSource {
     //get a sql cursor for each race. Used to display the races in the listview
     public Cursor getAllRacesCursor(String where, String orderBy, String groupBy){
 
+        //get a cursor with the data from all the race enteries
         Cursor cursor = db.query(DBAdapter.TABLE_RACES, DBAdapter.RACES_ALL_FIELDS, where,
                 null, groupBy, null, orderBy);
 

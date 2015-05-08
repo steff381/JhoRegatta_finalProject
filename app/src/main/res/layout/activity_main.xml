@@ -77,12 +77,6 @@
                             android:id="@+id/btn_nav_Settings"
                             android:onClick="navigateToPreferences"/>
 
-                        <Button
-                            android:layout_width="fill_parent"
-                            android:layout_height="80dp"
-                            android:text="TEST BUTTON"
-                            android:id="@+id/btn_ma_test"
-                            android:visibility="gone"/>
                     </LinearLayout>
 
                 </TableRow>

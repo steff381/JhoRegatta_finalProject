@@ -1,12 +1,13 @@
 package aad.finalproject.db;
 
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,12 +15,11 @@ import java.util.List;
 
 import aad.finalproject.jhoregatta.R;
 
-/**
- * Created by Daniel on 4/24/2015.
+/*
+This adapter is used to handle the connection betwee the select boats list view and the data base
  */
 public class SelectBoatAdapter extends ArrayAdapter<Boat> {
-    private static String LOGTAG = "Logtag: " + Thread.currentThread().getStackTrace()[2]
-            .getClass().getSimpleName();
+    private static String LOGTAG = "Logtag: SelectBoatAdapter";
 
     private Context context; // make an accessible field for context
     private String where;
@@ -50,7 +50,6 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder; // make null
-        Log.i(LOGTAG, "convertView" + String.valueOf(position));
 
 
         //if the convertView is null
@@ -97,6 +96,34 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
         holder.checkBox.setChecked(boat.isSelected());
         holder.checkBox.setTag(boat);
 
+        //when the checkbox is checked update the display
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                notifyDataSetChanged();
+            }
+        });
+
+
+
+        //if the checkbox is checked change the view to blue
+        if (holder.checkBox.isChecked()) {
+            ///view becomes blue
+            convertView.setBackgroundColor(convertView.getResources().getColor(R.color.blue05));
+            //text becomes white.
+            holder.boatClass.setTextColor(Color.parseColor("#ffffff"));
+            holder.boatName.setTextColor(Color.parseColor("#ffffff"));
+            holder.boatSailNum.setTextColor(Color.parseColor("#ffffff"));
+
+        } else {
+            //if it isn't checkd change it to regular.
+            convertView.setBackgroundColor((Color.parseColor("#00000000")));
+            //text becomes black.
+            holder.boatClass.setTextColor(Color.parseColor("#000000"));
+            holder.boatName.setTextColor(Color.parseColor("#000000"));
+            holder.boatSailNum.setTextColor(Color.parseColor("#000000"));
+        }
+
         return convertView;
 
     }
@@ -113,12 +140,14 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
         // Make sure the data coming from sql isn't blank. Otherwise throw error
         if (tempResultFromSql.size() > 0) {
 
+            //clear the list
             this.boatArrayList.clear();
-
+            //repopulate the list with data from SQL
             this.boatArrayList.addAll(tempResultFromSql);
 
         }
-        notifyDataSetChanged();
+        notifyDataSetChanged(); //force a repaint of the listview
     }
+
 
 }

@@ -10,9 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Daniel on 3/28/2015.
- */
+///handles all the data access abilies of the boat SQL table
 public class BoatDataSource {
 
     // log cat tagging
@@ -22,6 +20,7 @@ public class BoatDataSource {
     SQLiteOpenHelper dbHelper;
     SQLiteDatabase db;
 
+    //create a string array of all the boats
     private static final String[] ALL_BOAT_COLUMNS = {
             DBAdapter.KEY_ID,
             DBAdapter.KEY_BOAT_CLASS,
@@ -64,6 +63,7 @@ public class BoatDataSource {
         return boat;
     }
 
+    //get a list of all the boats
     public List<Boat> getAllBoats(String where, String orderBy, String having ){
         List<Boat> boats = new ArrayList<>();
 
@@ -87,14 +87,16 @@ public class BoatDataSource {
         return boats;
     }
 
+    //get an array list of all the boats in the sql table
     public ArrayList<Boat> getAllBoatsArrayList(String where, String orderBy, String having ){
         ArrayList<Boat> boats = new ArrayList<>();
 
-
+          // build a cursor that holds the sql data
         Cursor cursor = db.query(DBAdapter.TABLE_BOATS, ALL_BOAT_COLUMNS, where,
                 null, null, having, orderBy);
 
         Log.i(LOG, "Returned " + cursor.getCount() + " Rows");
+        //load the cursor with data
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 Boat boat = new Boat();
@@ -110,13 +112,14 @@ public class BoatDataSource {
         return boats;
     }
 
+    //get a cursor alone from the sql table
     public Cursor getAllBoatsCursor(String where, String orderBy, String having){
-//        orderBy = DBAdapter.KEY_BOAT_CLASS;
 
-
+        // grab a cursor laoded from db
         Cursor cursor = db.query(DBAdapter.TABLE_BOATS, ALL_BOAT_COLUMNS, where,
                 null, null, null, orderBy);
 
+        //if there is data move to the first row
         Log.i(LOG, "Returned " + cursor.getCount() + " Rows");
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -125,15 +128,10 @@ public class BoatDataSource {
         return cursor;
     }
 
-    public boolean updateChecked(long id, boolean isChecked) {
-        String whereClause = DBAdapter.KEY_ID + " = " + id;
-        ContentValues newValues = new ContentValues();
-        newValues.put(DBAdapter.KEY_BOAT_SELECTED, isChecked);
-        return db.update(DBAdapter.TABLE_BOATS, newValues, whereClause, null) != 0;
-    }
-
+    //change the data in the sql table using the values specified
     public boolean update(long id, String boatClass, String boatName, String boatSailNum,
                           int boatPHRF) {
+        // send data to content views to be used as the updates
         String whereClause = DBAdapter.KEY_ID + " = " + id;
         ContentValues newValues = new ContentValues();
         newValues.put(DBAdapter.KEY_BOAT_CLASS, boatClass);
@@ -144,52 +142,23 @@ public class BoatDataSource {
 
     }
 
+    //make a row of data disapear from the user's view
     public boolean psudoDelete(long id) {
         String whereClause = DBAdapter.KEY_ID + " = " + id;
-        ContentValues newValues = new ContentValues();
-        newValues.put(DBAdapter.KEY_BOAT_VISIBLE, 0);
+        ContentValues newValues = new ContentValues(); // update from cursor
+        newValues.put(DBAdapter.KEY_BOAT_VISIBLE, 0); // make the row invisible
         return db.update(DBAdapter.TABLE_BOATS, newValues, whereClause, null) != 0;
     }
 
-       public Cursor getRow(long id) {
-           String whereClause = DBAdapter.KEY_ID + " = " + id;
-           Cursor cursor = db.query(true, DBAdapter.TABLE_BOATS, ALL_BOAT_COLUMNS, whereClause,
-                   null, null, null, null, null);
-           if (cursor != null) {
-               cursor.moveToFirst();
-           }
-           return cursor;
+    //get a cursor with a single row of data
+   public Cursor getRow(long id) {
+       String whereClause = DBAdapter.KEY_ID + " = " + id;
+       // create a cursor with a query
+       Cursor cursor = db.query(true, DBAdapter.TABLE_BOATS, ALL_BOAT_COLUMNS, whereClause,
+               null, null, null, null, null);
+       if (cursor != null) {
+           cursor.moveToFirst(); // move to first record of the cursor
        }
-// data for displaying boat class in boat calls select dropdown
-    public static int getClassColorPosition(String classColor) {
-        int colorPosition;
-        switch (classColor) {
-            case "Red":
-                colorPosition = 1;
-                break;
-            case "_TBD_":
-                colorPosition = 2;
-                break;
-            case "Yellow":
-                colorPosition = 3;
-                break;
-            case "Purple":
-                colorPosition = 4;
-                break;
-            case "Blue":
-                colorPosition = 5;
-                break;
-            case "Green":
-                colorPosition = 6;
-                break;
-            default:
-                Log.i(LOG, "No color position found");
-                colorPosition = 0;
-                break;
-        }
-
-        return colorPosition;
-    }
-
-
+       return cursor;
+   }
 }

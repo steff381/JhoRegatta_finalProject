@@ -32,9 +32,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text=" Main Menu "
+                        android:text="Back"
                         android:id="@+id/btn_nav_MainMenu"
-                        android:onClick="navigateToMainMenu"
+                        android:onClick="navigateRaceBack"
                         android:layout_weight="2"
                         android:layout_marginRight="35dp"/>
 
@@ -64,7 +64,9 @@
                 android:id="@+id/txt_hd_raceTitle"
                 android:layout_weight=".45"
                 android:textColor="#ff000000"
-                android:textStyle="bold"  />
+                android:textStyle="bold"
+                android:layout_marginLeft="15dp"
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -73,16 +75,12 @@
                 android:id="@+id/txt_hd_raceDate"
                 android:layout_weight=".45"
                 android:textColor="#ff000000"
-                android:textStyle="bold"  />
+                android:textStyle="bold"
+                android:gravity="right"
+                android:layout_marginRight="15dp"
+                android:textSize="20sp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Dist."
-                android:id="@+id/txt_hd_raceDistance"
-                android:layout_weight=".1"
-                android:textColor="#ff000000"
-                android:textStyle="bold"  />
+
 
         </TableRow>
 

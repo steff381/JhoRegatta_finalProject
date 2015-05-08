@@ -21,7 +21,7 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
 
 
     // create a new communicator interface to communicate between activity and dialog
-    Communicator communicator;
+    private Communicator communicator;
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -80,9 +80,11 @@ public class TimePickerDialog extends DialogFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_tpd_set_time) {
+            //clear focus in case the user hasn't clicked away from the current text box
             hourPicker.clearFocus();
             minutePicker.clearFocus();
             secondPicker.clearFocus();
+
             // convert integers to milliseconds of hours minutes and seconds
             long hour = 3600000 * hourPicker.getValue();
             long minute = 60000 * minutePicker.getValue();

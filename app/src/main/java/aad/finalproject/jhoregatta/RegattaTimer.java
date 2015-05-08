@@ -1,6 +1,6 @@
 package aad.finalproject.jhoregatta;
 
-import android.annotation.SuppressLint;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -28,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import aad.finalproject.db.AndroidDatabaseManager;
 import aad.finalproject.db.ResultDataSource;
 
 import static aad.finalproject.jhoregatta.R.id.imgNextFlag;
@@ -44,6 +44,7 @@ public class RegattaTimer extends MainActivity {
     //get the shared preffs
     private SharedPreferences sharedPreferences;
 
+    //sound stuff
     private MediaPlayer hornMid;
     private ToneGenerator toneGenerator;
     private int toneType = ToneGenerator.TONE_CDMA_ABBR_ALERT;
@@ -83,13 +84,17 @@ public class RegattaTimer extends MainActivity {
     int numberOfSelectedBoatClasses; // initialize the number of selected Classes variable
     int currentPosition = 0;
 
+    //allowance for time drift
     private double drift = 0.005;
 
-    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regatta_timer);
+
+        //Keep awake during activity
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //switch to media volume control vs notification volume control
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -376,7 +381,7 @@ public class RegattaTimer extends MainActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_ddms:
-                onActionClickDDMS(); // TODO: Get rid of DDMS
+                onActionClickDDMS();
                 return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, Preferences.class);
@@ -388,12 +393,6 @@ public class RegattaTimer extends MainActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-        //TODO get rid of DDMS
-    public void onActionClickDDMS(){
-        Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
-        startActivity(dbmanager);
     }
 
 
@@ -523,11 +522,6 @@ public class RegattaTimer extends MainActivity {
 
                 BoatClass currentBoatClass = BoatStartingListClass.BOAT_CLASS_START_ARRAY
                         .get(currentPosition);
-
-                //TODO get rid of it, redundant
-//                // send the class's start time to the sql database
-//                resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
-//                        currentBoatClass.getBoatColor(), now);
 
 
                 // send the class's start time and class distance to the sql database

@@ -115,6 +115,7 @@ public class DistanceCalculator extends MainActivity {
 
     //clear the edit text boxes after an event
     private void clearValues() {
+        //clear edit texts based on if the user wants a blank slate or to keep degs and mins
         if (willSaveDegMin.isChecked()) {
             latSeconds.setText(null);
             lonSeconds.setText(null);
@@ -226,8 +227,6 @@ public class DistanceCalculator extends MainActivity {
                     Log.i(LOGTAG, " Cannot assign distance to the DistanceCalculator Textbox");
 
                 }
-
-
                 finish(); // close out of the activity
             }
         });

@@ -1,7 +1,7 @@
 package aad.finalproject.db;
 
-/**
- * Created by Daniel on 3/28/2015.
+/*
+ class containing all data that is manipulated for teh boat lass
  */
 public class Boat {
 
@@ -12,7 +12,6 @@ public class Boat {
     int boatPHRF;
     int boatVisible;
     private boolean selected = false;
-    String boatCreateDate = DBAdapter.getDateTime();
 
     public int getBoatVisible() {
         return boatVisible;
@@ -24,10 +23,6 @@ public class Boat {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-    }
-
-    public String getBoatCreateDate() {
-        return boatCreateDate;
     }
 
     public String getBoatSailNum() {
@@ -68,10 +63,6 @@ public class Boat {
 
     public void setBoatPHRF(int boatPHRF) {
         this.boatPHRF = boatPHRF;
-    }
-
-    public int isBoatVisible() {
-        return boatVisible;
     }
 
     public void setBoatVisible(int boatVisible) {

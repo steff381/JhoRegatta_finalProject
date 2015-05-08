@@ -24,11 +24,7 @@ public class SelectClassDistance extends MainActivity {
     public static ArrayList<Button> btnCalcDistance;
     private ArrayList<LinearLayout> classLinearLayouts;
 
-    private Button btnGoToSelectBoats;
-    private Button backBtn;
 
-
-    int c; // counter accessible in annonymous inner class
     public static boolean isActiveSCD;
 
     @Override
@@ -55,8 +51,8 @@ public class SelectClassDistance extends MainActivity {
         setupDisplayAndWidgets();
 
         // Wire buttons
-        btnGoToSelectBoats = (Button) findViewById(R.id.btn_scd_gotoSelectBoats);
-        backBtn = (Button) findViewById(R.id.btn_scd_back);
+        Button btnGoToSelectBoats = (Button) findViewById(R.id.btn_scd_gotoSelectBoats);
+        Button backBtn = (Button) findViewById(R.id.btn_scd_back);
 
 
         //set the button function
@@ -113,7 +109,7 @@ public class SelectClassDistance extends MainActivity {
     }
 
     private void setupDisplayAndWidgets() {
-        c = 0;
+        int c = 0;
         //load instances
         for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
             final int counter = c;

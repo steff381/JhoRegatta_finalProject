@@ -15,13 +15,10 @@ import aad.finalproject.jhoregatta.R;
 
 public class DistanceCalculatorAdapter extends ArrayAdapter<Coordinates> {
 
-    public int highlightPosition;
 
     //create some instances
     private Context context;
     private ArrayList<Coordinates> coordinates;
-    private String[] latStr;
-    private String[] lonStr;
 
     // instance constructor
     public DistanceCalculatorAdapter(Context context, int textViewResourceId,
@@ -58,21 +55,22 @@ public class DistanceCalculatorAdapter extends ArrayAdapter<Coordinates> {
             holder.lat = (TextView) convertView.findViewById(R.id.txt_dc_list_latitude);
             holder.lon = (TextView) convertView.findViewById(R.id.txt_dc_list_longitude);
 
-
+            // set the tags for the holder
             convertView.setTag(holder);
             convertView.setTag(R.id.txt_dc_list_latitude, holder.lat);
             convertView.setTag(R.id.txt_dc_list_longitude, holder.lon);
 
 
         } else {
+            // if convert view exists just assign holder to the constructed convert view
             holder = (ViewHolder) convertView.getTag();
         }
 
 
         Coordinates coordinate = coordinates.get(position);// create a coordinate to edit
         //get string arrays with the stored coordinates in string form
-        latStr = coordinate.getLatitudeString();
-        lonStr = coordinate.getLongitudeString();
+        String[] latStr = coordinate.getLatitudeString();
+        String[] lonStr = coordinate.getLongitudeString();
         // display the numbers in the right format
         holder.lat.setText(latStr[0] + "° "
                 + latStr[1] + "\' "
@@ -93,7 +91,4 @@ public class DistanceCalculatorAdapter extends ArrayAdapter<Coordinates> {
         notifyDataSetChanged();
     }
 
-    public void clearArrayList() {
-        this.coordinates.clear();
-    }
 }

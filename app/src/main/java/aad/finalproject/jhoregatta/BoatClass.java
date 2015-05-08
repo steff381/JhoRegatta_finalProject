@@ -3,8 +3,9 @@ package aad.finalproject.jhoregatta;
 import android.graphics.Color;
 import android.util.Log;
 
-/**
- * Created by Daniel on 4/12/2015.
+/*
+This class handles teh boatclass fields
+It isn't associated with the DB only references by other classes.
  */
 public class BoatClass {
 
@@ -24,14 +25,10 @@ public class BoatClass {
         return boatColor;
     }
 
-
-
     // instance with color only
     public BoatClass(String color) {
         setClassColor(color);
     }
-
-
 
     public String getStartTime() {
         return startTime;
@@ -40,7 +37,6 @@ public class BoatClass {
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
-
 
     public double getClassDistance() {
         return classDistance;
@@ -54,6 +50,8 @@ public class BoatClass {
         return classColorSolid;
     }
 
+    //each boatclass has its own color and among other properties. choosing a class color
+    // automatically assigns other boatclass characteristics
     public void setClassColor(String classColor) {
         switch (classColor) {
             case "Classless":

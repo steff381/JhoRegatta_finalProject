@@ -14,25 +14,28 @@ import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.Race;
 import aad.finalproject.db.ResultsAdapter;
 
-/**
- * Created by Daniel on 4/14/2015.
+/*
+This class contains data that can be accessed by any class in the project.
  */
 public class GlobalContent {
 
-    private static final String LOGTAG = "Logtag: " + Thread.currentThread()
-            .getStackTrace()[2].getClassName(); // log tag for records
+    private static final String LOGTAG = "Logtag: GlobalContent"; // log tag for records
 
+    //vital details used by the time tracker and results menu
     public static Race activeRace;
     public static ResultsAdapter activeResultsAdapter = null;
 
+    //access mode holders
     private static String BoatFormAccessMode;
     private static String RaceFormAccessMode;
     private static String ResultsFormAccessMode;
 
+    //storage for the ID's of each table
     private static long boatRowID;
     private static long raceRowID;
     private static long resultsRowID;
 
+    //form access mode options
     public static String modeAdd = "ADD";
     public static String modeEdit = "EDIT";
 
@@ -135,7 +138,7 @@ public class GlobalContent {
         DateTime finishTime = toDateTime(finishTimeString);
         // calculate difference in time
         long millis = finishTime.getMillis() - startTime.getMillis();
-        //format as string
+        //format as string 00:00:00
         return String.format("%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis) -
@@ -147,7 +150,7 @@ public class GlobalContent {
     //calculate PHRF and Penalty adjustment
     public static String calculateAdjDuration(int PHRF, long durationInMillis, double penalty,
                                               double distance, double correctionFactor) {
-        String result = null;
+        String result;
         penalty = penalty/100;
         //calculate Time Allowance in Milliseconds
         long taInMillis = (long) ((distance * PHRF * correctionFactor) * 1000);
@@ -189,6 +192,7 @@ public class GlobalContent {
         return BoatFormAccessMode;
     }
 
+    //used for establishing what kind of access the user should ahve to the data in the form
     public static void setBoatFormAccessMode(boolean isEditMode) {
         if(isEditMode){
             BoatFormAccessMode = modeEdit;
@@ -216,6 +220,7 @@ public class GlobalContent {
         return RaceFormAccessMode;
     }
 
+    //set teh access mode for the race form.
     public static void setRaceFormAccessMode(boolean isEditMode) {
         if(isEditMode){
             RaceFormAccessMode = modeEdit;

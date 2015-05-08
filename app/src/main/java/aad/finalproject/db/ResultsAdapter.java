@@ -20,8 +20,8 @@ import java.util.List;
 import aad.finalproject.jhoregatta.GlobalContent;
 import aad.finalproject.jhoregatta.R;
 
-/**
- * Created by Daniel on 4/20/2015.
+/*
+Handles the list view of results in the results menu
  */
 public class ResultsAdapter extends BaseAdapter {
     private static String LOGTAG = "Logtag: " + Thread.currentThread()
@@ -201,53 +201,54 @@ public class ResultsAdapter extends BaseAdapter {
 
 
             // set the function of each finish button
+
             btnFinish.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    if (result.getResultsClassStartTime() != null) {
-                        DateTime dateTime = DateTime.now();// capture the current time
+                if (result.getResultsClassStartTime() != null) {
+                    DateTime dateTime = DateTime.now();// capture the current time
 
-                        //format time as string for SQL
-                        String timeFormatted = GlobalContent.dateTimeToString(dateTime);
+                    //format time as string for SQL
+                    String timeFormatted = GlobalContent.dateTimeToString(dateTime);
 
-                        //update the result's finish time.
-                        resultDataSource.updateSingleFinishTime(result.getResultsId(), timeFormatted);
+                    //update the result's finish time.
+                    resultDataSource.updateSingleFinishTime(result.getResultsId(), timeFormatted);
 
 
-                        //set the result entry's finish time to the same.
-                        result.setResultsBoatFinishTime(timeFormatted);
+                    //set the result entry's finish time to the same.
+                    result.setResultsBoatFinishTime(timeFormatted);
 
-                        //hide the finish button and show the reset button instead.
-                        btnFinish.setVisibility(View.GONE);
-                        btnReset.setVisibility(View.VISIBLE);
+                    //hide the finish button and show the reset button instead.
+                    btnFinish.setVisibility(View.GONE);
+                    btnReset.setVisibility(View.VISIBLE);
 
-                        // set the text of the reset button. Click count to reset is 3
-                        btnReset.setText("   Reset [3]   ");
+                    // set the text of the reset button. Click count to reset is 3
+                    btnReset.setText("   Reset [3]   ");
 
-                        //set the row color to red
-                        finalView.setBackgroundColor(v.getResources().getColor(R.color.red06));
+                    //set the row color to red
+                    finalView.setBackgroundColor(v.getResources().getColor(R.color.red06));
 
-                        //set the text of each text box white
-                        for (TextView t : textViews) {
-                            t.setTextColor(Color.parseColor("#ffffff")); // make the text white
-                        }
+                    //set the text of each text box white
+                    for (TextView t : textViews) {
+                        t.setTextColor(Color.parseColor("#ffffff")); // make the text white
+                    }
 
-                        // get the start time for the class
-                        String startTime = result.getResultsClassStartTime();
+                    // get the start time for the class
+                    String startTime = result.getResultsClassStartTime();
 
-                       //get the finish time ""
-                        GlobalContent.getElapsedTime(startTime, timeFormatted);
+                   //get the finish time ""
+                    GlobalContent.getElapsedTime(startTime, timeFormatted);
 
-                        //run table calculations to derive duration and adjusted duration
-                        resultDataSource.runCalculations();
+                    //run table calculations to derive duration and adjusted duration
+                    resultDataSource.runCalculations();
 
-                        //refresh the viewed data
-                        notifyDataSetChanged();
-                    } else
-                        Toast.makeText(v.getContext(), "This boat's Class hasn't started yet. \n" +
-                                "Wait for Time Tracker to finish starting the Class.",
-                                Toast.LENGTH_LONG).show();
+                    //refresh the viewed data
+                    notifyDataSetChanged();
+                } else
+                    Toast.makeText(v.getContext(), "This boat's Class hasn't started yet. \n" +
+                            "Wait for Time Tracker to finish starting the Class.",
+                            Toast.LENGTH_LONG).show();
                 }
             });
 

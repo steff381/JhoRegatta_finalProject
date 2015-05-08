@@ -15,8 +15,8 @@ import java.util.List;
 
 import aad.finalproject.jhoregatta.R;
 
-/**
- * Created by Daniel on 4/11/2015.
+/*
+ class containing all data that is manipulated for teh boat lass
  */
 public class BoatAdapter extends BaseAdapter{
     Context mContext;

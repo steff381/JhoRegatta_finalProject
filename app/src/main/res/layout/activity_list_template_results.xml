@@ -13,7 +13,7 @@
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
-            android:layout_height="55dp"
+            android:layout_height="65dp"
             android:text="     Finish!    "
             android:layout_margin="5dp"
             android:id="@+id/btn_boat_finished"
@@ -85,7 +85,10 @@
             android:id="@+id/txt_hd_results_Name"
             android:layout_weight="3"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:layout_marginLeft="7dp"
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -94,7 +97,9 @@
             android:id="@+id/txt_hd_results_SailNum"
             android:layout_weight="3"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical|right"
+            android:textStyle="bold"
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -103,7 +108,10 @@
             android:id="@+id/txt_hd_finish_time"
             android:layout_weight="3"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:visibility="gone" />
     </TableRow>
 
 </RelativeLayout>

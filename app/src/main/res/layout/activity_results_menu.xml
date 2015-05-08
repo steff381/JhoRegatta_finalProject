@@ -115,7 +115,8 @@
                 android:text="Name"
                 android:id="@+id/txt_hd_rl_Name"
                 android:layout_weight="3"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -123,7 +124,9 @@
                 android:text="Sail Num"
                 android:id="@+id/txt_hd_rl_SailNum"
                 android:layout_weight="3"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp"
+                android:gravity="right" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -131,7 +134,8 @@
                 android:id="@+id/txt_hd_finish_time"
                 android:layout_weight="3"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:visibility="gone" />
 
         </TableRow>
 

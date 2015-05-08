@@ -16,12 +16,14 @@ import java.util.ArrayList;
 
 public class Preferences extends MainActivity implements TimePickerDialog.Communicator{
 
+    //array lists that handle the duration textviews and the time they hold
     private ArrayList<TextView> durationTextViews;
     private ArrayList<Long> milliseconds;
 
-
+    //Create a single string to call the preferences
     public static final String PREFS = "TimePrefs";
 
+    //this is the item in the milliseconds and durationTextViews arrays that will be changed.
     private int arrayPositionToModify = 0; // declare and set initially to 0
 
     //button wigets
@@ -38,9 +40,8 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false); // hide the return/up button
-
+        // hide the return/up button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         //get the shared prefereces file
         timePreferences = getSharedPreferences(PREFS, 0);
@@ -157,7 +158,6 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         });
 
         //wire the cancel button
-
         cancelChanges = (Button) findViewById(R.id.btn_prefs_cancelChanges);
 
         // simply close the activity if the user doesn't want to commit the changes.
@@ -171,17 +171,20 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
 
     //form validator
     private boolean validateForm() {
+        // let the user know the cannot choose 0 time for this field
         if (milliseconds.get(1) == 0) {
             Toast.makeText(this, "Class Flag up duration" +
                     " cannot be 0", Toast.LENGTH_LONG).show();
             return false;
         }
+        // let the user know the cannot choose 0 time for this field
         if (milliseconds.get(2) == 0) {
             Toast.makeText(this, "Class and Prep Flag up duration" +
                     " cannot be 0", Toast.LENGTH_LONG).show();
             return false;
 
         }
+        // let the user know the cannot choose 0 time for this field
         if (milliseconds.get(3) == 0) {
             Toast.makeText(this, "Class up Prep down duration" +
                     " cannot be 0", Toast.LENGTH_LONG).show();

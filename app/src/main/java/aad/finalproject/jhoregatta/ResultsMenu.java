@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,7 +20,6 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.List;
 
-import aad.finalproject.db.AndroidDatabaseManager;
 import aad.finalproject.db.DBAdapter;
 import aad.finalproject.db.DatabaseWriter;
 import aad.finalproject.db.RaceDataSource;
@@ -36,28 +36,26 @@ public class ResultsMenu extends MainActivity {
             + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
     private String orderBy = DBAdapter.KEY_BOAT_NAME;
 
+    //Message telling user what is wrong with the form.
     private String validatorMessage;
 
     //instance of data source
-    RaceDataSource raceDataSource;
-    ResultDataSource resultDataSource;
+    private RaceDataSource raceDataSource;
+    private ResultDataSource resultDataSource;
 
-    // Listview widgets and objects
+    //Listview widgets and objects
     public static ListView myList;
-    ResultsAdapter resultsAdapter;
-
-    // make button instance for capturing finish time
-    Button returnToTimeTracker;
-
-    //make a button that handles all finalization efforts
-    Button finishAndSendResults;
 
     //make a button that closes out the program.
-    Button exitRace;
+    private Button exitRace;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results_menu);
+
+        //Keep awake
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //wire data source and open
         raceDataSource = new RaceDataSource(this);
@@ -73,8 +71,8 @@ public class ResultsMenu extends MainActivity {
         myList = (ListView) findViewById(R.id.lvResultList);
 
         //wire button
-        returnToTimeTracker = (Button) findViewById(R.id.btn_nav_TimeTracker);
-        finishAndSendResults = (Button) findViewById(R.id.btn_rm_csv_export);
+        Button returnToTimeTracker = (Button) findViewById(R.id.btn_nav_TimeTracker);
+        Button finishAndSendResults = (Button) findViewById(R.id.btn_rm_csv_export);
         exitRace =(Button) findViewById(R.id.btn_rm_exit);
 
 
@@ -104,34 +102,24 @@ public class ResultsMenu extends MainActivity {
             returnToTimeTracker.setText("Races");
             //change the name of the finalizer button
             finishAndSendResults.setText("E-Mail Results");
-            //change the function of the back to tracker button
-            returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), RaceMenu.class);
-                    startActivity(intent);
-                }
-            });
 
-            //show the exit button
-            exitRace.setVisibility(View.VISIBLE);
 
         } else {//change the name of the back to tracker button
             //set the text for the tracker button
             returnToTimeTracker.setText("Time Tracker");
-            // close finish line and navigate to back to time tracker
-            returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // close databases to conserve resources
-                    resultDataSource.close();
-                    raceDataSource.close();
-                    finish(); //finish the activity
 
-                }
-            });
         }
+        // close finish line and navigate to back to time tracker
+        returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // close databases to conserve resources
+                resultDataSource.close();
+                raceDataSource.close();
+                finish(); //finish the activity
 
+            }
+        });
 
 ////////Finializer button functions
         finishAndSendResults.setText("Finalize");
@@ -140,7 +128,7 @@ public class ResultsMenu extends MainActivity {
         finishAndSendResults.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validateResultsTable()){
+                if (validateResultsTable()) {
                     // build dialog box for confirmation
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResultsMenu.this);
                     alertDialog.setTitle("WARNING: Finalizing Result Tables");
@@ -191,10 +179,12 @@ public class ResultsMenu extends MainActivity {
              */
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
                 TextView idTv = (TextView) view.findViewById(R.id.txt_hd_results_ID);
-                long myId = Long.parseLong(idTv.getText().toString());
+                long myId = Long.parseLong(idTv.getText().toString());//get the id value from the view
 
                 GlobalContent.setResultsRowID(myId); // grab the result id so the editor can use it
+                //open up the edit formm activity
                 Intent intent = new Intent(view.getContext(), ResultsEditor.class);
                 startActivity(intent);
                 return true;
@@ -318,21 +308,10 @@ public class ResultsMenu extends MainActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_ddms:
-                onActionClickDDMS(); //TODO: Get rid of DDMS
                 return true;
-//            case R.id.action_settings:
-//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-
-
-
-    public void onActionClickDDMS(){
-        Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
-        startActivity(dbmanager);
     }
 
     @Override

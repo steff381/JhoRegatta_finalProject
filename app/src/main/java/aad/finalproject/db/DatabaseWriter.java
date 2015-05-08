@@ -16,36 +16,8 @@ public class DatabaseWriter extends MainActivity {
     // sql elements for selecting boats
     private static String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
             + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
-    private static String orderBy = DBAdapter.KEY_BOAT_CLASS + ", "
-            + DBAdapter.KEY_BOAT_NAME + " DESC";
     // make a publicly accessible directory path
     public static File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    // create a list of headers for each row
-    private static String RESULTS_FIELDS_CSV_HEADER =
-//                    DBAdapter.KEY_ID + "," +
-//                    DBAdapter.KEY_RACE_ID + "," +
-//                    DBAdapter.KEY_BOAT_ID  + "," +
-
-                    DBAdapter.KEY_RACE_NAME + "," +
-                    DBAdapter.KEY_RACE_DATE + "," +
-                    DBAdapter.KEY_RACE_DISTANCE + "," +
-
-                    DBAdapter.KEY_BOAT_NAME + "," +
-                    DBAdapter.KEY_BOAT_SAIL_NUM + "," +
-                    "fleet_color," +
-                    DBAdapter.KEY_BOAT_PHRF + "," +
-                    DBAdapter.KEY_RESULTS_MANUAL_ENTRY + "," +
-
-                    DBAdapter.KEY_RESULTS_CLASS_START + "," +
-                    DBAdapter.KEY_RESULTS_FINISH_TIME + "," +
-                    DBAdapter.KEY_RESULTS_DURATION + "," +
-                    DBAdapter.KEY_RESULTS_ADJ_DURATION + "," +
-                    DBAdapter.KEY_RESULTS_PENALTY + "," +
-                    DBAdapter.KEY_RESULTS_NOTE + "," +
-                    DBAdapter.KEY_RESULTS_PLACE + "," +
-                    DBAdapter.KEY_RESULTS_NOT_FINISHED + "," +
-                    DBAdapter.KEY_CREATED_AT
-            ;
 
 
     public static boolean exportDatabase(String fileName, ResultDataSource resultDataSource) {
@@ -72,13 +44,15 @@ public class DatabaseWriter extends MainActivity {
                 exportDir.mkdirs();
             }
 
-            File file;
-            String c = ",";
-            PrintWriter printWriter = null;
+
+            File file; //file instance
+            String c = ","; //short way to make a comma
+            PrintWriter printWriter = null; //create a null printwriter
 
             try {
 
                 Log.i(LOGTAG, "Trying to write file ");
+                //write the file using the given file location and file name
                 file = new File(exportDir, fileName);
                 file.createNewFile();
                 printWriter = new PrintWriter(new FileWriter(file));
@@ -92,18 +66,41 @@ public class DatabaseWriter extends MainActivity {
                  * containing all records of the table (all fields).
                  * The code of this class is omitted for brevity.
                  */
+
+                //create the order by clause for the sql statement
+                String orderBy = DBAdapter.KEY_BOAT_CLASS + ", " + DBAdapter.KEY_BOAT_NAME;
+
                 List<Result> results = resultDataSource.getAllResults(where, orderBy, null);
 
                 //Write the name of the table and the name of the columns (comma separated values) in the .csv file.
+                String RESULTS_FIELDS_CSV_HEADER = DBAdapter.KEY_RACE_NAME + "," +
+                        DBAdapter.KEY_RACE_DATE + "," +
+                        DBAdapter.KEY_RACE_DISTANCE + "," +
+
+                        DBAdapter.KEY_BOAT_NAME + "," +
+                        DBAdapter.KEY_BOAT_SAIL_NUM + "," +
+                        "fleet_color," +
+                        DBAdapter.KEY_BOAT_PHRF + "," +
+                        DBAdapter.KEY_RESULTS_MANUAL_ENTRY + "," +
+
+                        DBAdapter.KEY_RESULTS_CLASS_START + "," +
+                        DBAdapter.KEY_RESULTS_FINISH_TIME + "," +
+                        DBAdapter.KEY_RESULTS_DURATION + "," +
+                        DBAdapter.KEY_RESULTS_ADJ_DURATION + "," +
+                        DBAdapter.KEY_RESULTS_PENALTY + "," +
+                        DBAdapter.KEY_RESULTS_NOTE + "," +
+                        DBAdapter.KEY_RESULTS_PLACE + "," +
+                        DBAdapter.KEY_RESULTS_NOT_FINISHED + "," +
+                        DBAdapter.KEY_CREATED_AT;
+
+
                 printWriter.println(RESULTS_FIELDS_CSV_HEADER);
+
+
                 Log.i(LOGTAG, "HEADERS: " + RESULTS_FIELDS_CSV_HEADER);
 
                 for (Result r : results) {
 
-//                    // IDs
-//                    long id = r.getResultsId();
-//                    long boat_id = r.getResultsBoatId();
-//                    long RaceId = r.getResultsRaceId();
                     //results
                     String ClassStartTime =  r.getResultsClassStartTime();
                     String BoatFinishTime =  r.getResultsBoatFinishTime();
@@ -131,9 +128,6 @@ public class DatabaseWriter extends MainActivity {
                      * is converted into String.
                      */
                     String record =
-//                                    id + c +
-//                                    RaceId + c +
-//                                    boat_id + c +
 
                                     RaceName + c +
                                     RaceDate + c +
@@ -153,20 +147,20 @@ public class DatabaseWriter extends MainActivity {
                                     ResultsNote + c +
                                     ResultsPlace + c +
                                     ResultsNotFinished + c +
-//                                    ResultsVisible + c +
-                                    Created
-                            ;
+                                    Created;
 
 
                     printWriter.println(record); //write the record in the .csv file
                 }
 
-                resultDataSource.close();
+                resultDataSource.close(); // close data soruce to conserve resources
             } catch (Exception exc) {
+                //catch any possible exceptions
                 Log.i(LOGTAG, "EXCEPTION THROWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 return false;
             } finally {
                 Log.i(LOGTAG, "Finally Closing writer");
+                //close the print writer.
                 if (printWriter != null) printWriter.close();
             }
 
