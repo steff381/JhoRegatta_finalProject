@@ -57,12 +57,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="               "
-                android:id="@+id/txt_hd_checkbox"
-                android:layout_weight=".05" />
+                android:id="@+id/checkBox"
+                android:layout_weight=".3"
+                android:checked="false"
+                android:enabled="false"/>
 
             <TextView
                 android:layout_width="0dp"
@@ -78,7 +79,8 @@
                 android:text="Name"
                 android:id="@+id/txt_hd_SelectName"
                 android:layout_weight="5"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="0dp"

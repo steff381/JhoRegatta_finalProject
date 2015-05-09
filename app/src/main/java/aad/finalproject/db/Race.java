@@ -15,6 +15,7 @@ public class Race {
     int clsYellow;
     int clsRed;
     int cls_TBD_;
+    public boolean hasDistance = true;
 
     public long getId() {
         return id;

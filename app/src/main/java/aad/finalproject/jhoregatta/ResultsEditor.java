@@ -83,6 +83,27 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                 } else {
                     //if unchecked, disable the button.
                     setElapsedTime.setEnabled(false);
+                    //recalculate the duration based on start and finish time
+
+                    long milliDuration = GlobalContent.getDurationInMillis(classStart.getText().toString(),
+                            finishTime.getText().toString());
+                    // convert to readable format
+                    String newDuration = GlobalContent.convertMillisToFormattedTime(milliDuration,0);
+                    elapsedTime.setText(newDuration); //set the calculated time
+                    calculateAdjustedDuration(); // recalculate adjusted duration
+                }
+            }
+        });
+
+        penalty.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    // if there is data in the penalty editor then recalculate the adjusted duration
+                    if (penalty.getText().toString().length() == 0) {
+                        penalty.setText("0");
+                    }
+                    calculateAdjustedDuration(); // calculate the adjusted duration
                 }
             }
         });
@@ -93,18 +114,13 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // if there is data in the penalty editor then recalculate the adjusted duration
-                try {
-                    if (Integer.parseInt(penalty.getText().toString()) > 0) {
-                        calculateAdjustedDuration();
-                    }
-                } catch (NumberFormatException e) {
-                    //do nothing, it wont harm the results editor if the number field is empty.
-                }
+
+
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         // if elapsed time is entered manually, calculate the adjusted time
@@ -159,6 +175,9 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //clear the focus from the penalty edit text
+                penalty.clearFocus();
                 //make sure there are no commas! bad for SQL table
                 if (!GlobalContent.checkForCommas(v.getContext(), notes.getText().toString())) {
                     if (manualEntryMode.isChecked() && elapsedTime.length() == 0) {
@@ -223,8 +242,6 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
         ///////////////initial widget states//////////////////////////////////////////
 
-        // button is disabled until new data is entered into one of the editable fields
-//        update.setEnabled(false);
 
         //set elapsed time button is disabled until manual entry checkbox is clicked
         setElapsedTime.setEnabled(false);

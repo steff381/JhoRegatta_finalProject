@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,13 +19,13 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import aad.finalproject.db.DBAdapter;
-import aad.finalproject.db.DatabaseWriter;
 import aad.finalproject.db.Race;
 import aad.finalproject.db.RaceDataSource;
+import aad.finalproject.db.Result;
 import aad.finalproject.db.ResultDataSource;
 
 
@@ -36,66 +34,56 @@ public class RaceAddForm extends Form {
     //logging header
     private String LOG = this.getClass().getSimpleName() + " - MODE:";
 
-    // set the onclick listners for each of the check boxes
-    String boatCheckBoxName;
+    //bundle key used for communications
+    public static final String BUNDLE_KEY = "setDistanceOnly";
 
     public static boolean isBoatClassUpdate;  // if the update is boat update
 
     // create empty instances for widgets
-    EditText raceTitle;
-    EditText raceDateMM;
-    EditText raceDateDD;
-    EditText raceDateYYYY;
+    private EditText raceTitle;
+    private EditText raceDateMM;
+    private EditText raceDateDD;
+    private EditText raceDateYYYY;
 
     // linear layout
     LinearLayout linlayResultsButtons;
-//    public static EditText raceDistance; // make accessible by the calculator
+
+
     //checkboxes for class selection
-    CheckBox raceClassless;
-    CheckBox raceClassBlue;
-    CheckBox raceClassPurple;
-    CheckBox raceClassYellow;
-    CheckBox raceClassGreen;
-    CheckBox raceClass_TBD_;
+    private CheckBox raceClassless;
+    private CheckBox raceClassBlue;
+    private CheckBox raceClassPurple;
+    private CheckBox raceClassYellow;
+    private CheckBox raceClassGreen;
+    private CheckBox raceClass_TBD_;
 
-    ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
 
-    // textviews for showing start order
-    TextView raceClass1Holder;
-    TextView raceClass2Holder;
-    TextView raceClass3Holder;
-    TextView raceClass4Holder;
-    TextView raceClass5Holder;
-    TextView raceClass6Holder;
+    //array list of checkboxes
+    private ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
 
-    //
-    ArrayList<TextView> boatClassHolderArrayList = new ArrayList<>();
+    //array list of boat names in text boxes
+    private ArrayList<TextView> boatClassHolderArrayList = new ArrayList<>();
 
     // create create field data containers
-    String strraceTitle;
-    String strraceDate;
-    int strraceDateYYYY;
-    int strraceDateDD;
-    int strraceDateMM;
-    int intRaceClassless;
-    int intRaceClassBlue;
-    int intRaceClassPurple;
-    int intRaceClassYellow;
-    int intRaceClassGreen;
-    int intRaceClass_TBD_;
+    private String strraceTitle;
+    private String strraceDate;
+    private int intRaceClassless;
+    private int intRaceClassBlue;
+    private int intRaceClassPurple;
+    private int intRaceClassYellow;
+    private int intRaceClassGreen;
+    private int intRaceClass_TBD_;
 
     // initialize the race data source object
     RaceDataSource raceDataSource; // create instance of the race data source
+    ResultDataSource resultDataSource; // create instance of the results data source.
     Cursor updateRowFromCursor; //create a cursor to hold single row of data for updates/edits
 
     // initialize button widgets
-    Button create;
-    Button update;
-    Button delete;
-    Button modifyResults;
-    Button emailResults;
-
-
+    private Button create;
+    private Button update;
+    private Button delete;
+    private Button setDistance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +95,9 @@ public class RaceAddForm extends Form {
         //open a Writable instance of the RaceDataSource
         raceDataSource = new RaceDataSource(this);
         raceDataSource.open();
+        //open the results data source
+        resultDataSource = new ResultDataSource(this);
+        resultDataSource.open();
 
         isBoatClassUpdate = false; // opening up the menu for the first time makes false
 
@@ -127,8 +118,9 @@ public class RaceAddForm extends Form {
         create = (Button) findViewById(R.id.btn_add_race);
         update = (Button) findViewById(R.id.btn_update_race);
         delete = (Button) findViewById(R.id.btn_delete_race);
-        modifyResults = (Button) findViewById(R.id.btn_raf_modify_results);
-        emailResults = (Button) findViewById(R.id.btn_raf_email_results);
+        Button modifyResults = (Button) findViewById(R.id.btn_raf_modify_results);
+        setDistance = (Button) findViewById(R.id.btn_setDistance);
+//        Button emailResults = (Button) findViewById(R.id.btn_raf_email_results);
 
         //wire linear layout
         linlayResultsButtons = (LinearLayout) findViewById(R.id.linlay_raf_results_buttons);
@@ -144,32 +136,78 @@ public class RaceAddForm extends Form {
             }
         });
 
-        //send the data to the data table writer to get a CSV for this race then send it by email
-        emailResults.setOnClickListener(new View.OnClickListener() {
+
+        setDistance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendResultTableByEmail();
+                //cleare the boat class array
+                BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
+
+                //load the array up with the selected boats.
+                if (raceClassless.isChecked()) {
+                    //add the class to the class array
+                    BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new
+                            BoatClass(raceClassless.getText().toString().trim()));
+                } else {
+                    if (raceClassBlue.isChecked()) {
+                        //add the class to the class array
+                        BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new
+                                BoatClass(raceClassBlue.getText().toString().trim()));
+                    }
+                    if (raceClassPurple.isChecked()) {
+                        //add the class to the class array
+                        BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new
+                                BoatClass(raceClassPurple.getText().toString().trim()));
+                    }
+                    if (raceClassYellow.isChecked()) {
+                        //add the class to the class array
+                        BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new
+                                BoatClass(raceClassYellow.getText().toString().trim()));
+                    }
+                    if (raceClassGreen.isChecked()) {
+                        //add the class to the class array
+                        BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new
+                                BoatClass(raceClassGreen.getText().toString().trim()));
+                    }
+                    if (raceClass_TBD_.isChecked()) {
+                        //add the class to the class array
+                        BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new
+                                BoatClass(raceClass_TBD_.getText().toString().trim()));
+                    }
+                }
+
+                if (BoatStartingListClass.BOAT_CLASS_START_ARRAY.size() > 0) {
+                    // open the select class distance
+                    Intent intent = new Intent(getApplicationContext(), SelectClassDistance.class);
+                    Bundle b = new Bundle();
+                    b.putBoolean(BUNDLE_KEY, true);
+                    intent.putExtras(b);
+                    startActivity(intent);
+                }
             }
         });
 
         // set the buttons for edit mode.
         if (GlobalContent.modeEdit.equals(GlobalContent.getRaceFormAccessMode())) {
+
+            //if EDIT mode is active initialize cursor fields
+            updateRowFromCursor = raceDataSource.getRow(GlobalContent.getRaceRowID());
+
+            //show the proper buttons
             create.setVisibility(View.GONE);
             linlayResultsButtons.setVisibility(View.VISIBLE);
             delete.setVisibility(View.VISIBLE);
+
+            checkForDistance();
+
 
             //make sure the editable fields and boxes are disabled
             setEnabledOfEditables(false);
 
 //            //make the starting order text views invisible during edit mode.
-//            findViewById(R.id.linlay_class_start_order_textviews).setVisibility(View.INVISIBLE);
             findViewById(R.id.linlay_raf_startOrder).setVisibility(View.INVISIBLE);
 
             LOG += " Race EDIT form"; // change the edit mode status for log cat
-//            raceDataSource.getRow(GlobalContent.getRaceRowID()); // get the id from global contetn
-
-            //if EDIT mode is active initialize cursor fields
-            updateRowFromCursor = raceDataSource.getRow(GlobalContent.getRaceRowID());
 
             //populate the edit form fields with data from selected race
             raceTitle.setText(updateRowFromCursor.getString(updateRowFromCursor
@@ -180,8 +218,6 @@ public class RaceAddForm extends Form {
             raceDateMM.setText(dateTemp[0]);
             raceDateDD.setText(dateTemp[1]);
             raceDateYYYY.setText(dateTemp[2]);
-
-
 
             //check if the variable in SQLite is 1 or 0, if one set the checkbox to checked
             if (Integer.parseInt(updateRowFromCursor.getString(updateRowFromCursor
@@ -229,6 +265,28 @@ public class RaceAddForm extends Form {
         }
     }
 
+    private void checkForDistance() {
+
+        //get a list of all the results that match the curret race id.
+        List<Result> results = resultDataSource.getAllResults(DBAdapter.KEY_RACE_ID + "= "
+                + GlobalContent.getRaceRowID(), null, null);
+
+        //tally up the distance
+        double distance = 0;
+        for (Result r : results) {
+            Log.i(LOG, " class: " + r.getBoatClass() + " boat: " + r.getBoatName() + " distance: " + r.getRaceDistance());
+            distance += r.getRaceDistance();
+        }
+        Log.i(LOG, "Distance = " + distance);
+        //if the distance is 0 then the distance wasn't set.
+        //show or hide the "set distance" button depending on the situation.
+        if (distance == 0) {
+            setDistance.setVisibility(View.VISIBLE);
+        } else {
+            setDistance.setVisibility(View.GONE);
+        }
+    }
+
 
     private void wireWidgetsAndLoadArrays() {
         //load up text and other fields into widgets
@@ -249,12 +307,12 @@ public class RaceAddForm extends Form {
         checkBoxArrayList.add(raceClass_TBD_);
 
         // wire textviews to textview instances
-        raceClass1Holder = (TextView) findViewById(R.id.txt_class_1_holder);
-        raceClass2Holder = (TextView) findViewById(R.id.txt_class_2_holder);
-        raceClass3Holder = (TextView) findViewById(R.id.txt_class_3_holder);
-        raceClass4Holder = (TextView) findViewById(R.id.txt_class_4_holder);
-        raceClass5Holder = (TextView) findViewById(R.id.txt_class_5_holder);
-        raceClass6Holder = (TextView) findViewById(R.id.txt_class_6_holder);
+        TextView raceClass1Holder = (TextView) findViewById(R.id.txt_class_1_holder);
+        TextView raceClass2Holder = (TextView) findViewById(R.id.txt_class_2_holder);
+        TextView raceClass3Holder = (TextView) findViewById(R.id.txt_class_3_holder);
+        TextView raceClass4Holder = (TextView) findViewById(R.id.txt_class_4_holder);
+        TextView raceClass5Holder = (TextView) findViewById(R.id.txt_class_5_holder);
+        TextView raceClass6Holder = (TextView) findViewById(R.id.txt_class_6_holder);
 
         //build array list of raceclass holder textviews
         boatClassHolderArrayList.add(raceClass1Holder);
@@ -270,9 +328,9 @@ public class RaceAddForm extends Form {
     public void setCheckboxListeners() {
 
         for (int i = 1; i < checkBoxArrayList.size(); i++) {
-            boatCheckBoxName = checkBoxArrayList.get(i).getText().toString().trim();
+            String boatCheckBoxName = checkBoxArrayList.get(i).getText().toString().trim();
             final String BCBN = boatCheckBoxName;
-            Log.i(LOG, " Adding Listener to " + boatCheckBoxName );
+            Log.i(LOG, " Adding Listener to " + boatCheckBoxName);
             checkBoxArrayList.get(i).setOnCheckedChangeListener(new CompoundButton.
                     OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -294,7 +352,6 @@ public class RaceAddForm extends Form {
                     bindTextViewWithClassColors(); // update the class order text views.
                 }
             });
-            boatCheckBoxName = null; //clear the name in the checkbox holder
         }
 
         //set a special re assignment for the first class
@@ -395,13 +452,14 @@ public class RaceAddForm extends Form {
             newRace.setClsYellow(intRaceClassYellow);
             newRace.setClsGreen(intRaceClassGreen);
             newRace.setCls_TBD_(intRaceClass_TBD_);
+            newRace.hasDistance = false; // created race has no distance. set in next activity
             raceDataSource.create(newRace); //assign the race class to the db
 
             // grab the newly created RaceID and set it to the global content for use by
             // the results table
             long id = raceDataSource.getLastInsertedRowID();
             GlobalContent.setRaceRowID(id); // set the id of global content
-            GlobalContent.setActiveRace(newRace,id); // set the active race to the new race
+            GlobalContent.setActiveRace(newRace, id); // set the active race to the new race
             Log.i(LOG, "Last inserted Id: " + id + " || Race name: " + newRace.getName());
 
 
@@ -409,6 +467,9 @@ public class RaceAddForm extends Form {
 
             // open the select class distance
             Intent intent = new Intent(this, SelectClassDistance.class);
+            Bundle b = new Bundle();
+            b.putBoolean(BUNDLE_KEY, false);
+            intent.putExtras(b);
             startActivity(intent);
 
             // remove the ADD functions and replace with "Update" functions
@@ -444,6 +505,9 @@ public class RaceAddForm extends Form {
                 Log.i(LOG, "Validated UPDATE entry");
                 // open the select boats list
                 Intent intent = new Intent(this, SelectClassDistance.class);
+                Bundle b = new Bundle();
+                b.putBoolean(BUNDLE_KEY, false);
+                intent.putExtras(b);
                 startActivity(intent);
             } else {
                 Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
@@ -463,33 +527,33 @@ public class RaceAddForm extends Form {
     @Override
     void delete() {
         Cursor cursor = raceDataSource.getRow(GlobalContent.getRaceRowID());
-            if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("WARNING!!!! CANNOT UNDO A DELETION!");
-                builder.setMessage("Warning:\n" +
-                        "You are about to delete this boat. You cannot undo this event");
-                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        raceDataSource.psudoDelete(GlobalContent.getRaceRowID());
-                        Log.i(LOG, "Validated PsudoDeleted entry");
+        if (cursor.moveToFirst()) { // checks if the id supplied leads to actual entry
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("WARNING!!!! CANNOT UNDO A DELETION!");
+            builder.setMessage("Warning:\n" +
+                    "You are about to delete this boat. You cannot undo this event");
+            builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    raceDataSource.psudoDelete(GlobalContent.getRaceRowID());
+                    Log.i(LOG, "Validated PsudoDeleted entry");
 
-                        dialog.dismiss();
-                        endActivity(); // close out of the current activity. Back to boatmenu
-                    }
-                });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    dialog.dismiss();
+                    endActivity(); // close out of the current activity. Back to boatmenu
+                }
+            });
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-            } else {
-                Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
-                        Toast.LENGTH_LONG).show();
-                Log.i(LOG, "CURSOR ERROR>> BAD ID");
-            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Cursor error, bad ID",
+                    Toast.LENGTH_LONG).show();
+            Log.i(LOG, "CURSOR ERROR>> BAD ID");
+        }
 
         cursor.close();
     }
@@ -544,9 +608,9 @@ public class RaceAddForm extends Form {
         //pass values from data entry fields and spinner to String variables
         try {
             strraceTitle = raceTitle.getText().toString();
-            strraceDateMM = Integer.parseInt(raceDateMM.getText().toString());
-            strraceDateDD = Integer.parseInt(raceDateDD.getText().toString());
-            strraceDateYYYY = Integer.parseInt(raceDateYYYY.getText().toString());
+            int strraceDateMM = Integer.parseInt(raceDateMM.getText().toString());
+            int strraceDateDD = Integer.parseInt(raceDateDD.getText().toString());
+            int strraceDateYYYY = Integer.parseInt(raceDateYYYY.getText().toString());
             strraceDate = strraceDateMM + "/" + strraceDateDD + "/" + strraceDateYYYY;
             intRaceClassless = (raceClassless.isChecked()) ? 1 : 0;
             intRaceClassBlue = (raceClassBlue.isChecked()) ? 1 : 0;
@@ -560,8 +624,9 @@ public class RaceAddForm extends Form {
         }
 
     }
+
     // user clicks today and today's date appears in the date picker
-    public void onClickToday(View view){
+    public void onClickToday(View view) {
         DateTime date = new DateTime();
         date.toLocalDate();
         raceDateMM.setText(date.getMonthOfYear() + "");
@@ -569,12 +634,15 @@ public class RaceAddForm extends Form {
         raceDateYYYY.setText(date.getYear() + "");
 
     }
+
     // generic end of activty
     protected void endActivity() {
-        try {
+
+        if (resultDataSource != null) {
+            resultDataSource.close();
+        }
+        if (raceDataSource != null) {
             raceDataSource.close();
-        } catch (Exception e) {
-            Log.i(LOG, "Data source close threw error");
         }
         this.finish();
     }
@@ -583,44 +651,21 @@ public class RaceAddForm extends Form {
     protected void onResume() {
         super.onResume();
         if (isBoatClassUpdate) {
-         // if accessing form from distance then show update button otherwise do nothing
+            // if accessing form from distance then show update button otherwise do nothing
             update.setVisibility(View.VISIBLE);
             // hide the results buttons too
             linlayResultsButtons.setVisibility(View.GONE);
-
         }
-    }
-
-    private void sendResultTableByEmail() {
-        ResultDataSource resultDataSource = new ResultDataSource(this);
+        checkForDistance(); // check to see if the distance was entered into the database.
         resultDataSource.open();
-        //create a file name for the csv file
-        String fileName = "Regatta_num_" + GlobalContent.getRaceRowID() + ".csv";
+        raceDataSource.open();
 
-        //write the database to a csv file.
-        DatabaseWriter.exportDatabase(fileName, resultDataSource);
-
-
-        //get the URI of the file just created
-        Uri uri = Uri.fromFile(new File(Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/" + fileName));
-
-
-        //Create a new email
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("plain/text");
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Regatta Results for " + fileName);
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "These are the results for " + fileName);
-        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);//send file by email
-
-        //dialog that asks the user to choose their mailing program preference
-        startActivity(Intent.createChooser(emailIntent, "Choose your Email App:"));
     }
+
 
     //either disable or enable the editable fields and checkboxes in the form.
     private void setEnabledOfEditables(boolean isEnabled) {
-        // create empty instances for widgets
+        //set all editable fields as either enabled or disabled.
         raceTitle.setEnabled(isEnabled);
         raceDateMM.setEnabled(isEnabled);
         raceDateDD.setEnabled(isEnabled);
@@ -632,5 +677,8 @@ public class RaceAddForm extends Form {
         raceClassYellow.setEnabled(isEnabled);
         raceClassGreen.setEnabled(isEnabled);
         raceClass_TBD_.setEnabled(isEnabled);
+
+        findViewById(R.id.btnToday).setEnabled(isEnabled);
+
     }
 }

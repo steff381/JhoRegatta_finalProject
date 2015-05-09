@@ -39,10 +39,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/ckboxSelectBoatCheck"
-            android:text="     "
             android:gravity="center_vertical"
             android:focusable="false"
-            android:layout_weight=".05" />
+            android:layout_weight=".3"
+            android:checked="false" />
 
         <TextView
             android:layout_width="0dp"
@@ -61,7 +61,7 @@
             android:id="@+id/txt_hd_sb_Name"
             android:layout_weight="5"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|center_horizontal"
             android:textSize="20sp" />
 
         <TextView

@@ -84,21 +84,21 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Modify Results"
+                    android:text="Results"
                     android:id="@+id/btn_raf_modify_results"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1" />
 
                 <Button
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="E-mail Results"
-                    android:id="@+id/btn_raf_email_results"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1" />
+                    android:text="Set Distance"
+                    android:id="@+id/btn_setDistance"
+                    android:background="#ffff0d00"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
+
             </LinearLayout>
 
         </LinearLayout>

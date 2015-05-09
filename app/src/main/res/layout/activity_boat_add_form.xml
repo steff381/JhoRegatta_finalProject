@@ -168,8 +168,7 @@
                 android:ems="10"
                 android:id="@+id/txt_inpt_PHRF"
                 android:gravity="bottom"
-                android:inputType="numberSigned"
-                android:focusableInTouchMode="false" />
+                android:inputType="numberSigned"/>
 
             <TableRow
                 android:layout_width="match_parent"

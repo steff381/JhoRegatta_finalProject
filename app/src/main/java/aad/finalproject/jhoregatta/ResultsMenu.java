@@ -73,16 +73,16 @@ public class ResultsMenu extends MainActivity {
         //wire button
         Button returnToTimeTracker = (Button) findViewById(R.id.btn_nav_TimeTracker);
         Button finishAndSendResults = (Button) findViewById(R.id.btn_rm_csv_export);
-        exitRace =(Button) findViewById(R.id.btn_rm_exit);
+        exitRace = (Button) findViewById(R.id.btn_rm_exit);
 
 
-////////Exit race button functions
+            ////////Exit race button functions
         // initially set button to invisible
         // only shows up after database has been finalized
         exitRace.setVisibility(View.GONE);
 
         //set methods for the exit button
-        exitRace.setOnClickListener( new View.OnClickListener() {
+        exitRace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(LOGTAG, " exit button clicked");
@@ -96,19 +96,7 @@ public class ResultsMenu extends MainActivity {
             }
         });
 
-//set the visability of buttons depending on access mode
-        if (GlobalContent.getResultsFormAccessMode().equals(GlobalContent.modeEdit)) {
-            //change the name of the back to tracker button
-            returnToTimeTracker.setText("Races");
-            //change the name of the finalizer button
-            finishAndSendResults.setText("E-Mail Results");
 
-
-        } else {//change the name of the back to tracker button
-            //set the text for the tracker button
-            returnToTimeTracker.setText("Time Tracker");
-
-        }
         // close finish line and navigate to back to time tracker
         returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +109,7 @@ public class ResultsMenu extends MainActivity {
             }
         });
 
-////////Finializer button functions
+            ////////Finializer button functions
         finishAndSendResults.setText("Finalize");
         // finalize the result table and
         // Export CSV and send via email
@@ -140,7 +128,6 @@ public class ResultsMenu extends MainActivity {
                     alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) { //if yes
-//                            finalizeActiveRace(); // call finalizer
                             sendResultTableByEmail(); // send the finalized results by email
                             exitRace.setVisibility(View.VISIBLE); // make the exit button visible
                         }
@@ -160,6 +147,20 @@ public class ResultsMenu extends MainActivity {
                 }
             }
         });
+
+        //set the visability of buttons depending on access mode
+        if (GlobalContent.getResultsFormAccessMode().equals(GlobalContent.modeEdit)) {
+            //change the name of the back to tracker button
+            returnToTimeTracker.setText("Races");
+            //change the name of the finalizer button
+            finishAndSendResults.setText("E-Mail Results");
+
+
+        } else {//change the name of the back to tracker button
+            //set the text for the tracker button
+            returnToTimeTracker.setText("Time Tracker");
+
+        }
 
 
         //set onclick listening for listview
@@ -270,7 +271,7 @@ public class ResultsMenu extends MainActivity {
 
     private void sendResultTableByEmail() {
         //create a file name for the csv file
-        String fileName ="Regatta_num_" + GlobalContent.getRaceRowID() + ".csv";
+        String fileName = "Regatta_num_" + GlobalContent.getRaceRowID() + ".csv";
 
         //write the database to a csv file.
         DatabaseWriter.exportDatabase(fileName, resultDataSource);
@@ -282,7 +283,7 @@ public class ResultsMenu extends MainActivity {
 
         Log.i(LOGTAG, " URI: " + uri.toString());
 
-//                Create a new email and
+        //Create a new email and
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("plain/text");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
@@ -340,7 +341,7 @@ public class ResultsMenu extends MainActivity {
 
         String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
                 + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
-        String orderBy =  DBAdapter.KEY_BOAT_NAME;
+        String orderBy = DBAdapter.KEY_BOAT_NAME;
 
         return resultDataSource.getAllResults(where, orderBy, null);
     }
@@ -359,7 +360,6 @@ public class ResultsMenu extends MainActivity {
         Log.i(LOGTAG, " Setting custom resultsAdapter to the listview");
         myList.setAdapter(GlobalContent.activeResultsAdapter);
     }
-
 
 
 }

@@ -182,6 +182,26 @@ public class ResultDataSource {
         }
 
     }
+    // add the finish time to the results list for the chosen class
+    public void updateClassDistances(long raceId, String boatClass, double distance) {
+        ContentValues newValues = new ContentValues(); // create a content values instance
+        //Put the new values into the contentValues variable
+        newValues.put(DBAdapter.KEY_RACE_DISTANCE, distance);
+        // enter update statement in sql
+        //if the boat or boats arent classless then execute this update
+        if (!boatClass.equals("Classless")) {
+            db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS
+                    + " SET " + DBAdapter.KEY_RACE_DISTANCE + "=" + distance
+                    + " WHERE " + DBAdapter.KEY_RACE_ID + " = " + raceId + " AND "
+                    + DBAdapter.KEY_BOAT_CLASS + " = '" + boatClass + "';");
+        } else {
+            //if boats are classless then use this update.
+            db.execSQL("UPDATE " + DBAdapter.TABLE_RESULTS
+                    + " SET " + DBAdapter.KEY_RACE_DISTANCE + "=" + distance
+                    + " WHERE " + DBAdapter.KEY_RACE_ID + " = " + raceId + ";");
+        }
+
+    }
 
     // clear the finish time for all results in the given race.
     //

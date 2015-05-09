@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import aad.finalproject.db.ResultDataSource;
+
 
 public class SelectClassDistance extends MainActivity {
 
@@ -32,6 +34,8 @@ public class SelectClassDistance extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_class_distance);
 
+        //get bundled info from race add form.
+        final boolean setDistanceOnly = getIntent().getExtras().getBoolean(RaceAddForm.BUNDLE_KEY);
 
         // create instances of the arraylists
         classColor = new ArrayList<>();
@@ -51,37 +55,77 @@ public class SelectClassDistance extends MainActivity {
         setupDisplayAndWidgets();
 
         // Wire buttons
-        Button btnGoToSelectBoats = (Button) findViewById(R.id.btn_scd_gotoSelectBoats);
-        Button backBtn = (Button) findViewById(R.id.btn_scd_back);
+        Button btnSetDistance = (Button) findViewById(R.id.btn_scd_gotoSelectBoats);
+        Button btnBack = (Button) findViewById(R.id.btn_scd_back);
+        Button btnDistanceUnknown = (Button) findViewById(R.id.btn_scd_distanceUnknown);
 
+        //if the purpose is to set the distance of an existing race then do not show "Unknown"
+        if (setDistanceOnly) {
+            btnDistanceUnknown.setVisibility(View.GONE);
+        }
 
         //set the button function
-        btnGoToSelectBoats.setOnClickListener(new View.OnClickListener() {
+        btnSetDistance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateEntries()) {
-                    int c = 0; // counter
-                    // pass the distance to the Class's distace field
-                    for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
-                        //get the distance from the text field
-                        double dist = Double.parseDouble(classDistance.get(c).getText().toString());
-                        b.setClassDistance(dist); // set the distance to the boat class
-                        Log.i(LOGTAG, " distance for class " + b.getBoatColor() + " is " +
-                                b.getClassDistance());
-                        c++; // increment the counter
-                    }
+            if (validateEntries()) {
+                int c = 0; // counter
+                // pass the distance to the Class's distance field
+                for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+                    //get the distance from the text field
+                    double dist = Double.parseDouble(classDistance.get(c).getText().toString());
+                    b.setClassDistance(dist); // set the distance to the boat class
+                    Log.i(LOGTAG, " distance for class " + b.getBoatColor() + " is " +
+                            b.getClassDistance());
+                    c++; // increment the counter
+                }
+                // if the intent is to set the distance and move on to time tracking
+                if (!setDistanceOnly) {
+                    //active race now has distances for each class
+                    GlobalContent.activeRace.hasDistance = true;
                     //start the select boats activity
                     Intent intent = new Intent(v.getContext(), SelectBoats.class);
                     startActivity(intent);
+                    //if the intent is to set the distance for an existing race.
+                } else {
+                    // open the results database
+                    ResultDataSource rds = new ResultDataSource(getApplicationContext());
+                    rds.open();
+
+                    //set the distance for each class in the correct race.
+                    for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+                        rds.updateClassDistances(GlobalContent.getRaceRowID(), b.getBoatColor(),
+                                b.getClassDistance());
+                    }
+                    rds.runCalculations(); // calculate and enter adjusted duration.
+                    //return to the previous activity.
+                    finish();
                 }
+            }
             }
         });
 
         //set back button functions
-        backBtn.setOnClickListener(new View.OnClickListener() {
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish(); // close activity
+            }
+        });
+
+        // if user does not know the distance yet.
+        btnDistanceUnknown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //set all class distances to 0
+                for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+                    bc.setClassDistance(0);
+                }
+                //active race has no distance
+                GlobalContent.activeRace.hasDistance = false;
+                //start the select boats activity
+                Intent intent = new Intent(v.getContext(), SelectBoats.class);
+                startActivity(intent);
             }
         });
     }

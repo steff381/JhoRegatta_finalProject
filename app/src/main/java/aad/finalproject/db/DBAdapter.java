@@ -204,7 +204,7 @@ public class DBAdapter extends SQLiteOpenHelper{
      * */
     public static String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                "MM/dd/yyyy HH:mm:ss", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
     }
