@@ -8,329 +8,334 @@
     tools:context="aad.finalproject.jhoregatta.ResultsEditor">
 
 
-
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linlay_rf_mainLayout">
+        android:layout_alignParentTop="false"
+        android:id="@+id/linearLayout2">
 
-        <TextView
-            android:layout_width="match_parent"
+        <Button
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/txt_rf_BoatName"
-            android:hint="Boat Name"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000"
-            android:singleLine="true"
-            android:layout_gravity="center_horizontal"
-            android:textSize="35sp"
-            android:layout_marginBottom="5dp"
-            android:textStyle="bold"
-            android:gravity="center_horizontal" />
+            android:text="Update"
+            android:id="@+id/btn_rf_update_result"
+            android:layout_weight="1" />
 
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="125dp"
-                android:layout_height="wrap_content"
-                android:text="Sail #:"
-                android:id="@+id/lbl_rf_sailNum"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ff4f4f52" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Sail Num"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#000000"
-                android:singleLine="true"
-                android:id="@+id/txt_rf_sailNum"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="125dp"
-                android:layout_height="wrap_content"
-                android:text="Class:"
-                android:id="@+id/lbl_rf_boatClass"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ff4f4f52" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Class color"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#000000"
-                android:singleLine="true"
-                android:id="@+id/txt_rf_BoatClass" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="125dp"
-                android:layout_height="wrap_content"
-                android:text="PHRF#:"
-                android:id="@+id/lbl_rf_PHRF"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ff4f4f52" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="PHRF"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#000000"
-                android:singleLine="true"
-                android:id="@+id/txt_rf_PHRF"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:layout_width="125dp"
-                android:layout_height="wrap_content"
-                android:text="Distance:"
-                android:id="@+id/lbl_rf_distance"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ff4f4f52" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="distance"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#000000"
-                android:singleLine="true"
-                android:id="@+id/txt_rf_distance" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:layout_width="125dp"
-                android:layout_height="wrap_content"
-                android:text="Class Start:"
-                android:id="@+id/lbl_rf_classStart"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ff4f4f52" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Start Time"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#000000"
-                android:singleLine="true"
-                android:id="@+id/txt_rf_classStart" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:layout_width="125dp"
-                android:layout_height="wrap_content"
-                android:text="Finish:"
-                android:id="@+id/lbl_rf_boatFinish"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ff4f4f52" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Finish Time"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#000000"
-                android:singleLine="true"
-                android:id="@+id/txt_rf_boatFinishTime" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
+        <Button
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Elapsed Time:"
-            android:id="@+id/lbl_rf_time"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#ff4f4f52"
-            android:layout_marginTop="20dp" />
+            android:text="Cancel"
+            android:id="@+id/btn_rf_cancel_result"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView3"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentEnd="true">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content"
+            android:id="@+id/linlay_rf_mainLayout">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_rf_BoatName"
+                android:hint="Boat Name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000"
+                android:singleLine="true"
+                android:layout_gravity="center_horizontal"
+                android:textSize="35sp"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal" />
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:text="Sail #:"
+                    android:id="@+id/lbl_rf_sailNum"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ff4f4f52" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Sail Num"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000000"
+                    android:singleLine="true"
+                    android:id="@+id/txt_rf_sailNum"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:text="Class:"
+                    android:id="@+id/lbl_rf_boatClass"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ff4f4f52" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Class color"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000000"
+                    android:singleLine="true"
+                    android:id="@+id/txt_rf_BoatClass" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:text="PHRF#:"
+                    android:id="@+id/lbl_rf_PHRF"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ff4f4f52" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="PHRF"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000000"
+                    android:singleLine="true"
+                    android:id="@+id/txt_rf_PHRF"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:text="Distance:"
+                    android:id="@+id/lbl_rf_distance"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ff4f4f52" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="distance"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000000"
+                    android:singleLine="true"
+                    android:id="@+id/txt_rf_distance" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:text="Class Start:"
+                    android:id="@+id/lbl_rf_classStart"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ff4f4f52" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Start Time"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000000"
+                    android:singleLine="true"
+                    android:id="@+id/txt_rf_classStart" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:text="Finish:"
+                    android:id="@+id/lbl_rf_boatFinish"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ff4f4f52" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Finish Time"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000000"
+                    android:singleLine="true"
+                    android:id="@+id/txt_rf_boatFinishTime" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Elapsed Time"
+                android:text="Elapsed Time:"
+                android:id="@+id/lbl_rf_time"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#ff4f4f52"
+                android:layout_marginTop="20dp" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Override Elapsed Time"
+                android:id="@+id/ckbx_rf_manualEntryMode"
+                android:checked="false"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/btn_rf_setElapsedTime"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="20dp" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set"
+                    android:id="@+id/btn_rf_setElapsedTime"
+                    android:layout_gravity="right|center"
+                    android:layout_alignParentRight="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Elapsed Time"
+                    android:layout_marginLeft="20dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_marginRight="5dp"
+                    android:textColor="#000000"
+                    android:id="@+id/txt_rf_ElapsedTime"
+                    android:layout_gravity="left|center|top"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
+
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Adj. Time:"
+                android:id="@+id/lbl_rf_adjTime"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#ff4f4f52" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Adjusted Time"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_marginRight="20dp"
                 android:textColor="#000000"
-                android:singleLine="true"
-                android:id="@+id/txt_rf_ElapsedTime"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical" />
+                android:id="@+id/txt_rf_AdjDuration"/>
 
-            <CheckBox
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Manual Entry"
-                android:id="@+id/ckbx_rf_manualEntryMode"
-                android:checked="false"
-                android:layout_weight="1.5"
-                android:layout_gravity="center_vertical" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Set"
-                android:id="@+id/btn_rf_setElapsedTime"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical" />
-        </LinearLayout>
-
-
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="Adj. Time:"
-            android:id="@+id/lbl_rf_adjTime"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#ff4f4f52" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Adjusted Time"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="10dp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_marginRight="20dp"
-            android:textColor="#000000"
-            android:id="@+id/txt_rf_AdjDuration"/>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Penalty % :"
-            android:id="@+id/lbl_rf_penalty"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <EditText
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:singleLine="true"
-            android:id="@+id/txt_rf_Penalty"
-            android:inputType="number" />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notes:"
-                android:id="@+id/lbl_rf_Notes"
+                android:text="Penalty % :"
+                android:id="@+id/lbl_rf_penalty"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <EditText
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="Max 256 chars:  "
-                android:id="@+id/lbl_rf_sub_notesMaxChar"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginBottom="10dp"
+                android:singleLine="true"
+                android:id="@+id/txt_rf_Penalty"
+                android:inputType="number" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="256"
-                android:id="@+id/txt_rf_sub_notesRemainingChars" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Notes:"
+                    android:id="@+id/lbl_rf_Notes"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Max 256 chars:  "
+                    android:id="@+id/lbl_rf_sub_notesMaxChar"
+                    android:layout_marginLeft="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="256"
+                    android:id="@+id/txt_rf_sub_notesRemainingChars" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  Remaining"
+                    android:id="@+id/lbl_rf_sub_sub_notesRemaining" />
+            </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:id="@+id/txt_rf_notes"
+                android:inputType="textCapSentences|textImeMultiLine|textMultiLine"
+                android:maxLength="256" />
+
+
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="  Remaining"
-                android:id="@+id/lbl_rf_sub_sub_notesRemaining" />
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="Did Not Finish (DNF)"
+                android:textSize="20sp"
+                android:id="@+id/ckbx_rf_DNF"
+                android:nestedScrollingEnabled="false"
+                android:checked="false" />
+
+
         </LinearLayout>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/txt_rf_notes"
-            android:inputType="textCapSentences|textImeMultiLine|textMultiLine"
-            android:maxLength="256" />
-
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="Did Not Finish (DNF)"
-            android:textSize="20sp"
-            android:id="@+id/ckbx_rf_DNF"
-            android:nestedScrollingEnabled="false"
-            android:checked="false" />
-
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Update"
-                android:id="@+id/btn_rf_update_result"
-                android:layout_weight="1"
-                android:layout_margin="20dp" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Cancel"
-                android:id="@+id/btn_rf_cancel_result"
-                android:layout_weight="1"
-                android:layout_margin="20dp" />
-        </LinearLayout>
-
-
-    </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
 

@@ -14,19 +14,13 @@ import aad.finalproject.db.AndroidDatabaseManager;
 
 public class MainActivity extends ActionBarActivity {
 
-    // set up buttons for click assignment
-//    Button testButton;
-    Button calculator;
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // wire buttons
-        calculator = (Button) findViewById(R.id.btn_nav_Calculator);
+        Button calculator = (Button) findViewById(R.id.btn_nav_Calculator);
+
 
 
         // assign click listeners
@@ -94,10 +88,11 @@ public class MainActivity extends ActionBarActivity {
         Log.i("Main Menu ", " goto Preferences ");
     }
 
-    // TODO get rid of DDMS
+    // TODO DDMS for Seung to use for grading
     public void onActionClickDDMS(){
         Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
         startActivity(dbmanager);
     }
+
 
 }

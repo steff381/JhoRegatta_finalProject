@@ -36,9 +36,6 @@ public class RaceAddForm extends Form {
     //logging header
     private String LOG = this.getClass().getSimpleName() + " - MODE:";
 
-    // activity is active
-    public static boolean isActiveRaceAddForm;
-
     // set the onclick listners for each of the check boxes
     String boatCheckBoxName;
 
@@ -87,7 +84,6 @@ public class RaceAddForm extends Form {
     int intRaceClassGreen;
     int intRaceClass_TBD_;
 
-    Bundle extras;// grab the saved instance of the bundle
     // initialize the race data source object
     RaceDataSource raceDataSource; // create instance of the race data source
     Cursor updateRowFromCursor; //create a cursor to hold single row of data for updates/edits
@@ -162,12 +158,12 @@ public class RaceAddForm extends Form {
             linlayResultsButtons.setVisibility(View.VISIBLE);
             delete.setVisibility(View.VISIBLE);
 
-            //make sure the editable fields and boxes are enabled
+            //make sure the editable fields and boxes are disabled
             setEnabledOfEditables(false);
 
-            //make the starting order text views invisible during edit mode.
-            findViewById(R.id.linlay_class_start_order_textviews).setVisibility(View.INVISIBLE);
-
+//            //make the starting order text views invisible during edit mode.
+//            findViewById(R.id.linlay_class_start_order_textviews).setVisibility(View.INVISIBLE);
+            findViewById(R.id.linlay_raf_startOrder).setVisibility(View.INVISIBLE);
 
             LOG += " Race EDIT form"; // change the edit mode status for log cat
 //            raceDataSource.getRow(GlobalContent.getRaceRowID()); // get the id from global contetn
@@ -222,17 +218,17 @@ public class RaceAddForm extends Form {
             create.setVisibility(View.VISIBLE);
             update.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
-            linlayResultsButtons.setVisibility(View.INVISIBLE);
+            linlayResultsButtons.setVisibility(View.GONE);
             //make the starting order text views visible during add mode.
-            findViewById(R.id.linlay_class_start_order_textviews).setVisibility(View.VISIBLE);
+//            findViewById(R.id.linlay_class_start_order_textviews).setVisibility(View.VISIBLE);
 
             Log.i(LOG, "create mode buttons activated");
         } else {
             Log.i(LOG, "NO RACE CHILD ACIVITY TYPE ERROR!!!!");
 
         }
-
     }
+
 
     private void wireWidgetsAndLoadArrays() {
         //load up text and other fields into widgets
@@ -592,8 +588,6 @@ public class RaceAddForm extends Form {
             // hide the results buttons too
             linlayResultsButtons.setVisibility(View.GONE);
 
-            //make sure the editable fields and boxes are enabled
-//            setEnabledOfEditables(true);
         }
     }
 

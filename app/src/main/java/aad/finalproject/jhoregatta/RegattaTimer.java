@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
@@ -70,22 +69,21 @@ public class RegattaTimer extends MainActivity {
     private ArrayList<Button> classRecallButtonArrayList = new ArrayList<>();
 
     // initialize containers
-    LinearLayout linlayClassContainer;
-    TableRow currentClassColor;
-    ImageView currentClassImage;
-    ImageView currentFlagImage;
-    ImageView nextFlagImage;
+    private LinearLayout linlayClassContainer;
+    private ImageView currentClassImage;
+    private ImageView currentFlagImage;
+    private ImageView nextFlagImage;
 
     //used for testing the app. mins and seconds will be
     // adjusted to meet timer needs on final version
 
-    long totalTime = 0;
+    private long totalTime = 0;
 
-    int numberOfSelectedBoatClasses; // initialize the number of selected Classes variable
-    int currentPosition = 0;
+    private int numberOfSelectedBoatClasses; // initialize the number of selected Classes variable
+    private int currentPosition = 0;
 
     //allowance for time drift
-    private double drift = 0.005;
+    private double drift = 0.001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +91,12 @@ public class RegattaTimer extends MainActivity {
         setContentView(R.layout.activity_regatta_timer);
 
         //Keep awake during activity
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        //get teh size of the window
+        double screenSize = GlobalContent.getScreenSize(this);
+
+
 
         //switch to media volume control vs notification volume control
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -108,6 +110,13 @@ public class RegattaTimer extends MainActivity {
         wireWidgetsAndAddToArrayLists(); // call the wiring method
         enabledStatusSwitcherRecallButtons(false); // disable all recall buttons
 
+        //set the SP of the timer programatically
+        if (screenSize < 6.5) {
+            txtCountDown.setTextSize(45f);
+        } else {
+            txtCountDown.setTextSize(65f);
+
+        }
         // Media play section
         hornMid = new MediaPlayer();
         int volume = 100;
@@ -186,7 +195,7 @@ public class RegattaTimer extends MainActivity {
         currentFlagImage = (ImageView) findViewById(R.id.imgCurrentFlag); // wire to xml
         nextFlagImage = (ImageView) findViewById(imgNextFlag); // wire flag to xml
         currentClassImage = (ImageView) findViewById(R.id.imgCurrentClass);
-        currentClassColor = (TableRow) findViewById(R.id.tblrowCurrentClass);
+//        TableRow currentClassColor = (TableRow) findViewById(R.id.tblrowCurrentClass);
 
 
         // get text view instance for the start time label

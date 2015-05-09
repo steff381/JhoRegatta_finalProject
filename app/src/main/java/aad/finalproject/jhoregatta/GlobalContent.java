@@ -1,6 +1,8 @@
 package aad.finalproject.jhoregatta;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -266,5 +268,18 @@ public class GlobalContent {
     public static void setActiveRace(Race activeRace, long id) {
         GlobalContent.activeRace = activeRace;
         activeRace.setId(id);
+    }
+
+    public static double getScreenSize(Activity activity) {
+        DisplayMetrics dm = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        int dens = dm.densityDpi;
+        double wi = (double) width / (double) dens;
+        double hi = (double) height / (double) dens;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        return Math.sqrt(x + y);
     }
 }

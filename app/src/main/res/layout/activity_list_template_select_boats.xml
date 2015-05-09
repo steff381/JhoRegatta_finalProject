@@ -41,7 +41,8 @@
             android:id="@+id/ckboxSelectBoatCheck"
             android:text="     "
             android:gravity="center_vertical"
-            android:focusable="false"/>
+            android:focusable="false"
+            android:layout_weight=".05" />
 
         <TextView
             android:layout_width="0dp"

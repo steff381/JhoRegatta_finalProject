@@ -59,7 +59,7 @@ public class BoatMenu extends MainActivity {
         Cursor boats = boatDataSource.getAllBoatsCursor(whereClauseIsVisible,
                 orderByClause, havingClause);
 
-        //TODO: FOR TESTING ONLY, REMOVE IF STATEMENT PRIOR TO COMPLETION
+        //TODO: Default boats for Seung to use for grading
         if (boats.getCount()>0) {
             populateListView();
         } else {
@@ -99,9 +99,7 @@ public class BoatMenu extends MainActivity {
     }
 
     public void navigateBack(View view){
-        //todo trash
-//        Intent intent = new Intent(this,MainActivity.class); // open main menu and nav to
-//        startActivity(intent);
+
         endBoatActivity(); // close db and exit activity
     }
 

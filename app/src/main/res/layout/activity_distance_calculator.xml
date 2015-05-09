@@ -7,10 +7,44 @@
     tools:context="aad.finalproject.jhoregatta.DistanceCalculator">
 
     <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout3">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Add/Edit"
+            android:id="@+id/btn_dc_addEdit"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Remove"
+            android:id="@+id/btn_dc_delete"
+            android:layout_weight="1"
+            android:layout_marginRight="25dp"
+            android:layout_marginLeft="25dp" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Done!"
+            android:id="@+id/btn_dc_done"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:padding="20dp">
+        android:measureWithLargestChild="false"
+        android:nestedScrollingEnabled="false"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,74 +83,40 @@
             android:baselineAligned="false">
 
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_dc_lat_degrees"
                 android:nextFocusDown="@+id/txt_dc_lat_minutes"
-                android:layout_weight="0.17"
+                android:layout_weight="0.25"
                 android:hint="Degs"
                 android:inputType="number" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="°"
-                android:id="@+id/lbl_dc_degrees"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="45sp" />
-
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:nextFocusDown="@+id/txt_dc_lat_seconds"
                 android:id="@+id/txt_dc_lat_minutes"
                 android:inputType="number"
-                android:layout_weight="0.21"
+                android:layout_weight="0.25"
                 android:hint="Mins"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="&apos;"
-                android:id="@+id/lbl_dc_minutes"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textIsSelectable="false"
-                android:textSize="45sp" />
-
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:nextFocusDown="@+id/txt_dc_lon_degrees"
                 android:id="@+id/txt_dc_lat_seconds"
-                android:layout_weight="0.21"
+                android:layout_weight="0.25"
                 android:hint="Secs"
                 android:inputType="numberDecimal"
                 android:maxLength="7" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="&quot;"
-                android:id="@+id/lbl_dc_seconds"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="0.05"
-                android:textSize="45sp" />
-
             <ToggleButton
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textOff="N"
                 android:textOn="S"
                 android:id="@+id/tog_dc_lat_direction"
-                android:layout_weight="0.17" />
+                android:layout_weight="0.25" />
         </LinearLayout>
 
         <TextView
@@ -134,109 +134,55 @@
             android:baselineAligned="false" >
 
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:nextFocusDown="@+id/txt_dc_lon_minutes"
                 android:inputType="number"
                 android:id="@+id/txt_dc_lon_degrees"
-                android:layout_weight="0.17"
+                android:layout_weight="0.25"
                 android:hint="Degs"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="°"
-                android:id="@+id/textView"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="45sp" />
-
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:nextFocusDown="@+id/txt_dc_lon_seconds"
                 android:inputType="number"
                 android:id="@+id/txt_dc_lon_minutes"
-                android:layout_weight="0.21"
+                android:layout_weight="0.25"
                 android:hint="Mins"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="&apos;"
-                android:id="@+id/textView2"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textIsSelectable="false"
-                android:textSize="45sp" />
-
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_dc_lon_seconds"
-                android:layout_weight="0.21"
+                android:layout_weight="0.25"
                 android:hint="Secs"
                 android:inputType="numberDecimal"
                 android:maxLength="7" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="&quot;"
-                android:id="@+id/textView3"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="0.05"
-                android:textSize="45sp" />
-
             <ToggleButton
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textOff="W"
                 android:textOn="E"
                 android:id="@+id/tog_dc_lon_direction"
-                android:layout_weight="0.17" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Add/Edit"
-                android:id="@+id/btn_dc_addEdit"
-                android:layout_weight="1" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Remove"
-                android:id="@+id/btn_dc_delete"
-                android:layout_weight="1"
-                android:layout_marginRight="25dp"
-                android:layout_marginLeft="25dp" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Done!"
-                android:id="@+id/btn_dc_done"
-                android:layout_weight="1" />
-
+                android:layout_weight="0.25" />
         </LinearLayout>
 
         <ListView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:id="@+id/lv_distcalc" />
 
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView4"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignParentStart="true">
+
+    </ScrollView>
+
 </RelativeLayout>

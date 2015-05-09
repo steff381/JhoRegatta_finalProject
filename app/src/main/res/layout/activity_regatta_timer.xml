@@ -49,7 +49,7 @@
                             android:textAppearance="?android:attr/textAppearanceLarge"
                             android:id="@+id/txtCountDown"
                             android:text="00h 00m 00s"
-                            android:textSize="65dp"
+                            android:textSize="65sp"
                             android:paddingTop="10dp"
                             android:textStyle="bold"
                             android:layout_gravity="center"
@@ -133,11 +133,10 @@
 
                                 <Button
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:text="Strt/Resm"
                                     android:id="@+id/btn_tt_start_resume"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="20dp" />
+                                    android:layout_gravity="center"/>
                             </FrameLayout>
                         </TableRow>
 

@@ -87,9 +87,6 @@ public class RaceMenu extends MainActivity {
 
 
     public void navigateRaceBack(View view){
-//TODO Trash
-//        Intent intent = new Intent(this,MainActivity.class);
-//        startActivity(intent);
         endActivity(); // exit activity and close db
     }
 

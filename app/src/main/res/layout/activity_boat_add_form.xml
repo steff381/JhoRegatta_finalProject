@@ -7,159 +7,177 @@
     tools:context="aad.finalproject.jhoregatta.BoatAddForm">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_margin="7dp">
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout4">
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Boat Name"
-            android:id="@+id/txt_form_BoatName" />
+            android:text="Add"
+            android:id="@+id/btn_add_current_boat"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:onClick="onClickCreate"
+            android:visibility="visible" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapWords"
-            android:id="@+id/txt_inpt_BoatName" />
-
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Boat Class"
-            android:id="@+id/txt_form_BoatClass"
-            android:layout_marginBottom="10dp" />
+            android:text="Update"
+            android:id="@+id/btn_update_current_boat"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:onClick="onClickUpdate"/>
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rbgrp_baf_boat_class"
-            android:layout_marginBottom="5dp">
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:text="Blue"
-                android:id="@+id/rb_baf_blue"
-                android:checked="false"
-                android:layout_weight="1"
-                android:layout_margin="5dp" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Yellow"
-                android:id="@+id/rb_baf_yellow"
-                android:checked="false"
-                android:layout_margin="5dp" />
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:text="Green"
-                android:id="@+id/rb_baf_green"
-                android:checked="false"
-                android:layout_weight="1"
-                android:layout_margin="5dp" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Purple"
-                android:id="@+id/rb_baf_purple"
-                android:checked="false"
-                android:layout_margin="5dp" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="_TBD_"
-                android:id="@+id/rb_baf__TBD_"
-                android:checked="false"
-                android:layout_margin="5dp" />
-        </RadioGroup>
-
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Sail Number"
-            android:id="@+id/txt_form_SailNum" />
+            android:text="Delete"
+            android:id="@+id/btn_delete_current_boat"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:onClick="onClickDelete"/>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/txt_inpt_SailNum"
-            android:inputType="textNoSuggestions|textCapCharacters" />
-
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="PHRF"
-            android:id="@+id/txt_form_PHRF" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/txt_inpt_PHRF" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add"
-                android:id="@+id/btn_add_current_boat"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:onClick="onClickCreate"
-                android:visibility="visible" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Update"
-                android:id="@+id/btn_update_current_boat"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:onClick="onClickUpdate"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delete"
-                android:id="@+id/btn_delete_current_boat"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:onClick="onClickDelete"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cancel"
-                android:id="@+id/btn_cancel_add_boat_form"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:onClick="onClickCancel"/>
-        </TableRow>
-
+            android:text="Cancel"
+            android:id="@+id/btn_cancel_add_boat_form"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:onClick="onClickCancel"/>
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/linearLayout4"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="7dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Boat Name"
+                android:id="@+id/txt_form_BoatName" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords"
+                android:id="@+id/txt_inpt_BoatName" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Boat Class"
+                android:id="@+id/txt_form_BoatClass"
+                android:layout_marginBottom="10dp" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rbgrp_baf_boat_class"
+                android:layout_marginBottom="5dp">
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="Blue"
+                    android:id="@+id/rb_baf_blue"
+                    android:checked="false"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yellow"
+                    android:id="@+id/rb_baf_yellow"
+                    android:checked="false"
+                    android:layout_margin="5dp" />
+
+                <RadioButton
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="Green"
+                    android:id="@+id/rb_baf_green"
+                    android:checked="false"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Purple"
+                    android:id="@+id/rb_baf_purple"
+                    android:checked="false"
+                    android:layout_margin="5dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="_TBD_"
+                    android:id="@+id/rb_baf__TBD_"
+                    android:checked="false"
+                    android:layout_margin="5dp" />
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Sail Number"
+                android:id="@+id/txt_form_SailNum" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_inpt_SailNum"
+                android:inputType="textNoSuggestions|textCapCharacters" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="PHRF"
+                android:id="@+id/txt_form_PHRF" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/txt_inpt_PHRF"
+                android:gravity="bottom"
+                android:inputType="numberSigned"
+                android:focusableInTouchMode="false" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+            </TableRow>
+
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

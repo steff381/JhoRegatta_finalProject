@@ -68,6 +68,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         wireWidgets(); //assign layout elements to variables
         getValuesFromCursor(); //grab the values from SQL
 
+
        /*
        //assign Listeners
         */
