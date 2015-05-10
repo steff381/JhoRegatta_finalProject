@@ -291,17 +291,21 @@ public class ResultDataSource {
         long raceID; // id holder
         //check if there is an active race, if not use the race id that was set previously
 
-        if (GlobalContent.activeRace != null) {
-            raceID =  GlobalContent.activeRace.getId();
-        } else {
-            raceID = GlobalContent.getResultsRowID();
-        }
+//        if (GlobalContent.activeRace != null) {
+//            raceID =  GlobalContent.activeRace.getId();
+//        } else { todo could be trouble, idk
+            raceID = GlobalContent.getRaceRowID();
+//        }
+        Log.i(LOG, " runCalculations: raceID = " + raceID);
         //create where statements with the right value and ID
         where = DBAdapter.KEY_RACE_ID + " = " + raceID
                 + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
 
         //create a results array list with all the results
         List<Result> resultArrayList = getAllResults(where, null, null);
+        for (Result r : resultArrayList) {
+            Log.i(LOG, " runCalculations: resultArrayList> Boat Name: " + r.boatName);
+        }
         //make shortened variables for convineince
         String table = DBAdapter.TABLE_RESULTS;
         String durationColumn = DBAdapter.KEY_RESULTS_DURATION;
@@ -326,6 +330,8 @@ public class ResultDataSource {
                             r.getResultsBoatFinishTime());
                     // convert to readable format
                     String newDuration = GlobalContent.convertMillisToFormattedTime(milliDuration,0);
+
+                    Log.i(LOG, " runCalculations: newDuration: " + newDuration);
                     // enter elapsed time into the database
                     db.execSQL("UPDATE " + table + " SET " + durationColumn + " = '" + newDuration
                             + "' WHERE _id = " + resultId + ";");

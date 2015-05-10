@@ -11,11 +11,11 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -40,8 +40,15 @@ public class RegattaTimer extends MainActivity {
     // create an instance of the result table datasource
     private ResultDataSource resultDataSource;
 
+    private PowerManager.WakeLock wl; // wake lock instance
+
+    private FrameLayout keepScreenOnDummyLayout;
+
     //get the shared preffs
     private SharedPreferences sharedPreferences;
+
+    //var that indicates that the timer has finished all timing activities
+    protected static boolean TIMER_FINISHED = false;
 
     //sound stuff
     private MediaPlayer hornMid;
@@ -83,7 +90,7 @@ public class RegattaTimer extends MainActivity {
     private int currentPosition = 0;
 
     //allowance for time drift
-    private double drift = 0.001;
+    private double drift = 0.0001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,11 +98,15 @@ public class RegattaTimer extends MainActivity {
         setContentView(R.layout.activity_regatta_timer);
 
         //Keep awake during activity
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        wl.acquire();
 
         //get teh size of the window
         double screenSize = GlobalContent.getScreenSize(this);
-
 
 
         //switch to media volume control vs notification volume control
@@ -110,8 +121,8 @@ public class RegattaTimer extends MainActivity {
         wireWidgetsAndAddToArrayLists(); // call the wiring method
         enabledStatusSwitcherRecallButtons(false); // disable all recall buttons
 
-        //set the SP of the timer programatically
-        if (screenSize < 6.5) {
+        //set the SP of the timer programatically based on the size of the device's screen
+        if (screenSize < 5.5) {
             txtCountDown.setTextSize(45f);
         } else {
             txtCountDown.setTextSize(65f);
@@ -189,14 +200,14 @@ public class RegattaTimer extends MainActivity {
 //        super.onBackPressed();
     }
 
+
     private void wireWidgetsAndAddToArrayLists() {
 
         linlayClassContainer = (LinearLayout) findViewById(R.id.linlay_class_container);
         currentFlagImage = (ImageView) findViewById(R.id.imgCurrentFlag); // wire to xml
         nextFlagImage = (ImageView) findViewById(imgNextFlag); // wire flag to xml
         currentClassImage = (ImageView) findViewById(R.id.imgCurrentClass);
-//        TableRow currentClassColor = (TableRow) findViewById(R.id.tblrowCurrentClass);
-
+        keepScreenOnDummyLayout = (FrameLayout) findViewById(R.id.frmlay_dummy_layout_keepScreenOn);
 
         // get text view instance for the start time label
         txtCountDown = (TextView) findViewById(R.id.txtCountDown); // create instance of the countdown
@@ -289,13 +300,14 @@ public class RegattaTimer extends MainActivity {
 
                     alertDialog.setMessage(alertMessage);
                     alertDialog.setCancelable(false);
-    //---------------------------BEGIN ON CONFIRMATION FUNCTION ------------------------------------
+  //---------------------------BEGIN ON CONFIRMATION FUNCTION ------------------------------------
                     //User selects Confirm
                     alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener(){
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                             myCountDownTimer.cancel(); // cancel the timer completely
+                            timeTrackerIsFinished(false); // disable exit button/ unfinish tracker
 
                             //clear out the start time from the current boat class isntance
                             clearUnstartedBoatTimes(arrayPosition);
@@ -360,6 +372,19 @@ public class RegattaTimer extends MainActivity {
 //-------------------------------END ALERT DIALOG-------------------------------------------------
     }
 
+    private void timeTrackerIsFinished(boolean isFinished) {
+
+        // set the status of the time tracker
+        TIMER_FINISHED = isFinished;
+
+        //check if the results menu activity is open
+        if (GlobalContent.RESULT_MENU_ALIVE) {
+            // if the reset button is pushed then the exit button on the
+            // results menu should not be accessible so hide it.
+            ResultsMenu.exitRace.setEnabled(isFinished);
+        }
+    }
+
     //sync up states and data sets with the results list
     private void refreshResultsList() {
         //risky because the results adapter and list may not be open yet.
@@ -404,6 +429,24 @@ public class RegattaTimer extends MainActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        wl.acquire(); //acquire wake lock
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        wl.release(); // let go of wake lock
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
 
     // modify the appearance of the activty by adding or removing each of the boat class panes.
@@ -529,6 +572,7 @@ public class RegattaTimer extends MainActivity {
                 currentCaseClassStartTime.get(this.currentPosition)
                         .setText(now);
 
+                //instance of current boat class
                 BoatClass currentBoatClass = BoatStartingListClass.BOAT_CLASS_START_ARRAY
                         .get(currentPosition);
 
@@ -554,12 +598,14 @@ public class RegattaTimer extends MainActivity {
                     //change the class color to the color of the next boat class in the starting lineup
                     currentClassImage.setImageResource(BoatStartingListClass
                             .BOAT_CLASS_START_ARRAY.get(this.currentPosition).getImage());
-                } else {
+                } else { // the time tracker is done
                     //exit the switch case
                     resetFlagAndClassHolders(); // clear out the data in flag and class holders
                     currentFlagImage.setVisibility(View.VISIBLE);
                     currentFlagImage.setImageResource(R.drawable.no_flags);
                     txtCountDown.setText(""); // reset the countdown display's time to 0
+                    //check if the results menu is active
+                    timeTrackerIsFinished(true); // enable the result menu exit button
                 }
                 refreshResultsList(); // force a repaint of the results list.
                 break;
@@ -592,6 +638,9 @@ public class RegattaTimer extends MainActivity {
         long milliMinutes = minutes * 60000;
         final long milliSeconds = (long) (seconds * 1000);
 
+        //keep the screen on by allowing the dummy frame layout to be displayed
+        keepScreenOnDummyLayout.setKeepScreenOn(true);
+
         // add all milliseconds up
         totalTime = milliHours + milliMinutes + milliSeconds;
 
@@ -615,6 +664,8 @@ public class RegattaTimer extends MainActivity {
             public void onFinish() {
                 hornMid.start(); // play horn sound to inform user that the state is switching
                 flagToDisplay++; // add 1 to the flag sequence. Moves the case to next flag
+
+                keepScreenOnDummyLayout.setKeepScreenOn(false); // allow screen to dim again.
                 raceFlagSwitcher(flagToDisplay); // restart switch case using next flag
             }
         }.start();
@@ -663,10 +714,6 @@ public class RegattaTimer extends MainActivity {
     }
 
     private void verifyIntentToResetMasterTime() {
-
-        if (!myCountDownTimer.isPaused()) {
-            myCountDownTimer.pause(); // pause the currently running timer
-        }
         // build dialog box for confirmation
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Complete Reset/Recall Confirmation");
@@ -679,9 +726,13 @@ public class RegattaTimer extends MainActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) { //if yes
                 Log.i(LOGTAG, " Complete reset dialog result is CONFIRMED");
-                //blank out all stored times
-                resetFlagAndClassHolders();
+
+                resetFlagAndClassHolders();//blank out all stored times
                 myCountDownTimer.cancel(); // cancel the timing event
+
+                startResume.setText("Start"); //change text to start
+
+                timeTrackerIsFinished(false); // disable exit button
 
                 //clear start times from boat class array
                 for (TextView tv : currentCaseClassStartTime) {

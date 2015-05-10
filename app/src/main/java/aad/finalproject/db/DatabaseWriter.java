@@ -14,17 +14,21 @@ import aad.finalproject.jhoregatta.MainActivity;
 public class DatabaseWriter extends MainActivity {
     private static final String LOGTAG = "Database Writer ";
     // sql elements for selecting boats
-    private static String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
-            + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+    private static String where;
+
     // make a publicly accessible directory path
-    public static File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+    public static File exportDir = Environment.getExternalStoragePublicDirectory(Environment
+            .DIRECTORY_DOWNLOADS);
 
 
     public static boolean exportDatabase(String fileName, ResultDataSource resultDataSource) {
-
+        where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
+                + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
         Log.i(LOGTAG, "Opening DB writer method");
         Log.i(LOGTAG, "Export directory: " + exportDir);
-
+        Log.i(LOGTAG, "Where Variable = " + where);
+        Log.i(LOGTAG, "Where = " +DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
+                + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1");
 
 
         /**First of all we check if the external storage of the device is available for writing.
@@ -71,6 +75,11 @@ public class DatabaseWriter extends MainActivity {
                 String orderBy = DBAdapter.KEY_BOAT_CLASS + ", " + DBAdapter.KEY_BOAT_NAME;
 
                 List<Result> results = resultDataSource.getAllResults(where, orderBy, null);
+
+                for (Result r : results) {
+                    Log.i(LOGTAG, "Results line = Race Name: " + r.raceName + " race ID " +
+                            r.resultsRaceId + " boat name: " + r.boatName);
+                }
 
                 //Write the name of the table and the name of the columns (comma separated values) in the .csv file.
                 String RESULTS_FIELDS_CSV_HEADER = DBAdapter.KEY_RACE_NAME + "," +
@@ -151,6 +160,7 @@ public class DatabaseWriter extends MainActivity {
 
 
                     printWriter.println(record); //write the record in the .csv file
+                    Log.i(LOGTAG, "Entering >>> " + record);
                 }
 
                 resultDataSource.close(); // close data soruce to conserve resources

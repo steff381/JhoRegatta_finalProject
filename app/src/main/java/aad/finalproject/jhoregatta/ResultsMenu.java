@@ -1,16 +1,17 @@
 package aad.finalproject.jhoregatta;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -39,15 +40,27 @@ public class ResultsMenu extends MainActivity {
     //Message telling user what is wrong with the form.
     private String validatorMessage;
 
+    // Button Text Constants
+    private static final String FINAL_BUTTON_TEXT = "E-MAIL RESULTS";
+    private static final String FINAL_BUTTON_TEXT_ACTIVE = "E-MAIL RESULTS";
+    private static final String BACK_BUTTON_TEXT = "Race Menu";
+    private static final String BACK_BUTTON_TEXT_ACTIVE = "Time Tracker";
+
+
+    //wake lock variable
+    PowerManager.WakeLock wl;
+
     //instance of data source
     private RaceDataSource raceDataSource;
     private ResultDataSource resultDataSource;
 
+    private List<Result> results;
+
     //Listview widgets and objects
     public static ListView myList;
 
-    //make a button that closes out the program.
-    private Button exitRace;
+    //make a package accessible race button that can be modified by other activities.
+    protected static Button exitRace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +68,9 @@ public class ResultsMenu extends MainActivity {
         setContentView(R.layout.activity_results_menu);
 
         //Keep awake
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        wl.acquire();
 
         //wire data source and open
         raceDataSource = new RaceDataSource(this);
@@ -63,23 +78,22 @@ public class ResultsMenu extends MainActivity {
         raceDataSource.open();
         resultDataSource.open();
 
+        results = getAllSQLResultResults(resultDataSource); // get list of all results
+
         //instantiate the custom results adapter
         GlobalContent.activeResultsAdapter = new ResultsAdapter(getApplicationContext(),
-                getAllSQLResultResults(resultDataSource), resultDataSource);
+                results, resultDataSource);
 
         // wire widgets
         myList = (ListView) findViewById(R.id.lvResultList);
 
         //wire button
         Button returnToTimeTracker = (Button) findViewById(R.id.btn_nav_TimeTracker);
-        Button finishAndSendResults = (Button) findViewById(R.id.btn_rm_csv_export);
+        final Button finishAndSendResults = (Button) findViewById(R.id.btn_rm_csv_export);
         exitRace = (Button) findViewById(R.id.btn_rm_exit);
 
 
             ////////Exit race button functions
-        // initially set button to invisible
-        // only shows up after database has been finalized
-        exitRace.setVisibility(View.GONE);
 
         //set methods for the exit button
         exitRace.setOnClickListener(new View.OnClickListener() {
@@ -87,11 +101,22 @@ public class ResultsMenu extends MainActivity {
             public void onClick(View v) {
                 Log.i(LOGTAG, " exit button clicked");
 
-                GlobalContent.finalDataClear(); //clear all the data
-                //goto main menu
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                if (validateResultsTable()) {
+                    try {
+                        wl.release();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        //do nothing else. it must already be closed.
+                    }
+                    GlobalContent.finalDataClear(); //clear all the data
+                    //goto main menu
+                    Intent intent = new Intent(v.getContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                } else {
+                    // show the error message to the user
+                    Toast.makeText(ResultsMenu.this, validatorMessage, Toast.LENGTH_LONG).show();
+                }
 
             }
         });
@@ -110,39 +135,50 @@ public class ResultsMenu extends MainActivity {
         });
 
             ////////Finializer button functions
-        finishAndSendResults.setText("Finalize");
+        finishAndSendResults.setText(FINAL_BUTTON_TEXT_ACTIVE);
         // finalize the result table and
         // Export CSV and send via email
         finishAndSendResults.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validateResultsTable()) {
-                    // build dialog box for confirmation
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(ResultsMenu.this);
-                    alertDialog.setTitle("WARNING: Finalizing Result Tables");
-                    alertDialog.setMessage("Do you want to end the race?\n" +
-                            "Finalizing the race will send a copy of the race results by Email.");
-                    alertDialog.setCancelable(false);
 
-                    // User chooses confirm
-                    alertDialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) { //if yes
-                            sendResultTableByEmail(); // send the finalized results by email
-                            exitRace.setVisibility(View.VISIBLE); // make the exit button visible
-                        }
-                    });
+                    //tally up the distance
+                    double distance = 0;
+                    for (Result r : results) {
+                        Log.i(LOGTAG, " class: " + r.getBoatClass() + " boat: " + r.getBoatName() + " distance: " + r.getRaceDistance());
+                        distance += r.getRaceDistance();
+                    }
 
-                    //User chose no
-                    alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Log.i(LOGTAG, " Finalize results?: NO");
-                        }
-                    });
-                    alertDialog.show();
+                    //if no distance was set by the user show the warning dialog
+                    if (distance == 0) {
+                        // build dialog box for confirmation
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
+                        alertDialog.setTitle("Missing Distance");
+                        alertDialog.setMessage("This race does not have any distances.\n\n" +
+                                "Would you like to send the results anyway?");
+                        alertDialog.setCancelable(false);
+
+                        // User chooses confirm
+                        alertDialog.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) { //if yes
+                                sendResultTableByEmail(); // send the finalized results by email
+                            }
+                        });
+
+                        //User choose no
+                        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+
+                        alertDialog.show();// show the error message to the user
+                    } else {
+                        sendResultTableByEmail(); // send the finalized results by email
+                    }
                 } else {
-                    // show the error message to the user
                     Toast.makeText(ResultsMenu.this, validatorMessage, Toast.LENGTH_LONG).show();
                 }
             }
@@ -151,14 +187,14 @@ public class ResultsMenu extends MainActivity {
         //set the visability of buttons depending on access mode
         if (GlobalContent.getResultsFormAccessMode().equals(GlobalContent.modeEdit)) {
             //change the name of the back to tracker button
-            returnToTimeTracker.setText("Races");
+            returnToTimeTracker.setText(BACK_BUTTON_TEXT);
             //change the name of the finalizer button
-            finishAndSendResults.setText("E-Mail Results");
+            finishAndSendResults.setText(FINAL_BUTTON_TEXT);
 
 
         } else {//change the name of the back to tracker button
             //set the text for the tracker button
-            returnToTimeTracker.setText("Time Tracker");
+            returnToTimeTracker.setText(BACK_BUTTON_TEXT_ACTIVE);
 
         }
 
@@ -321,7 +357,7 @@ public class ResultsMenu extends MainActivity {
         Log.i(LOGTAG, " onResume Now");
         raceDataSource.open(); // reopen the db
         resultDataSource.open(); // reopen the db
-
+        wl.acquire(); //acquire the wake lock
         //risky method
         try {
             //sync the list in the adapter with data from SQL
@@ -350,6 +386,7 @@ public class ResultsMenu extends MainActivity {
     protected void onPause() {
         super.onPause();
         Log.i(LOGTAG, " onPause NOW");
+        wl.release(); //release wake lock
         raceDataSource.close(); // close db to reduce data leak
         resultDataSource.close(); // close db to reduce data leak
     }
@@ -361,5 +398,23 @@ public class ResultsMenu extends MainActivity {
         myList.setAdapter(GlobalContent.activeResultsAdapter);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        //if time tracker finished then enable the exit button else set to disabled
+        if (RegattaTimer.TIMER_FINISHED) {
+            exitRace.setEnabled(true);
+        } else {
+            exitRace.setEnabled(false);
+        }
+        // set the activity alive status to true as the thing is on
+        GlobalContent.RESULT_MENU_ALIVE = true;
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        //set the activity alive status to false
+        GlobalContent.RESULT_MENU_ALIVE = false;
+    }
 }

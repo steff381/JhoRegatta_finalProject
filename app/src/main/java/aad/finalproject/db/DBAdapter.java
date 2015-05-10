@@ -45,6 +45,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_BOAT_VISIBLE = "visible";
 
 
+
     //RACES table
     public static final String KEY_RACE_NAME = "race_name";
     public static final String KEY_RACE_DATE = "date";

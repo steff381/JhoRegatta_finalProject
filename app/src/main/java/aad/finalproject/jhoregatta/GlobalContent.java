@@ -22,6 +22,7 @@ This class contains data that can be accessed by any class in the project.
 public class GlobalContent {
 
     private static final String LOGTAG = "Logtag: GlobalContent"; // log tag for records
+    protected static boolean RESULT_MENU_ALIVE = false;
 
     //vital details used by the time tracker and results menu
     public static Race activeRace;
@@ -53,6 +54,7 @@ public class GlobalContent {
         ResultsFormAccessMode = null;
         BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
         BoatListClass.selectedBoatsList.clear();
+        RegattaTimer.TIMER_FINISHED = false;
 
     }
 
@@ -125,9 +127,15 @@ public class GlobalContent {
         splitTime = elapsedDuration.split(":"); // break up string
         long h, m, s;
         // convert hours mins seconds to millis
-        h = 3600000 * Long.parseLong(splitTime[0]);
-        m = 60000 * Long.parseLong(splitTime[1]);
-        s = 1000 * Long.parseLong(splitTime[2]);
+        try {
+            h = 3600000 * Long.parseLong(splitTime[0]);
+            m = 60000 * Long.parseLong(splitTime[1]);
+            s = 1000 * Long.parseLong(splitTime[2]);
+        } catch (NumberFormatException e) {
+            Log.i(LOGTAG, "ERROR!!! > getDurationInMillis NUMBER FORMAT EXCEPTION");
+            e.printStackTrace();
+            return 0l; //if something went wrong then just return 0
+        }
 
         // calculate the time
         return (h + m + s);
