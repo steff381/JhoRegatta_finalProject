@@ -344,8 +344,8 @@ public class ResultsMenu extends MainActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_ddms:
-                return true;
+//            case R.id.action_ddms:
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
