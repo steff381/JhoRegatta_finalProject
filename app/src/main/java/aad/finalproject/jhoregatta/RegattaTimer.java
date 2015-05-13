@@ -381,7 +381,7 @@ public class RegattaTimer extends MainActivity {
         if (GlobalContent.RESULT_MENU_ALIVE) {
             // if the reset button is pushed then the exit button on the
             // results menu should not be accessible so hide it.
-            ResultsMenu.exitRace.setEnabled(isFinished);
+//            ResultsMenu.exitRace.setEnabled(isFinished);
         }
     }
 

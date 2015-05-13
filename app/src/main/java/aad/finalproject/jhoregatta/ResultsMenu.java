@@ -1,6 +1,7 @@
 package aad.finalproject.jhoregatta;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +30,7 @@ import aad.finalproject.db.ResultDataSource;
 import aad.finalproject.db.ResultsAdapter;
 
 
-public class ResultsMenu extends MainActivity {
+public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.ProofOfIntentCommunicator{
     private static final String LOGTAG = "Logtag: ResultsMenu";
 
     // sql elements for selecting boats
@@ -101,22 +102,47 @@ public class ResultsMenu extends MainActivity {
             public void onClick(View v) {
                 Log.i(LOGTAG, " exit button clicked");
 
-                if (validateResultsTable()) {
-                    try {
-                        wl.release();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        //do nothing else. it must already be closed.
-                    }
-                    GlobalContent.finalDataClear(); //clear all the data
-                    //goto main menu
-                    Intent intent = new Intent(v.getContext(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                if (!validateResultsTable()) {
+                    // build dialog box for confirmation
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
+                    alertDialog.setTitle("Exit Confirmation");
+                    alertDialog.setMessage("WARNING: You have not completed the race or vital " +
+                            "information is missing.\n\nWould you like to EXIT anyway?");
+                    alertDialog.setCancelable(false);
+
+                    // User chooses confirm
+                    alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) { //if yes
+                            // create fragment manager and dialog fragment
+                            FragmentManager fm = getFragmentManager();
+                            ProofOfIntentDialog poid = new ProofOfIntentDialog();
+
+                            poid.show(fm, "Confirm Intent to Exit");
+                        }
+                    });
+
+                    //User choose no
+                    alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+                    alertDialog.show();// show the error message to the user
                 } else {
-                    // show the error message to the user
-                    Toast.makeText(ResultsMenu.this, validatorMessage, Toast.LENGTH_LONG).show();
+
+
+
+
+//                if (validateResultsTable()) {
+                    exitResultsMenu();
+//                } else {
+//                    // show the error message to the user
+//                    Toast.makeText(ResultsMenu.this, validatorMessage, Toast.LENGTH_LONG).show();
                 }
+
+
 
             }
         });
@@ -143,15 +169,8 @@ public class ResultsMenu extends MainActivity {
             public void onClick(View v) {
                 if (validateResultsTable()) {
 
-                    //tally up the distance
-                    double distance = 0;
-                    for (Result r : results) {
-                        Log.i(LOGTAG, " class: " + r.getBoatClass() + " boat: " + r.getBoatName() + " distance: " + r.getRaceDistance());
-                        distance += r.getRaceDistance();
-                    }
-
                     //if no distance was set by the user show the warning dialog
-                    if (distance == 0) {
+                    if (calculateDistance() == 0) {
                         // build dialog box for confirmation
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
                         alertDialog.setTitle("Missing Distance");
@@ -229,6 +248,30 @@ public class ResultsMenu extends MainActivity {
         });
 
 
+    }
+
+    private double calculateDistance() {
+        //tally up the distance
+        double distance = 0;
+        for (Result r : results) {
+            Log.i(LOGTAG, " class: " + r.getBoatClass() + " boat: " + r.getBoatName() + " distance: " + r.getRaceDistance());
+            distance += r.getRaceDistance();
+        }
+        return distance;
+    }
+
+    private void exitResultsMenu() {
+        try {
+            wl.release();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //do nothing else. it must already be closed.
+        }
+        GlobalContent.finalDataClear(); //clear all the data
+        //goto main menu
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     //Check if the results table is complete,
@@ -402,11 +445,11 @@ public class ResultsMenu extends MainActivity {
     public void onStart() {
         super.onStart();
         //if time tracker finished then enable the exit button else set to disabled
-        if (RegattaTimer.TIMER_FINISHED) {
-            exitRace.setEnabled(true);
-        } else {
-            exitRace.setEnabled(false);
-        }
+//        if (RegattaTimer.TIMER_FINISHED) {
+//            exitRace.setEnabled(true);
+//        } else {
+//            exitRace.setEnabled(false);
+//        }
         // set the activity alive status to true as the thing is on
         GlobalContent.RESULT_MENU_ALIVE = true;
     }
@@ -416,5 +459,12 @@ public class ResultsMenu extends MainActivity {
         super.onStop();
         //set the activity alive status to false
         GlobalContent.RESULT_MENU_ALIVE = false;
+    }
+
+    @Override
+    public void onFragmentInteraction(String message) {
+        if (message.equals("exit")) {
+            exitResultsMenu();
+        }
     }
 }
