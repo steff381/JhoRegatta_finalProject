@@ -176,6 +176,7 @@ public class BoatMenu extends MainActivity {
                 };
 
 
+
         Boat boat = new Boat();
         for (int i = 0; i < boatString.length; i++) {
 
