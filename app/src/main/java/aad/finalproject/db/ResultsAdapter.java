@@ -3,7 +3,6 @@ package aad.finalproject.db;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import aad.finalproject.jhoregatta.GlobalContent;
 import aad.finalproject.jhoregatta.R;
+import aad.finalproject.jhoregatta.ResultsMenu;
 
 /*
 Handles the list view of results in the results menu
@@ -106,7 +106,6 @@ public class ResultsAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.activity_list_template_results, parent, false);
         }
 
-        Log.i("Results Adapter ", "mainDataList is of size " + arraylist.size() + " index is " + index);
         // create an result that will hold the data for the row item.
         final Result result = arraylist.get(index);
 
@@ -243,6 +242,8 @@ public class ResultsAdapter extends BaseAdapter {
                     //run table calculations to derive duration and adjusted duration
                     resultDataSource.runCalculations();
 
+                    syncArrayListWithSql(); // sync up results with sql
+
                     //refresh the viewed data
                     notifyDataSetChanged();
                 } else
@@ -281,6 +282,8 @@ public class ResultsAdapter extends BaseAdapter {
                     for (TextView t : textViews) {
                         t.setTextColor(Color.parseColor("#000000")); // make the text black
                     }
+
+                    syncArrayListWithSql();// sync up array list with SQL
                     notifyDataSetChanged(); // update the data
                 } else {
                     counter--; // decrement the click counter
@@ -297,6 +300,20 @@ public class ResultsAdapter extends BaseAdapter {
 
     // sync the list in the ResultsAdapter with what is in the Results SQL table.
     public void syncArrayListWithSql(List<Result> tempResultFromSql) {
+        // Make sure the data coming from sql isn't blank. Otherwise throw error
+        if (tempResultFromSql.size() > 0) {
+            this.arraylist.clear(); //empty out the array list
+            this.arraylist.addAll(tempResultFromSql);// add the temp sql stuff to the array list
+        } else {
+            throw new NullPointerException("Data in tempResultFromSql is empty");
+        }
+        notifyDataSetChanged(); // force refresh of the listview
+    }
+
+    // sync the list in the ResultsAdapter with what is in the Results SQL table.
+    public void syncArrayListWithSql() {
+        //get the results from sql
+        List<Result> tempResultFromSql = ResultsMenu.getAllSQLResultResults(resultDataSource);
         // Make sure the data coming from sql isn't blank. Otherwise throw error
         if (tempResultFromSql.size() > 0) {
             this.arraylist.clear(); //empty out the array list

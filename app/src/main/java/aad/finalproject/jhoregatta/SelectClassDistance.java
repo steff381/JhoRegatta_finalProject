@@ -21,11 +21,13 @@ public class SelectClassDistance extends MainActivity {
 
     private static final String LOGTAG = "SelectClassDistance";
     // build array lists of widgets
+
+
     public static ArrayList<TextView> classColor;
     public static ArrayList<EditText> classDistance;
     public static ArrayList<Button> btnCalcDistance;
     private ArrayList<LinearLayout> classLinearLayouts;
-
+    private Bundle b; // new bundle instance
 
     public static boolean isActiveSCD;
 
@@ -35,7 +37,11 @@ public class SelectClassDistance extends MainActivity {
         setContentView(R.layout.activity_select_class_distance);
 
         //get bundled info from race add form.
-        final boolean setDistanceOnly = getIntent().getExtras().getBoolean(RaceAddForm.BUNDLE_KEY);
+        final boolean setDistanceOnly = getIntent().getExtras().getBoolean(RaceAddForm.DISTANCE_KEY);
+
+        //set the bundle variable
+        b = new Bundle();
+        b.putString(SelectBoats.SOURCE_BUNDLE_KEY, "SCD");
 
         // create instances of the arraylists
         classColor = new ArrayList<>();
@@ -85,6 +91,7 @@ public class SelectClassDistance extends MainActivity {
                     GlobalContent.activeRace.hasDistance = true;
                     //start the select boats activity
                     Intent intent = new Intent(v.getContext(), SelectBoats.class);
+                    intent.putExtras(b);
                     startActivity(intent);
                     //if the intent is to set the distance for an existing race.
                 } else {
@@ -125,6 +132,7 @@ public class SelectClassDistance extends MainActivity {
                 GlobalContent.activeRace.hasDistance = false;
                 //start the select boats activity
                 Intent intent = new Intent(v.getContext(), SelectBoats.class);
+                intent.putExtras(b);
                 startActivity(intent);
             }
         });

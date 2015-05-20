@@ -10,10 +10,12 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.Race;
+import aad.finalproject.db.Result;
 import aad.finalproject.db.ResultsAdapter;
 
 /*
@@ -27,6 +29,9 @@ public class GlobalContent {
     //vital details used by the time tracker and results menu
     public static Race activeRace;
     public static ResultsAdapter activeResultsAdapter = null;
+
+    //result list that can be accessed globally.
+    public static List<Result> resultList;
 
     //access mode holders
     private static String BoatFormAccessMode;
@@ -54,7 +59,7 @@ public class GlobalContent {
         ResultsFormAccessMode = null;
         BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
         BoatListClass.selectedBoatsList.clear();
-        RegattaTimer.TIMER_FINISHED = false;
+        globalWhere = null;
 
     }
 

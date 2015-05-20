@@ -132,8 +132,7 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
     public void syncArrayListWithSql(BoatDataSource boatDataSource) {
 //    public static void syncArrayListWithSql(ResultDataSource resultDataSource) {
         //create statement strings
-        String orderBy = DBAdapter.KEY_BOAT_CLASS + ", "
-                + DBAdapter.KEY_BOAT_NAME;
+        String orderBy = DBAdapter.KEY_BOAT_NAME;
         // create a temporary placeholder for the data from SQL
         List<Boat> tempResultFromSql;
         tempResultFromSql = boatDataSource.getAllBoats(where, orderBy, null);

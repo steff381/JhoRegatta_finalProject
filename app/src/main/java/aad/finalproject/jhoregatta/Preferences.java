@@ -64,11 +64,11 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         prefKey.add("postRecallDelay");
 
         //Load default seconds
-        defaultPrefSeconds.add(15);
-        defaultPrefSeconds.add(65);
-        defaultPrefSeconds.add(185);
-        defaultPrefSeconds.add(65);
-        defaultPrefSeconds.add(365);
+        defaultPrefSeconds.add(0);
+        defaultPrefSeconds.add(60);
+        defaultPrefSeconds.add(180);
+        defaultPrefSeconds.add(60);
+        defaultPrefSeconds.add(0);
 
         //wire up textviews
         durationTextViews.add((TextView) findViewById(R.id.txt_prefs_initial_startDelay));
@@ -172,22 +172,22 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
     //form validator
     private boolean validateForm() {
         // let the user know the cannot choose 0 time for this field
-        if (milliseconds.get(1) == 0) {
+        if (milliseconds.get(1)  < 10999) {
             Toast.makeText(this, "Class Flag up duration" +
-                    " cannot be 0", Toast.LENGTH_LONG).show();
+                    " cannot be less than 11 seconds", Toast.LENGTH_LONG).show();
             return false;
         }
         // let the user know the cannot choose 0 time for this field
-        if (milliseconds.get(2) == 0) {
+        if (milliseconds.get(2) < 10999) {
             Toast.makeText(this, "Class and Prep Flag up duration" +
-                    " cannot be 0", Toast.LENGTH_LONG).show();
+                    " cannot be less than 11 seconds", Toast.LENGTH_LONG).show();
             return false;
 
         }
         // let the user know the cannot choose 0 time for this field
-        if (milliseconds.get(3) == 0) {
+        if (milliseconds.get(3) < 10999) {
             Toast.makeText(this, "Class up Prep down duration" +
-                    " cannot be 0", Toast.LENGTH_LONG).show();
+                    " cannot be less than 11 seconds", Toast.LENGTH_LONG).show();
             return false;
 
         }

@@ -121,8 +121,7 @@ public class ResultDataSource {
             result.setRaceName(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RACE_NAME)));
             result.setRaceDate(cursor.getString(cursor.getColumnIndex(DBAdapter.KEY_RACE_DATE)));
             results.add(result); // add all to the results instance
-            Log.i(LOG, "adding: " + result.getBoatName()
-                    + " resultId: " + result.getResultsId());
+
         }
         cursor.close(); //close cursor to preserve resources
         return results;

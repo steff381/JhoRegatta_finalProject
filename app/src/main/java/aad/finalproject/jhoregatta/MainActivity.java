@@ -9,10 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import aad.finalproject.db.AndroidDatabaseManager;
-
 
 public class MainActivity extends ActionBarActivity {
+
+    private static final String LOGTAG = "MainActivity";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,6 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         // wire buttons
         Button calculator = (Button) findViewById(R.id.btn_nav_Calculator);
-
 
 
         // assign click listeners
@@ -48,9 +49,6 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-//            case R.id.action_ddms:
-//                onActionClickDDMS();
-//                return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, Preferences.class);
                 startActivity(intent);
@@ -60,6 +58,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
     }
+
 
 
     //go to the boats menu
@@ -83,16 +82,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, Preferences.class);
         startActivity(intent);
 
-
-
         Log.i("Main Menu ", " goto Preferences ");
     }
-
-    // TODO DDMS for Seung to use for grading
-    public void onActionClickDDMS(){
-        Intent dbmanager = new Intent(this,AndroidDatabaseManager.class);
-        startActivity(dbmanager);
-    }
-
 
 }

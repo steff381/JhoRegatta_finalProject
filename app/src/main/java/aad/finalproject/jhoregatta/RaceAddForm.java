@@ -35,7 +35,7 @@ public class RaceAddForm extends Form {
     private String LOG = this.getClass().getSimpleName() + " - MODE:";
 
     //bundle key used for communications
-    public static final String BUNDLE_KEY = "setDistanceOnly";
+    public static final String DISTANCE_KEY = "setDistanceOnly";
 
     public static boolean isBoatClassUpdate;  // if the update is boat update
 
@@ -180,7 +180,7 @@ public class RaceAddForm extends Form {
                     // open the select class distance
                     Intent intent = new Intent(getApplicationContext(), SelectClassDistance.class);
                     Bundle b = new Bundle();
-                    b.putBoolean(BUNDLE_KEY, true);
+                    b.putBoolean(DISTANCE_KEY, true);
                     intent.putExtras(b);
                     startActivity(intent);
                 }
@@ -465,10 +465,12 @@ public class RaceAddForm extends Form {
 
             isBoatClassUpdate = true; // after the create, update goes to select boats
 
+            appendWhereClause(); // create a where clause for select boats
+
             // open the select class distance
             Intent intent = new Intent(this, SelectClassDistance.class);
             Bundle b = new Bundle();
-            b.putBoolean(BUNDLE_KEY, false);
+            b.putBoolean(DISTANCE_KEY, false);
             intent.putExtras(b);
             startActivity(intent);
 
@@ -504,9 +506,10 @@ public class RaceAddForm extends Form {
                         intRaceClass_TBD_);
                 Log.i(LOG, "Validated UPDATE entry");
                 // open the select boats list
+                appendWhereClause(); // create a where clause for select boats
                 Intent intent = new Intent(this, SelectClassDistance.class);
                 Bundle b = new Bundle();
-                b.putBoolean(BUNDLE_KEY, false);
+                b.putBoolean(DISTANCE_KEY, false);
                 intent.putExtras(b);
                 startActivity(intent);
             } else {
@@ -680,5 +683,30 @@ public class RaceAddForm extends Form {
 
         findViewById(R.id.btnToday).setEnabled(isEnabled);
 
+    }
+
+    // build a sql query that includes only the classes chosen by the user in the prvious form.
+    private void appendWhereClause() {
+        for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+            Log.i(LOG, b.getBoatColor());
+        }
+        //check if the boat class in the array is the "Classless" class
+        if (!BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(0).getBoatColor().equals("Classless")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(DBAdapter.KEY_BOAT_VISIBLE + " = 1"); // grab the original statement and append
+            // it to the new one
+            sb.append(" AND " + DBAdapter.KEY_BOAT_CLASS + " in(");
+            for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+                sb.append("\"" + bc.getBoatColor() + "\"");
+                sb.append(", ");
+            }
+            String substring = sb.substring(0, sb.length() - 2); // chop off the last comma.
+            substring += ")"; // include the last brace
+            GlobalContent.globalWhere = substring; //assign the where clause to the global where
+            Log.i(LOG, substring);
+        } else {
+            //if the only boat class in the list is the classless class choose all boats.
+            GlobalContent.globalWhere = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
+        }
     }
 }

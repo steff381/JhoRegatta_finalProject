@@ -166,7 +166,7 @@ public class DatabaseWriter extends MainActivity {
                 resultDataSource.close(); // close data soruce to conserve resources
             } catch (Exception exc) {
                 //catch any possible exceptions
-                Log.i(LOGTAG, "EXCEPTION THROWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                Log.i(LOGTAG, "EXCEPTION THROWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 return false;
             } finally {
                 Log.i(LOGTAG, "Finally Closing writer");

@@ -66,7 +66,6 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         myLayout = (LinearLayout) findViewById(R.id.linlay_rf_mainLayout);
 
         wireWidgets(); //assign layout elements to variables
-        getValuesFromCursor(); //grab the values from SQL
 
 
        /*
@@ -77,20 +76,28 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         manualEntryMode.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                penalty.clearFocus();
                 if (isChecked) {
                     //if checked allow user to enter custom elapsed time
                     setElapsedTime.setEnabled(true);
+                    Log.i(LOGTAG, "CHECKBOX ENABLED ++");
                 } else {
                     //if unchecked, disable the button.
                     setElapsedTime.setEnabled(false);
+                    Log.i(LOGTAG, "CHECKBOX -------------------- DISABLED ++");
                     //recalculate the duration based on start and finish time
 
-                    long milliDuration = GlobalContent.getDurationInMillis(classStart.getText().toString(),
-                            finishTime.getText().toString());
-                    // convert to readable format
-                    String newDuration = GlobalContent.convertMillisToFormattedTime(milliDuration,0);
-                    elapsedTime.setText(newDuration); //set the calculated time
-                    calculateAdjustedDuration(); // recalculate adjusted duration
+                    // check if the duration field is empty.
+                    if (finishTime.getText().toString().length() > 0) {
+                        long milliDuration = GlobalContent.getDurationInMillis(classStart.getText().toString(),
+                                finishTime.getText().toString());
+                        // convert to readable format
+                        String newDuration = GlobalContent.convertMillisToFormattedTime(milliDuration, 0);
+                        elapsedTime.setText(newDuration); //set the calculated time
+                        calculateAdjustedDuration(); // recalculate adjusted duration
+                    } else {
+                        elapsedTime.setText(null); // no finish means no elapsed can be calculated
+                    }
                 }
             }
         });
@@ -134,6 +141,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //if the there is text in the elapsed time and manual entry is checked
                 if (elapsedTime.length() > 0 && manualEntryMode.isChecked()) {
+                    penalty.clearFocus(); // clear focus to prevent errors
                     //calculate the adjusted duration.
                     calculateAdjustedDuration();
                 }
@@ -141,10 +149,10 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (elapsedTime.length() == 0) {
-                    //if the text box is empty set to 0
-                    elapsedTime.setText("0");
-                }
+//                if (elapsedTime.length() == 0) {
+//                    //if the text box is empty set to null
+//                    elapsedTime.setText("");
+//                }
             }
         });
 
@@ -242,21 +250,29 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
         ///////////////initial widget states//////////////////////////////////////////
 
+        getValuesFromCursor(); //grab the values from SQL
 
         //set elapsed time button is disabled until manual entry checkbox is clicked
-        setElapsedTime.setEnabled(false);
+        if (!manualEntryMode.isChecked()) {
+            setElapsedTime.setEnabled(false);
+            Log.i(LOGTAG, "CHECKBOX -------!!!--------- DISABLED @@");
+        }
 
         notesCharRemaining.setText(String.valueOf(totalChars)); // initial count of characters
     }
 
     //calculate the adjusted duration using the values in the text boxes
     private void calculateAdjustedDuration() {
-        adjDuration.setText(GlobalContent.calculateAdjDuration(
-                Integer.parseInt(phrf.getText().toString()),
-                GlobalContent.getDurationInMillis(elapsedTime.getText().toString()),
-                Integer.parseInt(penalty.getText().toString()),
-                Double.parseDouble(distance.getText().toString()),
-                1));
+
+        if (elapsedTime.getText().toString().length() != 0) {
+            // calculate the adjusted duration
+            adjDuration.setText(GlobalContent.calculateAdjDuration(
+                    Integer.parseInt(phrf.getText().toString()),
+                    GlobalContent.getDurationInMillis(elapsedTime.getText().toString()),
+                    Integer.parseInt(penalty.getText().toString()),
+                    Double.parseDouble(distance.getText().toString()),
+                    1));
+        }
     }
 
     // prevent the user from using the devices back button

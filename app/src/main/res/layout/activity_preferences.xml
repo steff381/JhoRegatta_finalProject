@@ -56,7 +56,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Initial Start Dealy:"
+                    android:text="Initial Start Delay:"
                     android:id="@+id/lbl_initialStartDelay"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"

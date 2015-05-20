@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,6 +34,7 @@ import aad.finalproject.db.ResultsAdapter;
 public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.ProofOfIntentCommunicator{
     private static final String LOGTAG = "Logtag: ResultsMenu";
 
+
     // sql elements for selecting boats
     private String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
             + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
@@ -47,6 +49,8 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     private static final String BACK_BUTTON_TEXT = "Race Menu";
     private static final String BACK_BUTTON_TEXT_ACTIVE = "Time Tracker";
 
+    //bundle
+    private Bundle b;
 
     //wake lock variable
     PowerManager.WakeLock wl;
@@ -70,8 +74,14 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
         //Keep awake
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "My Tag");
         wl.acquire();
+        Log.i(LOGTAG, "WAKELOCK: Acquired Initial");
+
+        //set up bundle
+        b = new Bundle();
+        b.putString(SelectBoats.SOURCE_BUNDLE_KEY, "RM");
+
 
         //wire data source and open
         raceDataSource = new RaceDataSource(this);
@@ -94,7 +104,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         exitRace = (Button) findViewById(R.id.btn_rm_exit);
 
 
-            ////////Exit race button functions
+        ////////Exit race button functions
 
         //set methods for the exit button
         exitRace.setOnClickListener(new View.OnClickListener() {
@@ -131,15 +141,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
                     alertDialog.show();// show the error message to the user
                 } else {
-
-
-
-
-//                if (validateResultsTable()) {
                     exitResultsMenu();
-//                } else {
-//                    // show the error message to the user
-//                    Toast.makeText(ResultsMenu.this, validatorMessage, Toast.LENGTH_LONG).show();
                 }
 
 
@@ -261,16 +263,11 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     }
 
     private void exitResultsMenu() {
-        try {
-            wl.release();
-        } catch (Exception e) {
-            e.printStackTrace();
-            //do nothing else. it must already be closed.
-        }
+
         GlobalContent.finalDataClear(); //clear all the data
         //goto main menu
         Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // exit don to everything
         startActivity(intent);
     }
 
@@ -349,8 +346,12 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
 
     private void sendResultTableByEmail() {
+
+        Cursor c = raceDataSource.getRow(GlobalContent.getRaceRowID());
+
+
         //create a file name for the csv file
-        String fileName = "Regatta_num_" + GlobalContent.getRaceRowID() + ".csv";
+        String fileName = c.getString(c.getColumnIndex(DBAdapter.KEY_RACE_NAME)) + ".csv";
 
         //write the database to a csv file.
         DatabaseWriter.exportDatabase(fileName, resultDataSource);
@@ -377,7 +378,12 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_results_menu, menu);
+        //if this is edit
+        if (GlobalContent.getResultsFormAccessMode().equals(GlobalContent.modeEdit)) {
+            getMenuInflater().inflate(R.menu.menu_results_menu_no_add, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_results_menu, menu);
+        }
         return true;
     }
 
@@ -387,11 +393,20 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-//            case R.id.action_ddms:
-//                return true;
+            case R.id.action_select_more_boats:
+                selectMoreBoats();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // user can add more boats that they might have forgotten to add.
+    private void selectMoreBoats() {
+        Intent intent = new Intent(getApplicationContext(), SelectBoats.class);
+        intent.putExtras(b); // package bundle into intent
+        // get list of all results and set to global content
+        GlobalContent.resultList = getAllSQLResultResults(resultDataSource);
+        startActivity(intent);
     }
 
     @Override
@@ -401,26 +416,23 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         raceDataSource.open(); // reopen the db
         resultDataSource.open(); // reopen the db
         wl.acquire(); //acquire the wake lock
-        //risky method
-        try {
-            //sync the list in the adapter with data from SQL
-            GlobalContent.activeResultsAdapter
-                    .syncArrayListWithSql(getAllSQLResultResults(resultDataSource));
-        } catch (Exception e) {
-            Log.i(LOGTAG, "Caught error");
-            e.printStackTrace();
-        }
+        Log.i(LOGTAG, "WAKELOCK: Acquired");
+
+        GlobalContent.activeResultsAdapter.syncArrayListWithSql(); // sync up
+
         myList.invalidate(); // force a refresh of the list view
         populateListView(); // refresh listview
 
 
+
     }
 
+    // create a list of what is currently in the sql table for this race
     public static List<Result> getAllSQLResultResults(ResultDataSource resultDataSource) {
 
         String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
                 + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
-        String orderBy = DBAdapter.KEY_BOAT_NAME;
+        String orderBy = DBAdapter.KEY_RESULTS_FINISH_TIME + ", "+ DBAdapter.KEY_BOAT_NAME;
 
         return resultDataSource.getAllResults(where, orderBy, null);
     }
@@ -430,6 +442,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         super.onPause();
         Log.i(LOGTAG, " onPause NOW");
         wl.release(); //release wake lock
+        Log.i(LOGTAG, "WAKELOCK: Released");
         raceDataSource.close(); // close db to reduce data leak
         resultDataSource.close(); // close db to reduce data leak
     }
@@ -444,12 +457,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     @Override
     public void onStart() {
         super.onStart();
-        //if time tracker finished then enable the exit button else set to disabled
-//        if (RegattaTimer.TIMER_FINISHED) {
-//            exitRace.setEnabled(true);
-//        } else {
-//            exitRace.setEnabled(false);
-//        }
+
         // set the activity alive status to true as the thing is on
         GlobalContent.RESULT_MENU_ALIVE = true;
     }

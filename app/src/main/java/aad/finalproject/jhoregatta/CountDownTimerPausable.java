@@ -44,6 +44,7 @@ public abstract class CountDownTimerPausable {
             @Override
             public void onFinish() {
                 CountDownTimerPausable.this.onFinish();
+                Log.i(LOGTAG, " Timer Finished");
 
             }
         };
@@ -61,8 +62,10 @@ public abstract class CountDownTimerPausable {
     /**
      * Cancel the countdown.
      */
-    public final void cancel(){
-        if(countDownTimer!=null){
+    public final void cancel() {
+        Log.i(LOGTAG, "Cancel Called");
+        if (countDownTimer != null) {
+            Log.i(LOGTAG, "Cancel Invoked");
             countDownTimer.cancel();
             startResumeButtonMethod();
 
@@ -95,6 +98,7 @@ public abstract class CountDownTimerPausable {
      */
     public void pause()throws IllegalStateException{
         if(!isPaused){
+            Log.i(LOGTAG, "Pause Called");
             countDownTimer.cancel();
             Log.i(LOGTAG, "Timer Pausing");
             startResumeButtonMethod(); //swtich from sstart to resume button
