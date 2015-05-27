@@ -24,7 +24,7 @@ import aad.finalproject.jhoregatta.ResultsMenu;
 Handles the list view of results in the results menu
  */
 public class ResultsAdapter extends BaseAdapter {
-    private static String LOGTAG = "Logtag: ResultAdapter";
+    private static String LOGTAG = "ResultAdapter";
     Context mContext; // add context
     LayoutInflater inflater; // instance of inflater
     ResultDataSource resultDataSource;

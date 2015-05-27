@@ -23,7 +23,7 @@ import android.widget.EditText;
  */
 public class ProofOfIntentDialog extends DialogFragment {
 
-    private static final String LOGTAG = "Logtag: DialogFragment "; // for logging
+    private static final String LOGTAG = "DialogFragment "; // for logging
 
     private Button confirm;
 

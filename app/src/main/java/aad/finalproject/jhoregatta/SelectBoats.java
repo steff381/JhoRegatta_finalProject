@@ -27,7 +27,7 @@ import aad.finalproject.db.SelectBoatsAdapter;
 public class SelectBoats extends MainActivity {
 
     // log cat tagging
-    private static final String LOG = "LogTag: SelectBoats";
+    private static final String LOG = "SelectBoats";
 
     // List stuff
     private ListView myList; // initialize the listview
@@ -157,13 +157,13 @@ public class SelectBoats extends MainActivity {
         int id = item.getItemId();
 
         switch (item.getItemId()) {
-            case R.id.action_merge_classes:
-                Intent intent = new Intent(this, MergeBoatClasses.class);
-                startActivity(intent);
-                return true;
-            case R.id.action_ddms:
-                GlobalContent.DDMS(this);
-                return true;
+//            case R.id.action_merge_classes:
+//                Intent intent = new Intent(this, MergeBoatClasses.class);
+//                startActivity(intent);
+//                return true;
+//            case R.id.action_ddms:
+//                GlobalContent.DDMS(this);
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -16,7 +16,7 @@ import java.util.List;
 import aad.finalproject.jhoregatta.R;
 
 public class SelectBoatsAdapter extends ArrayAdapter<Boat> {
-    private static String LOGTAG = "Logtag: SelectBoatAdapter";
+    private static String LOGTAG = "SelectBoatAdapter";
     private ResultDataSource resultDataSource;
     private SelectBoatDataSource selectBoatDataSource;
     private Context context; // make an accessible field for context

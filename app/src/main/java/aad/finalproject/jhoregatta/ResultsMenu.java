@@ -30,7 +30,10 @@ import aad.finalproject.db.ResultsAdapter;
 
 
 public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.ProofOfIntentCommunicator{
-    private static final String LOGTAG = "Logtag: ResultsMenu";
+
+
+    private String LOGTAG = GlobalContent.logTag(this);
+
 
 
     // sql elements for selecting boats
@@ -387,9 +390,9 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
             case R.id.action_select_more_boats:
                 selectMoreBoats();
                 return true;
-            case R.id.action_ddms:
-                GlobalContent.DDMS(this);
-                return true;
+//            case R.id.action_ddms:
+//                GlobalContent.DDMS(this);
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

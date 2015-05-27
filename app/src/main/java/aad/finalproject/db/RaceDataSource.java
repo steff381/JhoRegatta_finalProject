@@ -13,7 +13,7 @@ This class handles the datasource connection for the race table
 public class RaceDataSource {
 
     // log cat tagging
-    private static final String LOG = "LogTag: RaceDataSource";
+    private static final String LOG = "RaceDataSource";
 
     //get db helper and the database
     SQLiteOpenHelper dbHelper;

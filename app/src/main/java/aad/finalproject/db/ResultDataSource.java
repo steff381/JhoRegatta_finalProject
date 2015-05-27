@@ -17,7 +17,7 @@ This class handles the connection between the app and the database for the resul
  */
 public class ResultDataSource {
     // log cat tagging
-    public static String LOG = "LogTag: ResultsDataSource";
+    public static String LOG = "ResultsDataSource";
 
     //get db helper and the database
     SQLiteOpenHelper dbHelper;

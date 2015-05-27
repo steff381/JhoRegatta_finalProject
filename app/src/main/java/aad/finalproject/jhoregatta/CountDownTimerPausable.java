@@ -9,7 +9,7 @@ This is a drop in code from Github that is just a pausable version of the countd
  */
 public abstract class CountDownTimerPausable {
 
-    private static String LOGTAG = "LogTag: CountDownTimerPausable: ";
+    private static String LOGTAG = "CountDownTimerPausable: ";
     //timer elements
     long millisInFuture = 0;
     long countDownInterval = 0;

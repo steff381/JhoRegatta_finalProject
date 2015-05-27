@@ -12,7 +12,7 @@ import android.widget.NumberPicker;
 
 public class TimePickerDialog extends DialogFragment implements View.OnClickListener {
 
-    private static final String LOGTAG = "Logtag: TimePickerDail";
+    private static final String LOGTAG = "TimePickerDialog";
 
     // instances of number pickers
     private NumberPicker hourPicker;

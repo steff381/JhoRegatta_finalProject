@@ -231,14 +231,9 @@
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Blue"
-                            android:id="@+id/ckbx_inpt_RaceClassBlue" />
-
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:text="Purple"
-                            android:id="@+id/ckbx_inpt_RaceClassPurple"/>
+                            android:id="@+id/ckbx_inpt_RaceClassPurple"
+                            android:checked="false" />
 
                         <CheckBox
                             android:layout_width="wrap_content"
@@ -246,6 +241,12 @@
                             android:text="Yellow"
                             android:id="@+id/ckbx_inpt_RaceClassYellow"
                             android:layout_marginRight="10dp" />
+
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Blue"
+                            android:id="@+id/ckbx_inpt_RaceClassBlue" />
 
                         <CheckBox
                             android:layout_width="wrap_content"

@@ -14,7 +14,7 @@ import java.util.List;
 public class BoatDataSource {
 
     // log cat tagging
-    private static final String LOG = "LogTag: BoatDataSource";
+    private static final String LOG = "BoatDataSource";
 
     //get db helper and the database
     SQLiteOpenHelper dbHelper;

@@ -327,7 +327,7 @@ public class RaceAddForm extends Form {
 
 
     // create method to assign checkbox listeners to the class check boxes
-    public void setCheckboxListeners() {
+    private void setCheckboxListeners() {
 
         for (int i = 1; i < checkBoxArrayList.size(); i++) {
             String boatCheckBoxName = checkBoxArrayList.get(i).getText().toString().trim();

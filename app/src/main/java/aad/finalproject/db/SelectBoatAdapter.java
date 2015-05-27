@@ -19,7 +19,7 @@ import aad.finalproject.jhoregatta.R;
 This adapter is used to handle the connection betwee the select boats list view and the data base
  */
 public class SelectBoatAdapter extends ArrayAdapter<Boat> {
-    private static String LOGTAG = "Logtag: SelectBoatAdapter";
+    private static String LOGTAG = "SelectBoatAdapter";
 
     private Context context; // make an accessible field for context
     private String where;

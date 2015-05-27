@@ -61,11 +61,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/checkBox"
-                android:layout_weight=".3"
+                android:layout_weight=".6"
                 android:checked="false"
                 android:scaleX="1.5"
                 android:scaleY="1.5"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:visibility="invisible" />
 
             <TextView
                 android:layout_width="0dp"

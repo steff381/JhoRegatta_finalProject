@@ -27,7 +27,7 @@ This class contains data that can be accessed by any class in the project.
  */
 public class GlobalContent {
 
-    private static final String LOGTAG = "Logtag: GlobalContent"; // log tag for records
+    private static final String LOGTAG = "GlobalContent"; // log tag for records
     protected static boolean RESULT_MENU_ALIVE = false;
 
     //vital details used by the time tracker and results menu
@@ -319,4 +319,8 @@ public class GlobalContent {
         }
     }
 
+    //create logcat tag
+    public static String logTag(Context context) {
+        return context.getClass().getSimpleName();
+    }
 }

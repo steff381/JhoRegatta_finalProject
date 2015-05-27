@@ -23,7 +23,7 @@ import aad.finalproject.db.ResultDataSource;
 
 public class ResultsEditor extends MainActivity  implements TimePickerDialog.Communicator {
 
-    private static final String LOGTAG = "Logtag: ResultsEditor"; // logtag component
+    private static final String LOGTAG = "ResultsEditor"; // logtag component
     //widget instances
     private Button update, cancel, setElapsedTime;
     private CheckBox didNotFinish, manualEntryMode;

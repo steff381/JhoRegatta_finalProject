@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
 
-    private static final String LOGTAG = "MainActivity";
+    private String LOGTAG = GlobalContent.logTag(this);
 
     Button btn;
     EditText et1, et2;
@@ -31,6 +31,7 @@ public class MainActivity extends ActionBarActivity {
         // wire buttons
         Button calculator = (Button) findViewById(R.id.btn_nav_Calculator);
 
+        Log.i(LOGTAG, "testing Logtag");
         // assign click listeners
         calculator.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,12 +51,15 @@ public class MainActivity extends ActionBarActivity {
 
         soundTest(false);
 
-        mergeTest(true);
+        mergeTest(false);
+
+
 
     }
 
     private void mergeTest(boolean b) {
         if (b) {
+
             GlobalContent.unmergedBoats = new ArrayList<>();
             btn.setVisibility(View.VISIBLE);
             btn.setText("Merge");
@@ -111,9 +115,9 @@ public class MainActivity extends ActionBarActivity {
                 Intent intent = new Intent(this, Preferences.class);
                 startActivity(intent);
                 return true;
-            case R.id.action_ddms:
-                GlobalContent.DDMS(this);
-                return true;
+//            case R.id.action_ddms:
+//                GlobalContent.DDMS(this);
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

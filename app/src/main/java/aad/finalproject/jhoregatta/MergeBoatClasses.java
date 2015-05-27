@@ -113,11 +113,6 @@ public class MergeBoatClasses extends MainActivity {
                         //add the name to the array list
                         selectedBoatClassArrayList.remove(buttonView.getText().toString());
                     }
-
-                    //TODO for testing
-                    for (String s1 : selectedBoatClassArrayList) {
-                        Log.i(LOGTAG, "selectedBoatClassArrayList item: " + s1);
-                    }
                 }
 
             });

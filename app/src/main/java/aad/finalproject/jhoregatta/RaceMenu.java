@@ -18,7 +18,7 @@ import aad.finalproject.db.RaceDataSource;
 public class RaceMenu extends MainActivity {
 
     // log cat tagging
-    private static final String LOG = "LogTag: RaceMenu";
+    private static final String LOG = "RaceMenu";
 
     private ListView myListRace; // initialize the listview
 

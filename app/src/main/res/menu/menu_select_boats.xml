@@ -2,8 +2,5 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="aad.finalproject.jhoregatta.SelectBoats">
-    <item android:id="@+id/action_merge_classes"
-        android:title="Merge"
-        android:orderInCategory="200"
-        app:showAsAction="always"/>
+
 </menu>

@@ -19,7 +19,7 @@ import aad.finalproject.db.DBAdapter;
 public class BoatMenu extends MainActivity {
 
     // log cat tagging
-    private static final String LOG = "LogTag: BoatMenu";
+    private static final String LOG = "BoatMenu";
 
     // parameters for methods using sql quiery parameters
     private String whereClauseIsVisible = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
@@ -155,7 +155,7 @@ public class BoatMenu extends MainActivity {
                         {	"Blue"	    ,	"Polar Bear"	    ,	"50868"	    ,	"102"	},
                         {	"Green"	    ,	"Radio Flyer"	    ,	"40410"	    ,	"87"	},
                         {	"Blue"	    ,	"Ragnarok"	        ,	"31506"	    ,	"123"	},
-                        {	"Yellow"	,	"Ramble On"	        ,	"None"	    ,	"180"	},
+                        {	"Purple"	,	"Ramble On"	        ,	"None"	    ,	"180"	},
                         {	"Blue"	    ,	"Raptor"	        ,	"220*"	    ,	"102"	},
                         {	"Purple"	,	"Satori"	        ,	"None"	    ,	"174"	},
                         {	"Green"	    ,	"Sixx"	            ,	"6"	        ,	"54"	},
