@@ -24,19 +24,16 @@ import aad.finalproject.jhoregatta.ResultsMenu;
 Handles the list view of results in the results menu
  */
 public class ResultsAdapter extends BaseAdapter {
-    private static String LOGTAG = "Logtag: " + Thread.currentThread()
-            .getStackTrace()[2].getClass().getSimpleName(); // log tag for records
+    private static String LOGTAG = "Logtag: ResultAdapter";
     Context mContext; // add context
     LayoutInflater inflater; // instance of inflater
     ResultDataSource resultDataSource;
     // lists of result
-    private List<Result> mainDataList = null;
     public ArrayList<Result> arraylist;
 
     // instance constructor
     public ResultsAdapter(Context context, List<Result> mainDataList,
                           ResultDataSource resultDataSource) {
-        this.mainDataList= mainDataList;
         this.resultDataSource = resultDataSource;
         mContext = context;
         inflater = LayoutInflater.from(mContext);
@@ -44,58 +41,22 @@ public class ResultsAdapter extends BaseAdapter {
         this.arraylist = new ArrayList<>();
         this.arraylist.addAll(mainDataList);
     }
-    /**
-     * How many items are in the data set represented by this Adapter.
-     *
-     * @return Count of items.
-     */
+
+
     @Override
     public int getCount() {
         return arraylist.size();
     }
 
-    /**
-     * Get the data item associated with the specified position in the data set.
-     *
-     * @param position Position of the item whose data we want within the adapter's
-     *                 data set.
-     * @return The data at the specified position.
-     */
     @Override
     public Object getItem(int position) {
         return arraylist.get(position);
     }
 
-    /**
-     * Get the row id associated with the specified position in the list.
-     *
-     * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return The id of the item at the specified position.
-     */
-
     @Override
     public long getItemId(int position) {
         return position;
     }
-
-    /**
-     * Get a View that displays the data at the specified position in the data set. You can either
-     * create a View manually or inflate it from an XML layout file. When the View is inflated, the
-     * parent View (GridView, ListView...) will apply default layout parameters unless you use
-     * {@link android.view.LayoutInflater#inflate(int, android.view.ViewGroup, boolean)}
-     * to specify a root view and to prevent attachment to the root.
-     *
-     * @param index    The position of the item within the adapter's data set of the item whose view
-     *                    we want.
-     * @param view The old view to reuse, if possible. Note: You should check that this view
-     *                    is non-null and of an appropriate type before using. If it is not possible to convert
-     *                    this view to display the correct data, this method can create a new view.
-     *                    Heterogeneous lists can specify their number of view types, so that this View is
-     *                    always of the right type (see {@link #getViewTypeCount()} and
-     *                    {@link #getItemViewType(int)}).
-     * @param parent      The parent that this view will eventually be attached to
-     * @return A View corresponding to the data at the specified position.
-     */
 
     @Override
     public View getView( int index, View view, final ViewGroup parent) {
@@ -173,6 +134,7 @@ public class ResultsAdapter extends BaseAdapter {
                 t.setTextColor(Color.parseColor("#ffffff")); // make the text white
             }
             tv8.setText("DNF");
+
         } else if (r.getResultsBoatFinishTime() != null) {
 
             //hide the finish button and show the reset button instead.
@@ -198,13 +160,12 @@ public class ResultsAdapter extends BaseAdapter {
             }
         }
 
+        // set the function of each finish button
+        btnFinish.setOnClickListener(new View.OnClickListener() {
 
-            // set the function of each finish button
-
-            btnFinish.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
+                //check if the class start time contains either a string or a null
                 if (result.getResultsClassStartTime() != null) {
                     DateTime dateTime = DateTime.now();// capture the current time
 
@@ -240,18 +201,19 @@ public class ResultsAdapter extends BaseAdapter {
                     GlobalContent.getElapsedTime(startTime, timeFormatted);
 
                     //run table calculations to derive duration and adjusted duration
-                    resultDataSource.runCalculations();
+                    resultDataSource.runSingleCalculation(result.getResultsId());
 
                     syncArrayListWithSql(); // sync up results with sql
 
                     //refresh the viewed data
                     notifyDataSetChanged();
-                } else
+                } else {
                     Toast.makeText(v.getContext(), "This boat's Class hasn't started yet. \n" +
-                            "Wait for Time Tracker to finish starting the Class.",
+                                    "Wait for Time Tracker to finish starting the Class.",
                             Toast.LENGTH_LONG).show();
                 }
-            });
+            }
+        });
 
         // resets the finish time to 0 after 3 clicks
         btnReset.setOnClickListener(new View.OnClickListener() {
@@ -298,17 +260,17 @@ public class ResultsAdapter extends BaseAdapter {
         return view;
     }
 
-    // sync the list in the ResultsAdapter with what is in the Results SQL table.
-    public void syncArrayListWithSql(List<Result> tempResultFromSql) {
-        // Make sure the data coming from sql isn't blank. Otherwise throw error
-        if (tempResultFromSql.size() > 0) {
-            this.arraylist.clear(); //empty out the array list
-            this.arraylist.addAll(tempResultFromSql);// add the temp sql stuff to the array list
-        } else {
-            throw new NullPointerException("Data in tempResultFromSql is empty");
-        }
-        notifyDataSetChanged(); // force refresh of the listview
-    }
+//    // sync the list in the ResultsAdapter with what is in the Results SQL table.
+//    public void syncArrayListWithSql(List<Result> tempResultFromSql) {
+//        // Make sure the data coming from sql isn't blank. Otherwise throw error
+//        if (tempResultFromSql.size() > 0) {
+//            this.arraylist.clear(); //empty out the array list
+//            this.arraylist.addAll(tempResultFromSql);// add the temp sql stuff to the array list
+//        } else {
+//            throw new NullPointerException("Data in tempResultFromSql is empty");
+//        }
+//        notifyDataSetChanged(); // force refresh of the listview
+//    }
 
     // sync the list in the ResultsAdapter with what is in the Results SQL table.
     public void syncArrayListWithSql() {

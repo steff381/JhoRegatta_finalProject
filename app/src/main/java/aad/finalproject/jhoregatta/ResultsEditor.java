@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -31,6 +30,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
     private EditText penalty, notes;
     private TextView boatName, sailNum, boatClass, phrf, distance, elapsedTime, adjDuration,
             finishTime, classStart, notesCharRemaining;
+    private Dimmer dimmer;
 
 
     /////////DATABASE SECTION////////////
@@ -52,7 +52,8 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         setContentView(R.layout.activity_results_editor);
 
         //Keep awake during activity
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        dimmer = new Dimmer(getWindow(), GlobalContent.dimmerDelay);
+        dimmer.start();
 
         Log.i(LOGTAG, " Result row is " + GlobalContent.getResultsRowID());
         //assign editable datasource
@@ -373,7 +374,26 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onUserInteraction() {
+        dimmer.resetDelay(); // reschedule dimmer task
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(LOGTAG, " onResume Now");
+        resultDataSource.open(); // reopen the db
+        dimmer.start(); // start/resume dimmer timer
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(LOGTAG, " onPause NOW");
+        dimmer.end(); // release dimmer
+        resultDataSource.close(); // close db to reduce data leak
+    }
 
     @Override
     public void onDialogMessage(long message) {

@@ -33,7 +33,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Back"
-                        android:id="@+id/btn_nav_RaceMenu"
+                        android:id="@+id/btn_sb_back"
                         android:onClick="onClickBack"
                         android:layout_weight="2"
                         android:layout_marginRight="35dp"/>
@@ -43,7 +43,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text=" Timer >> "
-                        android:id="@+id/btn_add_boat"
+                        android:id="@+id/btn_sb_toTimer"
                         android:layout_gravity="center_vertical"
                         android:onClick="onClickTimer"
                         android:layout_weight="2"
@@ -63,6 +63,8 @@
                 android:id="@+id/checkBox"
                 android:layout_weight=".3"
                 android:checked="false"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
                 android:enabled="false"/>
 
             <TextView

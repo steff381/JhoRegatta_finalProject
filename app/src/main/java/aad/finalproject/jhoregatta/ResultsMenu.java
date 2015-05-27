@@ -2,14 +2,12 @@ package aad.finalproject.jhoregatta;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,7 +51,8 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     private Bundle b;
 
     //wake lock variable
-    PowerManager.WakeLock wl;
+//    PowerManager.WakeLock wl;
+    private Dimmer dimmer;
 
     //instance of data source
     private RaceDataSource raceDataSource;
@@ -72,16 +71,13 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results_menu);
 
-        //Keep awake
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "My Tag");
-        wl.acquire();
-        Log.i(LOGTAG, "WAKELOCK: Acquired Initial");
+        // screen dimmer allows the screen to dim but never turn off
+        dimmer = new Dimmer(getWindow(), GlobalContent.dimmerDelay);
+        dimmer.start();
 
         //set up bundle
         b = new Bundle();
         b.putString(SelectBoats.SOURCE_BUNDLE_KEY, "RM");
-
 
         //wire data source and open
         raceDataSource = new RaceDataSource(this);
@@ -219,7 +215,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
         }
 
-
         //set onclick listening for listview
         //make it long click to prevent accidental clicking
         myList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -248,8 +243,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                 return true;
             }
         });
-
-
     }
 
     private double calculateDistance() {
@@ -349,13 +342,11 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
         Cursor c = raceDataSource.getRow(GlobalContent.getRaceRowID());
 
-
         //create a file name for the csv file
         String fileName = c.getString(c.getColumnIndex(DBAdapter.KEY_RACE_NAME)) + ".csv";
 
         //write the database to a csv file.
         DatabaseWriter.exportDatabase(fileName, resultDataSource);
-
 
         //get the URI of the file just created
         Uri uri = Uri.fromFile(new File(Environment
@@ -395,6 +386,10 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         switch (item.getItemId()) {
             case R.id.action_select_more_boats:
                 selectMoreBoats();
+                return true;
+            case R.id.action_ddms:
+                GlobalContent.DDMS(this);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -409,24 +404,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         startActivity(intent);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(LOGTAG, " onResume Now");
-        raceDataSource.open(); // reopen the db
-        resultDataSource.open(); // reopen the db
-        wl.acquire(); //acquire the wake lock
-        Log.i(LOGTAG, "WAKELOCK: Acquired");
-
-        GlobalContent.activeResultsAdapter.syncArrayListWithSql(); // sync up
-
-        myList.invalidate(); // force a refresh of the list view
-        populateListView(); // refresh listview
-
-
-
-    }
-
     // create a list of what is currently in the sql table for this race
     public static List<Result> getAllSQLResultResults(ResultDataSource resultDataSource) {
 
@@ -438,15 +415,32 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     }
 
     @Override
+    public void onUserInteraction() {
+        dimmer.resetDelay(); // reschedule dimmer task
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(LOGTAG, " onResume Now");
+        raceDataSource.open(); // reopen the db
+        resultDataSource.open(); // reopen the db
+        dimmer.start(); // start/resume dimmer timer
+
+        GlobalContent.activeResultsAdapter.syncArrayListWithSql(); // sync up
+
+        myList.invalidate(); // force a refresh of the list view
+        populateListView(); // refresh listview
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         Log.i(LOGTAG, " onPause NOW");
-        wl.release(); //release wake lock
-        Log.i(LOGTAG, "WAKELOCK: Released");
+        dimmer.end(); // release dimmer
         raceDataSource.close(); // close db to reduce data leak
         resultDataSource.close(); // close db to reduce data leak
     }
-
 
     // populate the list using the adapter
     public void populateListView() {

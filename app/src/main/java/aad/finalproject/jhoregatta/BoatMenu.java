@@ -59,7 +59,7 @@ public class BoatMenu extends MainActivity {
         Cursor boats = boatDataSource.getAllBoatsCursor(whereClauseIsVisible,
                 orderByClause, havingClause);
 
-        //TODO: Default boats for Seung to use for grading
+        //TODO: Default boats
         if (boats.getCount()>0) {
             populateListView();
         } else {
@@ -166,7 +166,7 @@ public class BoatMenu extends MainActivity {
                         {	"Yellow"	,	"Striptease"	    ,	"4808*"	    ,	"0"	    },
                         {	"Blue"	    ,	"Swedish Magic"	    ,	"50955"	    ,	"135"	},
                         {	"Purple"	,	"Taku"	            ,	"2432"	    ,	"249"	},
-                        {	"Blue"	    ,	"Tweedy"	        ,	"30714"	    ,	"102"	},
+                        {	"Blue"	    ,	"Tweety"	        ,	"30714"	    ,	"102"	},
                         {	"Yellow"	,	"Wai"	            ,	"None"	    ,	"168"	},
                         {	"Yellow"	,	"Whirlwind"	        ,	"None"	    ,	"219"	},
                         {	"Yellow"	,	"Whisky Jack"	    ,	"None"	    ,	"180"	},

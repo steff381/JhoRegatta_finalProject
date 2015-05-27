@@ -6,12 +6,14 @@ package aad.finalproject.db;
 public class Boat {
 
     long id;
+    long boatId;
     String boatName;
     String boatSailNum;
     String boatClass;
     int boatPHRF;
     int boatVisible;
     private boolean selected = false;
+    int isSelected;
 
     public int getBoatVisible() {
         return boatVisible;
@@ -69,5 +71,19 @@ public class Boat {
         this.boatVisible = boatVisible;
     }
 
+    public int getIsSelected() {
+        return isSelected;
+    }
 
+    public void setIsSelected(int isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    public long getBoatId() {
+        return boatId;
+    }
+
+    public void setBoatId(long boatId) {
+        this.boatId = boatId;
+    }
 }

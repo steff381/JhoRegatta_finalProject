@@ -22,13 +22,14 @@ public class DBAdapter extends SQLiteOpenHelper{
     private static final String LOG = "LogTag: DBAdapter";
 
     // db version
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     // db name
     public static final String DB_NAME = "jhoRegattaDatabase.db";
 
     // table names
     public static final String TABLE_BOATS = "boats";
+    public static final String TABLE_SELECT_BOATS = "selectboats";
     public static final String TABLE_RACES = "races";
     public static final String TABLE_RESULTS = "results";
 
@@ -43,6 +44,7 @@ public class DBAdapter extends SQLiteOpenHelper{
     public static final String KEY_BOAT_PHRF = "phrf";
     public static final String KEY_BOAT_SELECTED = "isSelected";
     public static final String KEY_BOAT_VISIBLE = "visible";
+
 
 
 
@@ -100,6 +102,18 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_BOAT_PHRF + " INTEGER NOT NULL,"
             + KEY_BOAT_VISIBLE + " INTEGER NOT NULL,"
             + KEY_CREATED_AT + " INTEGER NOT NULL"
+            + ")";
+
+    //SELECT BOATS table create
+    public static final String CREATE_TABLE_SELECT_BOATS = "CREATE TABLE " + TABLE_SELECT_BOATS + "("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_BOAT_ID + " INTEGER NOT NULL, "
+            + KEY_BOAT_NAME + " TEXT NOT NULL,"
+            + KEY_BOAT_SAIL_NUM + " TEXT NOT NULL,"
+            + KEY_BOAT_CLASS + " TEXT NOT NULL,"
+            + KEY_BOAT_PHRF + " INTEGER NOT NULL,"
+            + KEY_BOAT_VISIBLE + " INTEGER NOT NULL,"
+            + KEY_BOAT_SELECTED + " INTEGER NOT NULL"
             + ")";
 
     //races table create
@@ -168,7 +182,6 @@ public class DBAdapter extends SQLiteOpenHelper{
             KEY_RACE_DISTANCE
     } ;
 
-
     // instances constructor for the DBAdapter class
     public DBAdapter(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -184,6 +197,8 @@ public class DBAdapter extends SQLiteOpenHelper{
         Log.i(LOG, "------------Table " + TABLE_RACES + " Created");
         db.execSQL(CREATE_TABLE_BOATS);
         Log.i(LOG, "------------Table " + TABLE_BOATS + " Created");
+        db.execSQL(CREATE_TABLE_SELECT_BOATS);
+        Log.i(LOG, "------------Table " + TABLE_SELECT_BOATS + " Created");
         db.execSQL(CREATE_TABLE_RESULTS);
         Log.i(LOG, "------------Table " + TABLE_RESULTS + " Created");
     }
@@ -193,12 +208,14 @@ public class DBAdapter extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // perform on upgrade of old tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RACES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SELECT_BOATS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOATS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESULTS);
 
         //remake the tables
         onCreate(db);
     }
+
 
     /**
      * Create a time stamp for each entry into the database for tracking

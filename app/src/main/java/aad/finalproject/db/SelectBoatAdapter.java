@@ -51,7 +51,6 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
 
         ViewHolder holder; // make null
 
-
         //if the convertView is null
         if (convertView == null) {
             // make and inflate the inflator
@@ -70,7 +69,6 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
 
             //pass values to the tag of the covert view
             convertView.setTag(holder);
-
 
             //create an onclick listener for each checkbox
             holder.checkBox.setOnClickListener(new View.OnClickListener(){
@@ -116,7 +114,7 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
             holder.boatSailNum.setTextColor(Color.parseColor("#ffffff"));
 
         } else {
-            //if it isn't checkd change it to regular.
+            //if it isn't checked change it to regular.
             convertView.setBackgroundColor((Color.parseColor("#00000000")));
             //text becomes black.
             holder.boatClass.setTextColor(Color.parseColor("#000000"));
@@ -130,7 +128,6 @@ public class SelectBoatAdapter extends ArrayAdapter<Boat> {
 
     // sync the list in the ResultsAdapter with what is in the Results SQL table.
     public void syncArrayListWithSql(BoatDataSource boatDataSource) {
-//    public static void syncArrayListWithSql(ResultDataSource resultDataSource) {
         //create statement strings
         String orderBy = DBAdapter.KEY_BOAT_NAME;
         // create a temporary placeholder for the data from SQL

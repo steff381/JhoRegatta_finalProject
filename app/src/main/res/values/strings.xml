@@ -42,4 +42,6 @@
     <string name="title_activity_results_editor">Result Editor</string>
     <string name="title_activity_select_class_distance">Class Distance</string>
     <string name="action_results_menu_add_boats">Add Boat</string>
+    <string name="title_activity_merge_boat_classes">Merge Boat Classes</string>
+    <string name="title_activity_list_template_merge_classes">ListTemplateMergeClasses</string>
 </resources>

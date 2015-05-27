@@ -13,8 +13,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme" >
         <activity android:name="aad.finalproject.db.AndroidDatabaseManager" />
         <activity
             android:name=".MainActivity"
@@ -67,7 +66,6 @@
             android:label="@string/title_activity_regatta_timer"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name=".ListTemplateSelectBoats"
             android:label="@string/title_activity_list_template_select_boats" >
@@ -90,7 +88,7 @@
         <activity
             android:name=".listTemplateDistanceCalculator"
             android:label="@string/title_activity_list_template_distance_calculator"
-            android:screenOrientation="portrait"  >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Preferences"
@@ -111,6 +109,14 @@
             android:name=".SelectClassDistance"
             android:label="@string/title_activity_select_class_distance"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".MergeBoatClasses"
+            android:label="@string/title_activity_merge_boat_classes"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="aad.finalproject.jhoregatta.MainActivity" />
         </activity>
     </application>
 

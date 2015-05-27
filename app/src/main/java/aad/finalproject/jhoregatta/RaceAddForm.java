@@ -22,11 +22,13 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import aad.finalproject.db.Boat;
 import aad.finalproject.db.DBAdapter;
 import aad.finalproject.db.Race;
 import aad.finalproject.db.RaceDataSource;
 import aad.finalproject.db.Result;
 import aad.finalproject.db.ResultDataSource;
+import aad.finalproject.db.SelectBoatDataSource;
 
 
 public class RaceAddForm extends Form {
@@ -46,8 +48,7 @@ public class RaceAddForm extends Form {
     private EditText raceDateYYYY;
 
     // linear layout
-    LinearLayout linlayResultsButtons;
-
+    private LinearLayout linlayResultsButtons;
 
     //checkboxes for class selection
     private CheckBox raceClassless;
@@ -56,7 +57,6 @@ public class RaceAddForm extends Form {
     private CheckBox raceClassYellow;
     private CheckBox raceClassGreen;
     private CheckBox raceClass_TBD_;
-
 
     //array list of checkboxes
     private ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
@@ -75,9 +75,9 @@ public class RaceAddForm extends Form {
     private int intRaceClass_TBD_;
 
     // initialize the race data source object
-    RaceDataSource raceDataSource; // create instance of the race data source
-    ResultDataSource resultDataSource; // create instance of the results data source.
-    Cursor updateRowFromCursor; //create a cursor to hold single row of data for updates/edits
+    private RaceDataSource raceDataSource; // create instance of the race data source
+    private ResultDataSource resultDataSource; // create instance of the results data source.
+    private SelectBoatDataSource selectBoatDataSource; // create instance of the select boats data source.
 
     // initialize button widgets
     private Button create;
@@ -95,9 +95,14 @@ public class RaceAddForm extends Form {
         //open a Writable instance of the RaceDataSource
         raceDataSource = new RaceDataSource(this);
         raceDataSource.open();
+
         //open the results data source
         resultDataSource = new ResultDataSource(this);
         resultDataSource.open();
+
+        //open the select boat data source
+        selectBoatDataSource = new SelectBoatDataSource(this);
+        selectBoatDataSource.open();
 
         isBoatClassUpdate = false; // opening up the menu for the first time makes false
 
@@ -120,7 +125,6 @@ public class RaceAddForm extends Form {
         delete = (Button) findViewById(R.id.btn_delete_race);
         Button modifyResults = (Button) findViewById(R.id.btn_raf_modify_results);
         setDistance = (Button) findViewById(R.id.btn_setDistance);
-//        Button emailResults = (Button) findViewById(R.id.btn_raf_email_results);
 
         //wire linear layout
         linlayResultsButtons = (LinearLayout) findViewById(R.id.linlay_raf_results_buttons);
@@ -132,7 +136,6 @@ public class RaceAddForm extends Form {
                 GlobalContent.setResultsFormAccessMode(true); //set the access mode variable.
                 Intent intent = new Intent(v.getContext(), ResultsMenu.class);
                 startActivity(intent);
-
             }
         });
 
@@ -186,12 +189,15 @@ public class RaceAddForm extends Form {
                 }
             }
         });
+        checkFormAccessMode(); // show/hide form elements for different variations of the form.
+    }
 
+    private void checkFormAccessMode() {
         // set the buttons for edit mode.
         if (GlobalContent.modeEdit.equals(GlobalContent.getRaceFormAccessMode())) {
 
             //if EDIT mode is active initialize cursor fields
-            updateRowFromCursor = raceDataSource.getRow(GlobalContent.getRaceRowID());
+            Cursor updateRowFromCursor = raceDataSource.getRow(GlobalContent.getRaceRowID());
 
             //show the proper buttons
             create.setVisibility(View.GONE);
@@ -200,11 +206,10 @@ public class RaceAddForm extends Form {
 
             checkForDistance();
 
-
             //make sure the editable fields and boxes are disabled
             setEnabledOfEditables(false);
 
-//            //make the starting order text views invisible during edit mode.
+            //make the starting order text views invisible during edit mode.
             findViewById(R.id.linlay_raf_startOrder).setVisibility(View.INVISIBLE);
 
             LOG += " Race EDIT form"; // change the edit mode status for log cat
@@ -251,12 +256,11 @@ public class RaceAddForm extends Form {
 
             LOG += " Race ADD form"; // change status for log cat
 
+            //show buttons needed in the add version of the form
             create.setVisibility(View.VISIBLE);
             update.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
             linlayResultsButtons.setVisibility(View.GONE);
-            //make the starting order text views visible during add mode.
-//            findViewById(R.id.linlay_class_start_order_textviews).setVisibility(View.VISIBLE);
 
             Log.i(LOG, "create mode buttons activated");
         } else {
@@ -274,10 +278,8 @@ public class RaceAddForm extends Form {
         //tally up the distance
         double distance = 0;
         for (Result r : results) {
-            Log.i(LOG, " class: " + r.getBoatClass() + " boat: " + r.getBoatName() + " distance: " + r.getRaceDistance());
             distance += r.getRaceDistance();
         }
-        Log.i(LOG, "Distance = " + distance);
         //if the distance is 0 then the distance wasn't set.
         //show or hide the "set distance" button depending on the situation.
         if (distance == 0) {
@@ -363,7 +365,7 @@ public class RaceAddForm extends Form {
                 if (isChecked) {
                     //clear the boat class array of all other boats
                     BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
-                    //if the classless cb is check then uncheck al other boxes and disable them
+                    //if the classless cb is check then uncheck all other boxes and disable them
                     for (int i = 1; i < checkBoxArrayList.size(); i++) {
                         checkBoxArrayList.get(i).setChecked(false);
                         checkBoxArrayList.get(i).setEnabled(false);
@@ -381,8 +383,6 @@ public class RaceAddForm extends Form {
                 bindTextViewWithClassColors(); // update the class order text views.
             }
         });
-
-        //set the listener for the first check box
     }
 
 
@@ -403,15 +403,12 @@ public class RaceAddForm extends Form {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_race_add_form, menu);
         Log.i("BoatAddForm ", "OnCreateOptionsMenu");
         return true;
-
-
     }
 
     @Override
@@ -429,7 +426,6 @@ public class RaceAddForm extends Form {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onClickCancel(View view) {
         endActivity(); /// just end the actiity
@@ -442,6 +438,10 @@ public class RaceAddForm extends Form {
         if (validateDataEntryFields()) {
 
             Race newRace = new Race(); // create a new race instance
+
+            //clear all boats from selected boats table
+            // Will need a clean version for the new race.
+            clearSelectBoatsTable();
 
             // load new race instance with data from validated fields
             newRace.setName(strraceTitle);
@@ -458,8 +458,10 @@ public class RaceAddForm extends Form {
             // grab the newly created RaceID and set it to the global content for use by
             // the results table
             long id = raceDataSource.getLastInsertedRowID();
+            GlobalContent.unmergedBoats = new ArrayList<>(); // create active instance of new unmerged boats
             GlobalContent.setRaceRowID(id); // set the id of global content
             GlobalContent.setActiveRace(newRace, id); // set the active race to the new race
+
             Log.i(LOG, "Last inserted Id: " + id + " || Race name: " + newRace.getName());
 
 
@@ -470,6 +472,7 @@ public class RaceAddForm extends Form {
             // open the select class distance
             Intent intent = new Intent(this, SelectClassDistance.class);
             Bundle b = new Bundle();
+            //add distance data to bundle for use by next activity
             b.putBoolean(DISTANCE_KEY, false);
             intent.putExtras(b);
             startActivity(intent);
@@ -479,14 +482,11 @@ public class RaceAddForm extends Form {
             delete.setVisibility(View.VISIBLE);
             Log.i("BoatAddForm ", "Validated entry added");
         }
-
     }
-
 
     @Override
     public void onClickUpdate(View view) {
         update(GlobalContent.getRaceRowID()); // update the data in the race sql table
-
     }
 
     @Override
@@ -507,6 +507,7 @@ public class RaceAddForm extends Form {
                 Log.i(LOG, "Validated UPDATE entry");
                 // open the select boats list
                 appendWhereClause(); // create a where clause for select boats
+                GlobalContent.unmergedBoats = new ArrayList<>(); // reset the arraylist of unmerged boats
                 Intent intent = new Intent(this, SelectClassDistance.class);
                 Bundle b = new Bundle();
                 b.putBoolean(DISTANCE_KEY, false);
@@ -519,7 +520,6 @@ public class RaceAddForm extends Form {
             }
             cursor.close();
         }
-
     }
 
     @Override
@@ -601,7 +601,6 @@ public class RaceAddForm extends Form {
                     Toast.LENGTH_LONG).show();
             return false;
         }
-
         //check if any commas are in fields used when writing to the sql CSV file
         return !GlobalContent.checkForCommas(this, raceTitle.getText().toString());
     }
@@ -625,7 +624,6 @@ public class RaceAddForm extends Form {
             Toast.makeText(this, "All fields are required",
                     Toast.LENGTH_LONG).show();
         }
-
     }
 
     // user clicks today and today's date appears in the date picker
@@ -635,18 +633,10 @@ public class RaceAddForm extends Form {
         raceDateMM.setText(date.getMonthOfYear() + "");
         raceDateDD.setText(date.getDayOfMonth() + "");
         raceDateYYYY.setText(date.getYear() + "");
-
     }
 
     // generic end of activty
     protected void endActivity() {
-
-        if (resultDataSource != null) {
-            resultDataSource.close();
-        }
-        if (raceDataSource != null) {
-            raceDataSource.close();
-        }
         this.finish();
     }
 
@@ -659,10 +649,19 @@ public class RaceAddForm extends Form {
             // hide the results buttons too
             linlayResultsButtons.setVisibility(View.GONE);
         }
-        checkForDistance(); // check to see if the distance was entered into the database.
         resultDataSource.open();
         raceDataSource.open();
+        selectBoatDataSource.open();
+        checkForDistance(); // check to see if the distance was entered into the database.
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //close data sources to prevent leaking
+        resultDataSource.close();
+        raceDataSource.close();
+        selectBoatDataSource.close();
     }
 
 
@@ -682,14 +681,10 @@ public class RaceAddForm extends Form {
         raceClass_TBD_.setEnabled(isEnabled);
 
         findViewById(R.id.btnToday).setEnabled(isEnabled);
-
     }
 
     // build a sql query that includes only the classes chosen by the user in the prvious form.
     private void appendWhereClause() {
-        for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
-            Log.i(LOG, b.getBoatColor());
-        }
         //check if the boat class in the array is the "Classless" class
         if (!BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(0).getBoatColor().equals("Classless")) {
             StringBuilder sb = new StringBuilder();
@@ -708,5 +703,17 @@ public class RaceAddForm extends Form {
             //if the only boat class in the list is the classless class choose all boats.
             GlobalContent.globalWhere = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
         }
+    }
+
+    private void clearSelectBoatsTable() {
+        ArrayList<Boat> boats = new ArrayList<>(); // create list for all boats
+        //get list of boats in the select boats sql table
+        boats = selectBoatDataSource.getAllSelectBoatsArrayList(null, null, null);
+
+        //check if table is empty
+        if (boats.size() > 0) {
+            selectBoatDataSource.rebuildTable();
+        }
+
     }
 }

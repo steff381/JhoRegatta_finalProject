@@ -10,5 +10,9 @@
         android:title="@string/action_results_menu_add_boats"
         android:orderInCategory="200"
         app:showAsAction="always"/>
+    <item android:id="@+id/action_ddms"
+        android:title="DDMS"
+        android:orderInCategory="300"
+        app:showAsAction="always"/>
 
 </menu>

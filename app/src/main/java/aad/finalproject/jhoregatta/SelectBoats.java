@@ -1,13 +1,12 @@
 package aad.finalproject.jhoregatta;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,7 +20,8 @@ import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.DBAdapter;
 import aad.finalproject.db.Result;
 import aad.finalproject.db.ResultDataSource;
-import aad.finalproject.db.SelectBoatAdapter;
+import aad.finalproject.db.SelectBoatDataSource;
+import aad.finalproject.db.SelectBoatsAdapter;
 
 
 public class SelectBoats extends MainActivity {
@@ -31,53 +31,42 @@ public class SelectBoats extends MainActivity {
 
     // List stuff
     private ListView myList; // initialize the listview
-    private SelectBoatAdapter objAdapter;
+    private SelectBoatsAdapter objAdapter;
 
-    private PowerManager.WakeLock wl; // wake lock instances
+    private Dimmer dimmer;
 
     public static final String SOURCE_BUNDLE_KEY = "SOURCE";
 
     private String source;
 
     CheckBox selectBoatCkBox; // create an accessible instance of the checkbox widget
+    private Button btnRegTimer;
 
     // data base stuff
     private BoatDataSource boatDataSource; // call the boat datasource
     private ResultDataSource resultDataSource; // instance of results daasource
+    private SelectBoatDataSource selectBoatDataSource; // instance of select boats daasource
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_boats);
 
-        //get power manager instances
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        wl.acquire(); // keep the activity awake
-        Log.i(LOG, "WAKELOCK: Acquired Initial ");
+        //create a dimmer class object that will schedule dimming after a period of time
+        dimmer = new Dimmer(getWindow(), GlobalContent.dimmerDelay);
+        dimmer.start();
 
         source = getIntent().getExtras().getString(SOURCE_BUNDLE_KEY);
 
         //Build database
         boatDataSource = new BoatDataSource(this);
         resultDataSource = new ResultDataSource(this);
+        selectBoatDataSource = new SelectBoatDataSource(this);
         boatDataSource.open(); // open a writable version of the db
         resultDataSource.open(); // open a writable version of the db
+        selectBoatDataSource.open(); // open a writable version of the db
 
-        String where = null;
-        if (source.equals("RM")) {
-            where = showOnlyUnselectedBoats(GlobalContent.resultList); //get only unselected boats
-            changeInterface();
-        } else if (source.equals("SCD")) {
-            where = GlobalContent.globalWhere; //set to standard where clause
-        } else {
-            Log.i(LOG, "ERROR WITH WHERE CLAUSE");
-        }
-
-        //get a list of all the boats in the selected classes
-        String orderByClause = DBAdapter.KEY_BOAT_NAME;
-        ArrayList<Boat> allTheBoats = boatDataSource
-                .getAllBoatsArrayList(where, orderByClause, null);
+        btnRegTimer = (Button) findViewById(R.id.btn_sb_toTimer);
 
         // set the lv to the current listview
         myList = (ListView) findViewById(R.id.lvSelectBoatList);
@@ -85,19 +74,73 @@ public class SelectBoats extends MainActivity {
         myList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         selectBoatCkBox = (CheckBox) findViewById(R.id.ckboxSelectBoatCheck);
 
+        populateListView();
+    }
+
+    private void populateListView() {
+        String where = null;
+        ArrayList<Boat> selectedBoatsList = new ArrayList<>();
+
+        switch (source) {
+            case "RM":
+                btnRegTimer.setVisibility(View.GONE); // hide the to timer button
+                //get only unselected boats
+                where = GlobalContent.globalWhere + " AND " + DBAdapter.KEY_BOAT_SELECTED + " = 0";
+
+                Log.i(LOG, " RM > GlobalWhere = " + GlobalContent.globalWhere + " || Where = " + where);
+
+                selectedBoatsList.clear(); // make sure list is empty
+                break;
+            case "SCD":
+                //Clear the current race from the results table.
+                resultDataSource.deleteRace(GlobalContent.activeRace.getId());
+                Log.i(LOG, "Source is SCD. Removing any existing race from Results Table");
+
+                where = GlobalContent.globalWhere; //set to standard where clause
+
+                //Where statement for selectedBoatsList
+                String selectedBoatsListWhere = GlobalContent.globalWhere + " AND "
+                        + DBAdapter.KEY_BOAT_SELECTED + " = 1";
+
+                //get a list of boats marked as "Selected = 1"
+                selectedBoatsList = selectBoatDataSource.getAllSelectBoatsArrayList(
+                        selectedBoatsListWhere, null, null);
+                Log.i(LOG, " SCD > GlobalWhere = " + GlobalContent.globalWhere + " || Where = " + where);
+
+                //clear the current select boats table
+                selectBoatDataSource.rebuildTable();
+
+                //populate select boats table from the boat table
+                selectBoatDataSource.buildBoatList(boatDataSource.getAllBoatsArrayList(
+                        GlobalContent.globalWhere, DBAdapter.KEY_BOAT_NAME, null));
+                break;
+            default:
+                Log.i(LOG, "ERROR WITH WHERE CLAUSE");
+                break;
+        }
+
+        //// make sure the selected boats from the previous list
+        //// match the selections in the new list (when applicable)
+        // edit the selected status to true for the boats in the new selected boat list that
+        // were selected in the previous version of the list
+        for (Boat b : selectedBoatsList) {
+            selectBoatDataSource.setSelectedByBoatId(b.getBoatId(), true);
+            resultDataSource.insertResult(b); // insert the selected boat into results table
+            Log.i(LOG, "Sync SELECTED:  Boat " + b.getBoatName() + " Selected" );
+        }
+
+        // get all the boats that are in the selected boats table
+        ArrayList<Boat> allTheBoats = selectBoatDataSource.getAllSelectBoatsArrayList(
+                where, null, null);
 
         /// wire the custom view adapter to the view
         Log.i(LOG, "Setting obj Adapter");
 
         //set the listview adapter
-        objAdapter = new SelectBoatAdapter(this, R.layout.activity_list_template_select_boats,
-                allTheBoats, where);
-
+        objAdapter = new SelectBoatsAdapter(this, R.layout.activity_list_template_select_boats,
+                allTheBoats, where, resultDataSource, selectBoatDataSource,
+                GlobalContent.getRaceRowID());
     }
-
-    private void changeInterface() {
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,12 +156,17 @@ public class SelectBoats extends MainActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_merge_classes:
+                Intent intent = new Intent(this, MergeBoatClasses.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_ddms:
+                GlobalContent.DDMS(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     //navigate user to the timer.
@@ -126,17 +174,8 @@ public class SelectBoats extends MainActivity {
 
         BoatListClass.selectedBoatsList.clear(); // clear data from the boat list.
 
-        //If the user selected the boat add it to the list.
-        for (Boat b : objAdapter.boatArrayList) {
-            if (b.isSelected()) {
-                BoatListClass.selectedBoatsList.add(b);
-            }
-        }
-
         // check if user selected at least 1 boat
-        if (BoatListClass.selectedBoatsList.size() > 0) {
-            // enter selected boats into the results table
-            resultDataSource.create();
+        if (isValid()) {
             //if accessed by the select class distance activity
             if (source.equals("SCD")) {
                 // open the timer
@@ -153,51 +192,56 @@ public class SelectBoats extends MainActivity {
                             bc.getBoatColor(), bc.getStartTime(), bc.getClassDistance());
                 }
                 finish(); // close activity
-
             }
-            Toast.makeText(this, "Adding " + BoatListClass.selectedBoatsList.size() + " boats " +
-                    "to the results table", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, "You must select at least 1 boat"
                     , Toast.LENGTH_LONG).show();
         }
+    }
 
-
-
+    private boolean isValid() {
+        List<Result> validResults = resultDataSource.getAllResults(
+                DBAdapter.KEY_RACE_ID + "= " + GlobalContent.getRaceRowID(),
+                 null, null);
+        //check the soruce,
+        if (source.equals("RM")) {
+            return true; //  if it was from results menu then no validation required
+        } else if (validResults.size() > 0) { //check if user selected at least one boat
+            return true;
+        }
+        return false;
     }
 
     public void onClickBack(View view) {
-        boatDataSource.close(); // close datasource to prevent leakage
         Log.i(LOG, " Close SelectBoats");
         finish(); // close out the current view
     }
 
     @Override
+    public void onUserInteraction() {
+        dimmer.resetDelay(); // reschedule dimmer task
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        wl.acquire(); // resume wakelock status
-        Log.i(LOG, "WAKELOCK: Acquired");
+        dimmer.start();// start or resume the dimmer
         boatDataSource.open(); // open the datasource
-        populateListView(); // refresh the listview
+        selectBoatDataSource.open(); // open the datasource
+        resultDataSource.open(); // open the datasource
+        populateListView();// refresh the listview
+        myList.setAdapter(objAdapter); // refresh the listview
         // sync up array list with db
-        objAdapter.syncArrayListWithSql(boatDataSource);
-
+        objAdapter.syncArrayListWithSql();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        wl.release(); // suspend wakelock mode for this screen
-        Log.i(LOG, "WAKELOCK: Released");
+        dimmer.end();// end dimmer activity
         boatDataSource.close(); // close datasource to prevent leakage
-    }
-
-
-    // wire the data from the sql table to the list view
-    public void populateListView() {
-        Log.i(LOG, "Wiring ObjAdapter to list");
-        myList.setAdapter(objAdapter);
-
+        selectBoatDataSource.close(); // open the datasource
+        resultDataSource.close(); // close datasource to prevent leakage
     }
 
     // create a where clause without boats that have been selected

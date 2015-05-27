@@ -2,6 +2,7 @@ package aad.finalproject.jhoregatta;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,9 +11,12 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import aad.finalproject.db.AndroidDatabaseManager;
+import aad.finalproject.db.Boat;
 import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.Race;
 import aad.finalproject.db.Result;
@@ -30,8 +34,13 @@ public class GlobalContent {
     public static Race activeRace;
     public static ResultsAdapter activeResultsAdapter = null;
 
+    public static long dimmerDelay = 20000; // how long should screen remain bright before dimming
+
     //result list that can be accessed globally.
     public static List<Result> resultList;
+
+    //preserved list of boat classes that haven't been merged
+    public static ArrayList<Boat> unmergedBoats;
 
     //access mode holders
     private static String BoatFormAccessMode;
@@ -60,6 +69,7 @@ public class GlobalContent {
         BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
         BoatListClass.selectedBoatsList.clear();
         globalWhere = null;
+        unmergedBoats.clear();
 
     }
 
@@ -89,8 +99,8 @@ public class GlobalContent {
                             TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                     TimeUnit.MILLISECONDS.toSeconds(millis) -
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-        // 1 is 00h 00m 00s format
-        } else if(format == 1) {
+            // 1 is 00h 00m 00s format
+        } else if (format == 1) {
             if (millis >= 3600000) { // format with hours
                 return String.format("%2dh %2dm %2ds",
                         TimeUnit.MILLISECONDS.toHours(millis),
@@ -166,7 +176,7 @@ public class GlobalContent {
     public static String calculateAdjDuration(int PHRF, long durationInMillis, double penalty,
                                               double distance, double correctionFactor) {
         String result;
-        penalty = penalty/100;
+        penalty = penalty / 100;
         //calculate Time Allowance in Milliseconds
         long taInMillis = (long) ((distance * PHRF * correctionFactor) * 1000);
         Log.i(LOGTAG, "TA in Millis " + taInMillis);
@@ -174,7 +184,7 @@ public class GlobalContent {
         long tmpAdjDuration = durationInMillis - taInMillis;
         Log.i(LOGTAG, "AdjDuration pre penalty " + tmpAdjDuration);
         //apply any penalty
-        long adjDurationWPenalty = (long)(tmpAdjDuration + (tmpAdjDuration * penalty));
+        long adjDurationWPenalty = (long) (tmpAdjDuration + (tmpAdjDuration * penalty));
         Log.i(LOGTAG, "AdjDuration with penalty " + tmpAdjDuration);
 
         //convert result to formatted duration
@@ -187,17 +197,16 @@ public class GlobalContent {
 
     //check for commas in chosen text fields. Used for validation because commas will mess up the
     // SQL table when converted to CSV
-    public static boolean checkForCommas(Context context, String ... textFields) {
+    public static boolean checkForCommas(Context context, String... textFields) {
         for (String textField : textFields) {
             if (textField.contains(",")) {
                 Toast.makeText(context, "Error: Comma(s) found. You cannot use commas in text fields"
-                ,Toast.LENGTH_LONG).show();
+                        , Toast.LENGTH_LONG).show();
                 return true;
             }
         }
         return false;
     }
-
 
 
 // Boat form content
@@ -209,7 +218,7 @@ public class GlobalContent {
 
     //used for establishing what kind of access the user should ahve to the data in the form
     public static void setBoatFormAccessMode(boolean isEditMode) {
-        if(isEditMode){
+        if (isEditMode) {
             BoatFormAccessMode = modeEdit;
         } else {
             BoatFormAccessMode = modeAdd;
@@ -227,7 +236,6 @@ public class GlobalContent {
     }
 
 
-
 // Race Form content
 
     // Race Form getters setters and Clear
@@ -237,7 +245,7 @@ public class GlobalContent {
 
     //set teh access mode for the race form.
     public static void setRaceFormAccessMode(boolean isEditMode) {
-        if(isEditMode){
+        if (isEditMode) {
             RaceFormAccessMode = modeEdit;
         } else {
             RaceFormAccessMode = modeAdd;
@@ -254,14 +262,13 @@ public class GlobalContent {
     }
 
 
-
     // Results Form getters setters and Clear
     public static String getResultsFormAccessMode() {
         return ResultsFormAccessMode;
     }
 
     public static void setResultsFormAccessMode(boolean isEditMode) {
-        if(isEditMode){
+        if (isEditMode) {
             ResultsFormAccessMode = modeEdit;
         } else {
             ResultsFormAccessMode = modeAdd;
@@ -283,6 +290,7 @@ public class GlobalContent {
         activeRace.setId(id);
     }
 
+    //calculate the size of the screen being used.
     public static double getScreenSize(Activity activity) {
         DisplayMetrics dm = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -295,4 +303,20 @@ public class GlobalContent {
         double y = Math.pow(hi, 2);
         return Math.sqrt(x + y);
     }
+
+    //open the data based manager
+    public static void DDMS(Context context) {
+        Intent intent = new Intent(context.getApplicationContext(), AndroidDatabaseManager.class);
+        context.startActivity(intent);
+    }
+
+    //change value into a format that can be used in execSQL statements.
+    public static String singleQuotify(String value) {
+        if (value != null) {
+            return "\'" + value + "\'";
+        } else {
+            return null;
+        }
+    }
+
 }
