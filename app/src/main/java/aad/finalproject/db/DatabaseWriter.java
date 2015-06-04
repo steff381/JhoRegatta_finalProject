@@ -21,9 +21,15 @@ public class DatabaseWriter extends MainActivity {
             .DIRECTORY_DOWNLOADS);
 
 
-    public static boolean exportDatabase(String fileName, ResultDataSource resultDataSource) {
-        where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
-                + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+    public static boolean exportDatabase(String fileName, ResultDataSource resultDataSource,
+                                         boolean getAllRaces) {
+
+        if (!getAllRaces) {
+            where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
+                    + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+        } else {
+            where = DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+        }
         Log.i(LOGTAG, "Opening DB writer method");
         Log.i(LOGTAG, "Export directory: " + exportDir);
         Log.i(LOGTAG, "Where Variable = " + where);
@@ -72,7 +78,8 @@ public class DatabaseWriter extends MainActivity {
                  */
 
                 //create the order by clause for the sql statement
-                String orderBy = DBAdapter.KEY_BOAT_CLASS + ", " + DBAdapter.KEY_BOAT_NAME;
+                String orderBy = DBAdapter.KEY_RACE_ID + ", " + DBAdapter.KEY_BOAT_CLASS + ", "
+                        + DBAdapter.KEY_RESULTS_ADJ_DURATION;
 
                 List<Result> results = resultDataSource.getAllResults(where, orderBy, null);
 
@@ -88,7 +95,7 @@ public class DatabaseWriter extends MainActivity {
 
                         DBAdapter.KEY_BOAT_NAME + "," +
                         DBAdapter.KEY_BOAT_SAIL_NUM + "," +
-                        "fleet_color," +
+                        DBAdapter.KEY_BOAT_CLASS + "," +
                         DBAdapter.KEY_BOAT_PHRF + "," +
                         DBAdapter.KEY_RESULTS_MANUAL_ENTRY + "," +
 
@@ -108,12 +115,14 @@ public class DatabaseWriter extends MainActivity {
 
                 Log.i(LOGTAG, "HEADERS: " + RESULTS_FIELDS_CSV_HEADER);
 
+
+                int rowCounter = 2;
                 for (Result r : results) {
 
                     //results
                     String ClassStartTime =  r.getResultsClassStartTime();
                     String BoatFinishTime =  r.getResultsBoatFinishTime();
-                    String ResultsDuration =  r.getResultsDuration();
+                    String ResultsDuration = r.getResultsDuration();
                     String ResultsAdjDuration =  r.getResultsAdjDuration();
                     Double ResultsPenalty =  r.getResultsPenalty();
                     String ResultsNote =  r.getResultsNote();
@@ -129,6 +138,7 @@ public class DatabaseWriter extends MainActivity {
                     Double RaceDistance = r.getRaceDistance();
                     String RaceName = r.getRaceName();
                     String RaceDate = r.getRaceDate();
+
                     String Created = r.getResultsCreateDate();
 
                     /**Create the line to write in the .csv file.
@@ -138,29 +148,30 @@ public class DatabaseWriter extends MainActivity {
                      */
                     String record =
 
-                                    RaceName + c +
-                                    RaceDate + c +
-                                    RaceDistance + c +
+                                    RaceName + c +              // Column A
+                                    RaceDate + c +              // Column B
+                                    RaceDistance + c +          // Column C
 
-                                    BoatName + c +
-                                    BoatSailNum + c +
-                                    BoatClass + c +
-                                    BoatPHRF + c +
-                                    ResultsManualEntry + c +
+                                    BoatName + c +              // Column D
+                                    BoatSailNum + c +           // Column E
+                                    BoatClass + c +             // Column F
+                                    BoatPHRF + c +              // Column G
+                                    ResultsManualEntry + c +    // Column H
 
-                                    ClassStartTime + c +
-                                    BoatFinishTime + c +
-                                    ResultsDuration + c +
-                                    ResultsAdjDuration + c +
-                                    ResultsPenalty + c +
-                                    ResultsNote + c +
-                                    ResultsPlace + c +
-                                    ResultsNotFinished + c +
-                                    Created;
+                                    ClassStartTime + c +        // Column I
+                                    BoatFinishTime + c +        // Column J
+                                    ResultsDuration + c +       // Column K
+                                    ResultsAdjDuration + c +    // Column L
+                                    ResultsPenalty + c +        // Column M
+                                    ResultsNote + c +           // Column N
+                                    ResultsPlace + c +          // Column O
+                                    ResultsNotFinished + c +    // Column P
+                                    Created;                    // Column S
 
 
                     printWriter.println(record); //write the record in the .csv file
                     Log.i(LOGTAG, "Entering >>> " + record);
+                    rowCounter++;
                 }
 
                 resultDataSource.close(); // close data soruce to conserve resources

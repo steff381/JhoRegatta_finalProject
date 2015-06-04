@@ -349,7 +349,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         String fileName = c.getString(c.getColumnIndex(DBAdapter.KEY_RACE_NAME)) + ".csv";
 
         //write the database to a csv file.
-        DatabaseWriter.exportDatabase(fileName, resultDataSource);
+        DatabaseWriter.exportDatabase(fileName, resultDataSource, false);
 
         //get the URI of the file just created
         Uri uri = Uri.fromFile(new File(Environment
@@ -389,6 +389,11 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         switch (item.getItemId()) {
             case R.id.action_select_more_boats:
                 selectMoreBoats();
+                return true;
+            case R.id.action_rm_class_finishes:
+                FragmentManager fm = getFragmentManager();
+                ClassFinishesDialog cfd = new ClassFinishesDialog();
+                cfd.show(fm, "Finish Deadlines");
                 return true;
 //            case R.id.action_ddms:
 //                GlobalContent.DDMS(this);
@@ -434,6 +439,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
         myList.invalidate(); // force a refresh of the list view
         populateListView(); // refresh listview
+        resultDataSource.runCalculations();
     }
 
     @Override

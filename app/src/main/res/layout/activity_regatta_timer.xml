@@ -614,7 +614,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textAppearance="?android:attr/textAppearanceLarge"
-                                    android:text="Flag"
+                                    android:text="Signal"
                                     android:id="@+id/txtlblFlag"
                                     android:layout_gravity="center" />
                             </FrameLayout>
@@ -646,7 +646,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textAppearance="?android:attr/textAppearanceLarge"
-                                    android:text="Next Flag"
+                                    android:text="Next Signal"
                                     android:id="@+id/txtlblNextFlag"
                                     android:layout_gravity="center" />
                             </FrameLayout>

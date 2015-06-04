@@ -11,7 +11,7 @@ for use in the regatta tracker.
 public class BoatListClass extends MainActivity{
 
     public static final ArrayList<Boat> boatList = new ArrayList<>(); // all boats in list
-    public static ArrayList<Boat> selectedBoatsList = new ArrayList<>(); // only the selected boats
+//    public static ArrayList<Boat> selectedBoatsList = new ArrayList<>(); // only the selected boats
 
 
 

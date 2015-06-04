@@ -16,6 +16,7 @@ public class BoatClass {
     private int classColorLite;
     private int image;
 
+
     public int getImage() {
         return image;
     }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,9 @@ public class MainActivity extends ActionBarActivity {
     EditText et1, et2;
     ToneGenerator tg;
     ArrayList<Integer> tones;
+    Handler handler;
+    Runnable r;
+    AudioVoiceManager am;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,11 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         // wire buttons
         Button calculator = (Button) findViewById(R.id.btn_nav_Calculator);
+
+        am = new AudioVoiceManager(this);
+
+
+
 
         Log.i(LOGTAG, "testing Logtag");
         // assign click listeners
@@ -52,9 +61,7 @@ public class MainActivity extends ActionBarActivity {
         soundTest(false);
 
         mergeTest(false);
-
-
-
+        audioTest(false);
     }
 
     private void mergeTest(boolean b) {
@@ -68,6 +75,32 @@ public class MainActivity extends ActionBarActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), MergeBoatClasses.class);
                     startActivity(intent);
+                }
+            });
+        }
+    }
+
+    private void audioTest(boolean b) {
+        if (b) {
+
+            am.audioFullStop();
+            final int time = 11;
+            final int delay = 1;
+
+            handler = new Handler();
+            r = new Runnable() {
+                @Override
+                public void run() {
+                    am.playAudioByCase(0, time);
+                }
+            };
+            btn.setVisibility(View.VISIBLE);
+            btn.setText("Twenty Second Delay");
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    am.playAudioByCase(-1, time);
+                    handler.postDelayed(r, ((time *1000) + delay));
                 }
             });
         }

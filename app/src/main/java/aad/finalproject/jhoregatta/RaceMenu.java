@@ -2,7 +2,9 @@ package aad.finalproject.jhoregatta;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,8 +13,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import org.joda.time.DateTime;
+
+import java.io.File;
+
 import aad.finalproject.db.DBAdapter;
+import aad.finalproject.db.DatabaseWriter;
 import aad.finalproject.db.RaceDataSource;
+import aad.finalproject.db.ResultDataSource;
 
 
 public class RaceMenu extends MainActivity {
@@ -24,6 +32,7 @@ public class RaceMenu extends MainActivity {
 
 
     private RaceDataSource raceDataSource; // call the race datasource
+    private ResultDataSource resultDataSource; // call the race datasource
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +41,9 @@ public class RaceMenu extends MainActivity {
 
         //Build database
         raceDataSource = new RaceDataSource(this);
+        resultDataSource = new ResultDataSource(this);
         raceDataSource.open();
+        resultDataSource.open();
 
         myListRace = (ListView) findViewById(R.id.lvRaceList); // set the lv to the current listview
 
@@ -74,8 +85,40 @@ public class RaceMenu extends MainActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_send_all_races) {
+            sendAllRaces();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendAllRaces() {
+        Cursor c = raceDataSource.getRow(GlobalContent.getRaceRowID());
+
+        DateTime dtNow = DateTime.now();
+        //create a file name for the csv file
+        String fileName = "All Races as of " + dtNow.getMonthOfYear() + "." + dtNow.getDayOfMonth()
+                + "." + dtNow.getYear() + ".csv";
+
+        //write the database to a csv file.
+        DatabaseWriter.exportDatabase(fileName, resultDataSource, true);
+
+        //get the URI of the file just created
+        Uri uri = Uri.fromFile(new File(Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "/" + fileName));
+
+        Log.i(LOG, " URI: " + uri.toString());
+
+        //Create a new email and
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Regatta Results for " + fileName);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "These are the results for " + fileName);
+        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);//send file by email
+
+        //dialog that asks the user to choose their mailing program preference
+        startActivity(Intent.createChooser(emailIntent, "Choose your Email App:"));
+
     }
 
     // open the race editor/adder activity
@@ -95,6 +138,7 @@ public class RaceMenu extends MainActivity {
         super.onResume();
         Log.i(LOG, " onResume Now");
         raceDataSource.open(); // reopen the db
+        resultDataSource.open();
         populateListView(); // refresh listview
 
     }
@@ -104,6 +148,7 @@ public class RaceMenu extends MainActivity {
         super.onPause();
         Log.i(LOG, " onPause NOW");
         raceDataSource.close(); // close db to reduce data leak
+        resultDataSource.close();
     }
 
     // add the data from sql to the listview

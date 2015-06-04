@@ -44,32 +44,6 @@ public class ResultDataSource {
 
     public void create() {
 
-        //put the values into the results table for each boat
-        for (Boat b : BoatListClass.selectedBoatsList) {
-            Result result = new Result(); // create result
-            //load result with data from all over
-            ContentValues values = new ContentValues();
-            values.put(DBAdapter.KEY_RACE_ID, GlobalContent.activeRace.getId());
-            values.put(DBAdapter.KEY_BOAT_ID, b.getId());
-            values.put(DBAdapter.KEY_RESULTS_PENALTY, 0);
-            values.put(DBAdapter.KEY_RESULTS_NOT_FINISHED, 0);
-            values.put(DBAdapter.KEY_RESULTS_MANUAL_ENTRY, 0);
-            values.put(DBAdapter.KEY_BOAT_NAME, b.getBoatName());
-            values.put(DBAdapter.KEY_BOAT_SAIL_NUM, b.getBoatSailNum());
-            values.put(DBAdapter.KEY_BOAT_CLASS, b.getBoatClass());
-            values.put(DBAdapter.KEY_BOAT_PHRF, b.getBoatPHRF());
-            values.put(DBAdapter.KEY_RACE_DISTANCE, GlobalContent.activeRace.getDistance());
-            values.put(DBAdapter.KEY_RACE_NAME, GlobalContent.activeRace.getName());
-            values.put(DBAdapter.KEY_RACE_DATE, GlobalContent.activeRace.getDate());
-            values.put(DBAdapter.KEY_CREATED_AT, DBAdapter.getDateTime());
-            values.put(DBAdapter.KEY_RACE_VISIBLE, 1);
-            //insert the data into the sql db
-            long insertId = db.insert(DBAdapter.TABLE_RESULTS, null, values);
-            result.setResultsId(insertId); // insert data
-            Log.i(LOG, " Added result ID: " + result.getResultsId() + " Boat name: " +
-                    b.getBoatName() + " Race name: " + GlobalContent.activeRace.getName());
-        }
-
     }
 
     public void insertResult(Boat b) {
@@ -421,12 +395,13 @@ public class ResultDataSource {
         // if the boat is both visible and not manual entry mode. Then next
         if (notFinished == 0) {
             //if there is a start and a finish time calculate duration.
+            Log.i(LOG, "manualEntry " + manualEntry + "clasStart " + classStartTime + "boatFin " + boatFinishTime);
             if (manualEntry == 0 && classStartTime.length() > 1 && boatFinishTime.length() > 1) {
                 //calculate elapsed time
                 long milliDuration = GlobalContent.getDurationInMillis(classStartTime,
                         boatFinishTime);
                 // convert to readable format
-                String newDuration = GlobalContent.convertMillisToFormattedTime(milliDuration,0);
+                String newDuration = GlobalContent.convertMillisToFormattedTime(milliDuration, 0);
 
                 Log.i(LOG, " runCalculations: newDuration: " + newDuration);
                 // enter elapsed time into the database
@@ -438,7 +413,7 @@ public class ResultDataSource {
                         penalty, distance, 1);
                 // enter adjusted duration
                 db.execSQL("UPDATE " + table + " SET " + adjDurationColumn + " = " +
-                       GlobalContent.singleQuotify(adjDuration) + " WHERE _id = " + resultId + ";");
+                        GlobalContent.singleQuotify(adjDuration) + " WHERE _id = " + resultId + ";");
 
             } else if (manualEntry == 1 && duration.length() > 1) {
                 //get the elapsed time in millis from the manually entered duration.
@@ -448,9 +423,80 @@ public class ResultDataSource {
                         penalty, distance, 1);
                 // enter adjusted duration
                 db.execSQL("UPDATE " + table + " SET " + adjDurationColumn + " = " +
-                       GlobalContent.singleQuotify(adjDuration) + " WHERE _id = " + resultId + ";");
+                        GlobalContent.singleQuotify(adjDuration) + " WHERE _id = " + resultId + ";");
             }
         }
         // check to see if the right data is present
     }
+
+    //get a list of all results in the results table.
+    public Result getFirstClassResult(long raceId, String boatClass){
+
+        // fields to select and filter by
+        String bClass = DBAdapter.KEY_BOAT_CLASS;
+        String resultId = DBAdapter.KEY_ID;
+        String bName = DBAdapter.KEY_BOAT_NAME;
+        String bStart = DBAdapter.KEY_RESULTS_CLASS_START;
+        String bFinish = DBAdapter.KEY_RESULTS_FINISH_TIME;
+        String bDuration = DBAdapter.KEY_RESULTS_DURATION;
+        String bDnf = DBAdapter.KEY_RESULTS_NOT_FINISHED;
+        String bVis = DBAdapter.KEY_RESULTS_VISIBLE;
+
+        // ID
+        String rId = DBAdapter.KEY_RACE_ID;
+
+        // table
+        String bTable = DBAdapter.TABLE_RESULTS;
+        String sqlQuery;
+
+        // create a sql statement
+        if (!boatClass.equals("Classless")) {
+            //write a query that only looks at a specific class
+            sqlQuery = "SELECT " + resultId + "," + bName + "," + bClass + "," + bStart + "," + bFinish +
+                        "," + bDuration
+                    + " FROM " + bTable
+                    + " WHERE " + rId + " = " + raceId + " AND " + bDnf + " = 0 AND " + bVis +
+                        " = 1 AND " + bClass + " = " + GlobalContent.singleQuotify(boatClass) +
+                        " AND " + bDuration + " IS NOT NULL "
+                    + " ORDER BY " + bDuration
+                    + " LIMIT 1;";
+
+        } else {
+            //write a query that doesn't exclude boats by class
+            sqlQuery = "SELECT " + resultId + "," + bName + "," + bClass + "," + bStart + "," + bFinish +
+                    "," + bDuration
+                    + " FROM " + bTable
+                    + " WHERE " + rId + " = " + raceId + " AND " + bDnf + " = 0 AND " + bVis +
+                        " = 1 AND " + bDuration + " IS NOT NULL "
+                    + " ORDER BY " + bDuration
+                    + " LIMIT 1;";
+        }
+        //load cursor with the data from sqlite
+        Cursor cursor;
+        Log.i(LOG, "SQL Query Used: " + sqlQuery);
+        cursor = db.rawQuery(sqlQuery,  null);
+        cursor.moveToNext();
+
+        Log.i(LOG, "Returned " + cursor.getCount() + " Rows");
+
+        cursor.moveToFirst();
+        Result result = new Result();
+        // check if the cursor contains any values.
+        if (cursor.getCount() > 0) {
+            // add the requested fields to the result
+            result.setResultsId(cursor.getLong(cursor.getColumnIndex(resultId)));
+            result.setResultsClassStartTime(cursor.getString(cursor.getColumnIndex(bStart)));
+            result.setResultsBoatFinishTime(cursor.getString(cursor.getColumnIndex(bFinish)));
+            result.setResultsDuration(cursor.getString(cursor.getColumnIndex(bDuration)));
+            result.setBoatName(cursor.getString(cursor.getColumnIndex(bName)));
+            result.setBoatClass(cursor.getString(cursor.getColumnIndex(bClass)));
+            cursor.close(); //close cursor to preserve resources
+            return result;
+        } else {
+            cursor.close();
+            return null; // just return a null version of the result
+        }
+
+    }
+
 }

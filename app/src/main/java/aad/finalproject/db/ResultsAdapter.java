@@ -30,6 +30,8 @@ public class ResultsAdapter extends BaseAdapter {
     ResultDataSource resultDataSource;
     // lists of result
     public ArrayList<Result> arraylist;
+//    private ArrayList<ClassFinished> finishedBoats;
+
 
     // instance constructor
     public ResultsAdapter(Context context, List<Result> mainDataList,
@@ -42,6 +44,9 @@ public class ResultsAdapter extends BaseAdapter {
         this.arraylist.addAll(mainDataList);
     }
 
+    // class that holds the pertinant data relating to the first boat of a particular class that
+    // crossed the finish line. Boats that do fail to cross the finish line 30 mins after the first
+    // boat are disqualified
 
     @Override
     public int getCount() {
@@ -59,13 +64,15 @@ public class ResultsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView( int index, View view, final ViewGroup parent) {
+    public View getView(int index, View view, final ViewGroup parent) {
 
         if (view == null) {
             // build inflater to create a new row for each row in the Results table
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             view = inflater.inflate(R.layout.activity_list_template_results, parent, false);
         }
+
+        boolean hasExhaustedTimeLimit = false;
 
         // create an result that will hold the data for the row item.
         final Result result = arraylist.get(index);
@@ -121,6 +128,7 @@ public class ResultsAdapter extends BaseAdapter {
 
         Result r = arraylist.get(index);
 
+
         // on refresh of list.
         // If there is a finish time present then make the row red
         if (r.getResultsNotFinished() == 1) {//if the boat didn't finish the race
@@ -148,7 +156,10 @@ public class ResultsAdapter extends BaseAdapter {
             for (TextView t : textViews) {
                 t.setTextColor(Color.parseColor("#ffffff")); // make the text white
             }
+//        } else if (hasExhaustedTimeLimit) {
+
         } else {
+
             // change the row color blank
             view.setBackgroundColor(Color.parseColor("#00000000"));
             //show the finish button and hide the reset button instead.
@@ -168,13 +179,13 @@ public class ResultsAdapter extends BaseAdapter {
                 //check if the class start time contains either a string or a null
                 if (result.getResultsClassStartTime() != null) {
                     DateTime dateTime = DateTime.now();// capture the current time
+                    String color = result.getBoatClass(); // get the class's color
+                    long resultId = result.getResultsId();
 
                     //format time as string for SQL
                     String timeFormatted = GlobalContent.dateTimeToString(dateTime);
 
-                    //update the result's finish time.
-                    resultDataSource.updateSingleFinishTime(result.getResultsId(), timeFormatted);
-
+                    resultDataSource.updateSingleFinishTime(resultId, timeFormatted);
 
                     //set the result entry's finish time to the same.
                     result.setResultsBoatFinishTime(timeFormatted);
@@ -197,11 +208,21 @@ public class ResultsAdapter extends BaseAdapter {
                     // get the start time for the class
                     String startTime = result.getResultsClassStartTime();
 
-                   //get the finish time ""
+                    //get the finish time ""
                     GlobalContent.getElapsedTime(startTime, timeFormatted);
 
                     //run table calculations to derive duration and adjusted duration
-                    resultDataSource.runSingleCalculation(result.getResultsId());
+                    resultDataSource.runSingleCalculation(resultId);
+
+//                    Result firstFinishResult = resultDataSource.getFirstClassResult(resultId, color);
+//                    for (ClassFinished c : finishedBoats) {
+//                        // cycle through to the right result
+//                        if (c.finishedClassColor.equals(color) && c.finishedClassResultId == -1) {
+//                            Log.i(LOGTAG, "classFinished match = " + color);
+//                            // set the finished times for the class color
+//                            c.setFinishTime(result.resultsBoatFinishTime);
+//                        }
+//                    }
 
                     syncArrayListWithSql(); // sync up results with sql
 
@@ -218,13 +239,16 @@ public class ResultsAdapter extends BaseAdapter {
         // resets the finish time to 0 after 3 clicks
         btnReset.setOnClickListener(new View.OnClickListener() {
             int counter = 3; // initial click count
+
             @Override
             public void onClick(View v) {
                 String message; // message to pass to the user
                 if (counter == 1) { // check how many clicks are left, if 1 then...
-
                     //blank out database entry
                     resultDataSource.clearStartAndDurations(result.getResultsId());
+
+                    //reset the result finish order to 999
+                    result.setResultsOrderFinished(999);
 
                     //blank out result object fnish time entry
                     result.setResultsBoatFinishTime(null);
@@ -260,17 +284,6 @@ public class ResultsAdapter extends BaseAdapter {
         return view;
     }
 
-//    // sync the list in the ResultsAdapter with what is in the Results SQL table.
-//    public void syncArrayListWithSql(List<Result> tempResultFromSql) {
-//        // Make sure the data coming from sql isn't blank. Otherwise throw error
-//        if (tempResultFromSql.size() > 0) {
-//            this.arraylist.clear(); //empty out the array list
-//            this.arraylist.addAll(tempResultFromSql);// add the temp sql stuff to the array list
-//        } else {
-//            throw new NullPointerException("Data in tempResultFromSql is empty");
-//        }
-//        notifyDataSetChanged(); // force refresh of the listview
-//    }
 
     // sync the list in the ResultsAdapter with what is in the Results SQL table.
     public void syncArrayListWithSql() {

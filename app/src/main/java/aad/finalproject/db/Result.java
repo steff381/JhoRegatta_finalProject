@@ -9,6 +9,8 @@ public class Result {
     long id;
     long resultsRaceId;
     long resultsBoatId;
+    long resultsSeriesId;
+
     // results
     String resultsClassStartTime;
     String resultsBoatFinishTime;
@@ -17,9 +19,11 @@ public class Result {
     double resultsPenalty;
     String resultsNote;
     int resultsPlace;
+    double resultsPoints;
     int resultsVisible;
     int resultsNotFinished;
     int resultsManualEntry;
+    int resultsOrderFinished;
     // boat
     String boatName;
     String boatSailNum;
@@ -29,6 +33,8 @@ public class Result {
     double raceDistance;
     String raceName; // no
     String raceDate; // no
+    //series
+    String seriesName;
 
     String resultsCreateDate = DBAdapter.getDateTime();
 
@@ -196,5 +202,35 @@ public class Result {
         this.resultsNotFinished = resultsNotFinished;
     }
 
+    public int getResultsOrderFinished() {
+        return resultsOrderFinished;
+    }
 
+    public void setResultsOrderFinished(int resultsOrderFinished) {
+        this.resultsOrderFinished = resultsOrderFinished;
+    }
+
+    public long getResultsSeriesId() {
+        return resultsSeriesId;
+    }
+
+    public void setResultsSeriesId(long resultsSeriesId) {
+        this.resultsSeriesId = resultsSeriesId;
+    }
+
+    public double getResultsPoints() {
+        return resultsPoints;
+    }
+
+    public void setResultsPoints(double resultsPoints) {
+        this.resultsPoints = resultsPoints;
+    }
+
+    public String getSeriesName() {
+        return seriesName;
+    }
+
+    public void setSeriesName(String seriesName) {
+        this.seriesName = seriesName;
+    }
 }

@@ -16,7 +16,6 @@ import java.util.List;
 
 import aad.finalproject.db.Boat;
 import aad.finalproject.db.BoatDataSource;
-import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.DBAdapter;
 import aad.finalproject.db.Result;
 import aad.finalproject.db.ResultDataSource;
@@ -172,7 +171,6 @@ public class SelectBoats extends MainActivity {
     //navigate user to the timer.
     public void onClickTimer(View view) {
 
-        BoatListClass.selectedBoatsList.clear(); // clear data from the boat list.
 
         // check if user selected at least 1 boat
         if (isValid()) {
@@ -214,6 +212,15 @@ public class SelectBoats extends MainActivity {
 
     public void onClickBack(View view) {
         Log.i(LOG, " Close SelectBoats");
+        if(source.equals("RM")) {
+            // finish activity thus returning to results menu
+            Log.i(LOG, " Return to Results Menu");
+            // grab the start times for each class and apply it to the datasource.
+            for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+                resultDataSource.updateClassStartTime(GlobalContent.getRaceRowID(),
+                        bc.getBoatColor(), bc.getStartTime(), bc.getClassDistance());
+            }
+        }
         finish(); // close out the current view
     }
 

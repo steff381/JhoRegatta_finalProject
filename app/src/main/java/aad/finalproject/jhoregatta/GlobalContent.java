@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import aad.finalproject.db.AndroidDatabaseManager;
 import aad.finalproject.db.Boat;
-import aad.finalproject.db.BoatListClass;
 import aad.finalproject.db.Race;
 import aad.finalproject.db.Result;
 import aad.finalproject.db.ResultsAdapter;
@@ -67,7 +66,6 @@ public class GlobalContent {
         RaceFormAccessMode = null;
         ResultsFormAccessMode = null;
         BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
-        BoatListClass.selectedBoatsList.clear();
         globalWhere = null;
         unmergedBoats.clear();
 
@@ -170,6 +168,12 @@ public class GlobalContent {
                         TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+    }
+
+    // get elapsed time in milliseconds using DateTimes
+    public static long getElapsedTime(DateTime startTimeString, DateTime finishTimeString) {
+
+        return finishTimeString.getMillis() - startTimeString.getMillis();
     }
 
     //calculate PHRF and Penalty adjustment
