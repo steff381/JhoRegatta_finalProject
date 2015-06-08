@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.util.List;
 
@@ -34,8 +36,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
     private String LOGTAG = GlobalContent.logTag(this);
 
-
-
     // sql elements for selecting boats
     private String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
             + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
@@ -45,8 +45,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     private String validatorMessage;
 
     // Button Text Constants
-    private static final String FINAL_BUTTON_TEXT = "E-MAIL RESULTS";
-    private static final String FINAL_BUTTON_TEXT_ACTIVE = "E-MAIL RESULTS";
     private static final String BACK_BUTTON_TEXT = "Race Menu";
     private static final String BACK_BUTTON_TEXT_ACTIVE = "Time Tracker";
 
@@ -54,7 +52,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     private Bundle b;
 
     //wake lock variable
-//    PowerManager.WakeLock wl;
     private Dimmer dimmer;
 
     //instance of data source
@@ -88,6 +85,25 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         raceDataSource.open();
         resultDataSource.open();
 
+        //if there is no active race there are no start times
+        if (GlobalContent.activeRace == null) {
+            Log.i(LOGTAG, "active Race is null");
+            //repopulate start times using data from results table.
+            int i = 0;
+            for (String s : resultDataSource.getAllClasses()) {
+                Result r = resultDataSource.getStartTimesByBoatClass(s);
+                BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new BoatClass(s));
+                BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(i).setStartTime(r
+                        .getResultsClassStartTime());
+                BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(i).setClassDistance(r
+                        .getRaceDistance());
+                i++;
+                Log.i(LOGTAG, s + "'s start = " + r.getResultsClassStartTime());
+            }
+        } else {
+            Log.i(LOGTAG, "activeRace is NOT null");
+        }
+
         results = getAllSQLResultResults(resultDataSource); // get list of all results
 
         //instantiate the custom results adapter
@@ -99,57 +115,37 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
         //wire button
         Button returnToTimeTracker = (Button) findViewById(R.id.btn_nav_TimeTracker);
-        final Button finishAndSendResults = (Button) findViewById(R.id.btn_rm_csv_export);
-        exitRace = (Button) findViewById(R.id.btn_rm_exit);
-
-
-        ////////Exit race button functions
-
-        //set methods for the exit button
-        exitRace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(LOGTAG, " exit button clicked");
-
-                if (!validateResultsTable()) {
-                    // build dialog box for confirmation
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
-                    alertDialog.setTitle("Exit Confirmation");
-                    alertDialog.setMessage("WARNING: You have not completed the race or vital " +
-                            "information is missing.\n\nWould you like to EXIT anyway?");
-                    alertDialog.setCancelable(false);
-
-                    // User chooses confirm
-                    alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) { //if yes
-                            // create fragment manager and dialog fragment
-                            FragmentManager fm = getFragmentManager();
-                            ProofOfIntentDialog poid = new ProofOfIntentDialog();
-
-                            poid.show(fm, "Confirm Intent to Exit");
-                        }
-                    });
-
-                    //User choose no
-                    alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-
-                    alertDialog.show();// show the error message to the user
-                } else {
-                    exitResultsMenu();
-                }
-
-
-
-            }
-        });
+        Button captureTime = (Button) findViewById(R.id.btn_rm_annon_finish);
 
 
         // close finish line and navigate to back to time tracker
+
+        // create a placeholder with the current time
+        captureTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //get current time stamp
+                DateTime now = DateTime.now();
+                String nowString = GlobalContent.dateTimeToString(now);
+
+                // create a result to insert
+                Result r = new Result();
+
+                r.setResultsBoatId(000);
+                r.setResultsBoatFinishTime(nowString);
+                r.setBoatName(ResultsEditor.PLACEHOLDER);
+                r.setBoatSailNum("{[NONE]}");
+                // grab the first boat class in the array.
+                r.setBoatClass(BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(0).getBoatColor());
+                r.setBoatPHRF(000);
+
+                resultDataSource.insertResultPlaceholder(r);
+                GlobalContent.activeResultsAdapter.syncArrayListWithSql();
+//                myList.invalidate(); // force a refresh of the list view
+//                populateListView(); // refresh listview
+            }
+        });
         returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,55 +157,12 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
             }
         });
 
-            ////////Finializer button functions
-        finishAndSendResults.setText(FINAL_BUTTON_TEXT_ACTIVE);
-        // finalize the result table and
-        // Export CSV and send via email
-        finishAndSendResults.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateResultsTable()) {
-
-                    //if no distance was set by the user show the warning dialog
-                    if (calculateDistance() == 0) {
-                        // build dialog box for confirmation
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
-                        alertDialog.setTitle("Missing Distance");
-                        alertDialog.setMessage("This race does not have any distances.\n\n" +
-                                "Would you like to send the results anyway?");
-                        alertDialog.setCancelable(false);
-
-                        // User chooses confirm
-                        alertDialog.setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) { //if yes
-                                sendResultTableByEmail(); // send the finalized results by email
-                            }
-                        });
-
-                        //User choose no
-                        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-
-                        alertDialog.show();// show the error message to the user
-                    } else {
-                        sendResultTableByEmail(); // send the finalized results by email
-                    }
-                } else {
-                    Toast.makeText(ResultsMenu.this, validatorMessage, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
 
         //set the visability of buttons depending on access mode
         if (GlobalContent.getResultsFormAccessMode().equals(GlobalContent.modeEdit)) {
             //change the name of the back to tracker button
             returnToTimeTracker.setText(BACK_BUTTON_TEXT);
             //change the name of the finalizer button
-            finishAndSendResults.setText(FINAL_BUTTON_TEXT);
 
 
         } else {//change the name of the back to tracker button
@@ -221,18 +174,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         //set onclick listening for listview
         //make it long click to prevent accidental clicking
         myList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            /**
-             * Callback method to be invoked when an item in this view has been
-             * clicked and held.
-             * Implementers can call getItemAtPosition(position) if they need to access
-             * the data associated with the selected item.
-             *
-             * @param parent   The AbsListView where the click happened
-             * @param view     The view within the AbsListView that was clicked
-             * @param position The position of the view in the list
-             * @param id       The row id of the item that was clicked
-             * @return true if the callback consumed the long click, false otherwise
-             */
+
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -394,6 +336,75 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                 FragmentManager fm = getFragmentManager();
                 ClassFinishesDialog cfd = new ClassFinishesDialog();
                 cfd.show(fm, "Finish Deadlines");
+                return true;
+            case R.id.action_email_results:
+                DatabaseWriter.print(resultDataSource, false);
+                if (validateResultsTable()) {
+
+                    //if no distance was set by the user show the warning dialog
+                    if (calculateDistance() == 0) {
+                        // build dialog box for confirmation
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                        alertDialog.setTitle("Missing Distance");
+                        alertDialog.setMessage("This race does not have any distances.\n\n" +
+                                "Would you like to send the results anyway?");
+                        alertDialog.setCancelable(false);
+
+                        // User chooses confirm
+                        alertDialog.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) { //if yes
+                                sendResultTableByEmail(); // send the finalized results by email
+                            }
+                        });
+
+                        //User choose no
+                        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+
+                        alertDialog.show();// show the error message to the user
+                    } else {
+                        sendResultTableByEmail(); // send the finalized results by email
+                    }
+                } else {
+                    Toast.makeText(ResultsMenu.this, validatorMessage, Toast.LENGTH_LONG).show();
+                }
+                return true;
+            case R.id.action_exit_results:
+                if (!validateResultsTable()) {
+                    // build dialog box for confirmation
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                    alertDialog.setTitle("Exit Confirmation");
+                    alertDialog.setMessage("WARNING: You have not completed the race or vital " +
+                            "information is missing.\n\nWould you like to EXIT anyway?");
+                    alertDialog.setCancelable(false);
+
+                    // User chooses confirm
+                    alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) { //if yes
+                            // create fragment manager and dialog fragment
+                            FragmentManager fm = getFragmentManager();
+                            ProofOfIntentDialog poid = new ProofOfIntentDialog();
+
+                            poid.show(fm, "Confirm Intent to Exit");
+                        }
+                    });
+
+                    //User choose no
+                    alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+                    alertDialog.show();// show the error message to the user
+                } else {
+                    exitResultsMenu();
+                }
                 return true;
 //            case R.id.action_ddms:
 //                GlobalContent.DDMS(this);

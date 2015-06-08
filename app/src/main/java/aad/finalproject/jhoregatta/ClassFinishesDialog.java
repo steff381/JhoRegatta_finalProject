@@ -63,7 +63,7 @@ public class ClassFinishesDialog extends DialogFragment {
             // get the boats class's color from the starting list
             String bc = BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(i).getBoatColor();
             // grab the result
-            Result r = resultDataSource.getFirstClassResult(GlobalContent.activeRace.getId(),
+            Result r = resultDataSource.getFirstClassResult(GlobalContent.getRaceRowID(),
                     BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(i).getBoatColor());
 
             String callAtStringTime;

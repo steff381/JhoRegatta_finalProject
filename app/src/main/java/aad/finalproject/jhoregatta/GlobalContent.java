@@ -33,6 +33,8 @@ public class GlobalContent {
     public static Race activeRace;
     public static ResultsAdapter activeResultsAdapter = null;
 
+    public static AudioVoiceManager avm; // globally accessible audio manager
+
     public static long dimmerDelay = 20000; // how long should screen remain bright before dimming
 
     //result list that can be accessed globally.
@@ -49,12 +51,16 @@ public class GlobalContent {
     //storage for the ID's of each table
     private static long boatRowID;
     private static long raceRowID;
+    public static String raceRowName;
+    public static String raceRowDate;
     private static long resultsRowID;
 
     //form access mode options
     public static String modeAdd = "ADD";
     public static String modeEdit = "EDIT";
 
+    // public alive statement
+    public static boolean selectBoatListIsAlive = false;
 
     // Joda time formatters. Used by all applications for consistancy of date time formats
     private static DateTimeFormatter timeFormatter = DateTimeFormat.forPattern("hh:mm:ss a");
@@ -67,7 +73,9 @@ public class GlobalContent {
         ResultsFormAccessMode = null;
         BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
         globalWhere = null;
+        avm.audioFullStop();
         unmergedBoats.clear();
+        activeRace = null;
 
     }
 

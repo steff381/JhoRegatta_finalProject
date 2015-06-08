@@ -88,6 +88,24 @@ public class SelectBoatDataSource {
         }
     }
 
+    public void addSingleBoat(Boat boat) {
+        // content values statement to package sql data
+
+        ContentValues values = new ContentValues();
+        values.put(DBAdapter.KEY_BOAT_ID, boat.getId());
+        values.put(DBAdapter.KEY_BOAT_NAME, boat.getBoatName());
+        values.put(DBAdapter.KEY_BOAT_SAIL_NUM, boat.getBoatSailNum());
+        values.put(DBAdapter.KEY_BOAT_CLASS, boat.getBoatClass());
+        values.put(DBAdapter.KEY_BOAT_PHRF, boat.getBoatPHRF());
+        values.put(DBAdapter.KEY_BOAT_VISIBLE, 1);
+        values.put(DBAdapter.KEY_BOAT_SELECTED, 0);
+
+        // add the boat to the table
+        db.insert(DBAdapter.TABLE_SELECT_BOATS, null, values);
+
+
+    }
+
     //get a list of all the boats
     public List<Boat> getAllSelectBoats(String where, String orderBy, String having) {
         List<Boat> boats = new ArrayList<>();

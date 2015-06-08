@@ -46,4 +46,6 @@
     <string name="title_activity_list_template_merge_classes">ListTemplateMergeClasses</string>
     <string name="action_results_menu_class_finishes">Class Finishes</string>
     <string name="email_all_races">Email All Races</string>
+    <string name="emailResults">E-mail</string>
+    <string name="action_exit_result_menu">Exit</string>
 </resources>

@@ -90,7 +90,7 @@ public class RegattaTimer extends MainActivity {
 
 
         // create a new instance of the audiovoice manager
-        avm = new AudioVoiceManager(this);
+        GlobalContent.avm = new AudioVoiceManager(this);
 
         //switch to media volume control vs notification volume control
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -293,7 +293,7 @@ public class RegattaTimer extends MainActivity {
 
                             recallButtonSetEnabled(false); // disable all the recall buttons
 
-                            avm.audioFullStop();// end all audio events
+                            GlobalContent.avm.audioFullStop();// end all audio events
 
                             //clear out the start time from the current boat class instance and all
                             //subsequent class start times
@@ -597,7 +597,7 @@ public class RegattaTimer extends MainActivity {
         // add all milliseconds up
         long totalTime = milliHours + milliMinutes + milliSeconds;
 //        final String timeString = bestTickTockTime(totalTime+1000);
-        avm.playAudioByCase(flagToDisplay, seconds); // call audio changer based on time given
+        GlobalContent.avm.playAudioByCase(flagToDisplay, seconds); // call audio changer based on time given
 
         myCountDownTimer = new CountDownTimerPausable(totalTime, 500) {
             /**
@@ -695,7 +695,7 @@ public class RegattaTimer extends MainActivity {
                 startResume.setText("Start"); //change text to start
 
 //                audioFullStop(); // end all audio events
-                avm.audioFullStop();// end all audio events
+                GlobalContent.avm.audioFullStop();// end all audio events
 
                 //clear start times from boat class array
                 for (TextView tv : currentCaseClassStartTime) {

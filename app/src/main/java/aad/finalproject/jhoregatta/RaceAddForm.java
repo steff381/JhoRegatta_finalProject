@@ -133,7 +133,10 @@ public class RaceAddForm extends Form {
         modifyResults.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setTempDataFields();
                 GlobalContent.setResultsFormAccessMode(true); //set the access mode variable.
+                GlobalContent.raceRowName = raceTitle.getText().toString();
+                GlobalContent.raceRowDate = strraceDate;
                 Intent intent = new Intent(v.getContext(), ResultsMenu.class);
                 startActivity(intent);
             }
@@ -460,6 +463,8 @@ public class RaceAddForm extends Form {
             long id = raceDataSource.getLastInsertedRowID();
             GlobalContent.unmergedBoats = new ArrayList<>(); // create active instance of new unmerged boats
             GlobalContent.setRaceRowID(id); // set the id of global content
+            GlobalContent.raceRowName = newRace.getName();
+            GlobalContent.raceRowDate = newRace.getDate();
             GlobalContent.setActiveRace(newRace, id); // set the active race to the new race
 
             Log.i(LOG, "Last inserted Id: " + id + " || Race name: " + newRace.getName());

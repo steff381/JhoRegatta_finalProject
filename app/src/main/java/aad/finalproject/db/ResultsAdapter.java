@@ -214,16 +214,6 @@ public class ResultsAdapter extends BaseAdapter {
                     //run table calculations to derive duration and adjusted duration
                     resultDataSource.runSingleCalculation(resultId);
 
-//                    Result firstFinishResult = resultDataSource.getFirstClassResult(resultId, color);
-//                    for (ClassFinished c : finishedBoats) {
-//                        // cycle through to the right result
-//                        if (c.finishedClassColor.equals(color) && c.finishedClassResultId == -1) {
-//                            Log.i(LOGTAG, "classFinished match = " + color);
-//                            // set the finished times for the class color
-//                            c.setFinishTime(result.resultsBoatFinishTime);
-//                        }
-//                    }
-
                     syncArrayListWithSql(); // sync up results with sql
 
                     //refresh the viewed data

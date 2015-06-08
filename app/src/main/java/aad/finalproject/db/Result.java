@@ -16,7 +16,7 @@ public class Result {
     String resultsBoatFinishTime;
     String resultsDuration;
     String resultsAdjDuration;
-    double resultsPenalty;
+    int resultsPenalty;
     String resultsNote;
     int resultsPlace;
     double resultsPoints;
@@ -158,11 +158,11 @@ public class Result {
         this.resultsAdjDuration = resultsAdjDuration;
     }
 
-    public double getResultsPenalty() {
+    public int getResultsPenalty() {
         return resultsPenalty;
     }
 
-    public void setResultsPenalty(double resultsPenalty) {
+    public void setResultsPenalty(int resultsPenalty) {
         this.resultsPenalty = resultsPenalty;
     }
 

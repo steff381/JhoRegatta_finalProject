@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="false"
-        android:id="@+id/linearLayout2">
+        android:id="@+id/linearLayout2"
+        android:layout_marginBottom="10dp">
 
         <Button
             android:layout_width="0dp"
@@ -21,6 +22,15 @@
             android:text="Update"
             android:id="@+id/btn_rf_update_result"
             android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:id="@+id/btn_rf_delete_result"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" />
 
         <Button
             android:layout_width="0dp"
@@ -43,6 +53,45 @@
             android:layout_height="wrap_content"
             android:id="@+id/linlay_rf_mainLayout">
 
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Boat Details"
+                android:id="@+id/ckbx_rf_editBoatDetails"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
+                android:layout_marginLeft="15dp"
+                android:textSize="20sp"
+                android:paddingLeft="10dp"
+                android:checked="false"
+                android:layout_gravity="center_horizontal" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false">
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:text="Boat Name:"
+                    android:id="@+id/lbl_rf_boatName"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ff4f4f52"
+                    android:layout_gravity="center_vertical" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spn_rf_boatName"
+                    android:layout_gravity="center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:clickable="false"
+                    android:theme="@style/TextAppearance.AppCompat.Large" />
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,7 +104,8 @@
                 android:textSize="35sp"
                 android:layout_marginBottom="5dp"
                 android:textStyle="bold"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:visibility="gone"/>
 
 
             <LinearLayout
@@ -71,7 +121,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#ff4f4f52" />
 
-                <TextView
+                <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="Sail Num"
@@ -79,7 +129,8 @@
                     android:textColor="#000000"
                     android:singleLine="true"
                     android:id="@+id/txt_rf_sailNum"
-                    />
+                    android:enabled="false"
+                    android:inputType="textCapCharacters" />
             </LinearLayout>
 
             <LinearLayout
@@ -93,23 +144,34 @@
                     android:text="Class:"
                     android:id="@+id/lbl_rf_boatClass"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#ff4f4f52" />
+                    android:textColor="#ff4f4f52"
+                    android:layout_gravity="center_vertical" />
 
-                <TextView
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spn_rf_boatClass"
+                    android:spinnerMode="dropdown"
+                    android:theme="@style/TextAppearance.AppCompat.Medium"
+                    android:clickable="false" />
+
+                <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="Class color"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#000000"
                     android:singleLine="true"
-                    android:id="@+id/txt_rf_BoatClass" />
+                    android:id="@+id/txt_rf_BoatClass"
+                    android:visibility="gone"/>
             </LinearLayout>
 
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:baselineAligned="false">
 
                 <TextView
                     android:layout_width="125dp"
@@ -117,16 +179,20 @@
                     android:text="PHRF#:"
                     android:id="@+id/lbl_rf_PHRF"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#ff4f4f52" />
+                    android:textColor="#ff4f4f52"
+                    android:layout_gravity="center_vertical" />
 
-                <TextView
+                <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="PHRF"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#000000"
                     android:singleLine="true"
-                    android:id="@+id/txt_rf_PHRF"/>
+                    android:enabled="false"
+                    android:id="@+id/txt_rf_PHRF"
+                    android:inputType="number"
+                    android:layout_gravity="bottom" />
             </LinearLayout>
 
             <LinearLayout

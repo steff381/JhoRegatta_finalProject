@@ -43,6 +43,8 @@ public class SelectClassDistance extends MainActivity {
         b = new Bundle();
         b.putString(SelectBoats.SOURCE_BUNDLE_KEY, "SCD");
 
+        isActiveSCD = true;
+
         // create instances of the arraylists
         classColor = new ArrayList<>();
         classDistance = new ArrayList<>();
@@ -69,6 +71,8 @@ public class SelectClassDistance extends MainActivity {
         if (setDistanceOnly) {
             btnDistanceUnknown.setVisibility(View.GONE);
         }
+
+
 
         //set the button function
         btnSetDistance.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +142,16 @@ public class SelectClassDistance extends MainActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     // check to see if the entries are valid.
     private boolean validateEntries() {
         int c = 0; //counter
@@ -183,17 +197,11 @@ public class SelectClassDistance extends MainActivity {
         }
     }
 
-    //change activie status when activity starts and stops
-    @Override
-    public void onStart() {
-        super.onStart();
-        isActiveSCD = true;
-    }
 
     // set the active setting to false
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         isActiveSCD = false;
     }
 

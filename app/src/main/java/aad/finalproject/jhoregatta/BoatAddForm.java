@@ -17,6 +17,7 @@ import android.widget.Toast;
 import aad.finalproject.db.Boat;
 import aad.finalproject.db.BoatDataSource;
 import aad.finalproject.db.DBAdapter;
+import aad.finalproject.db.SelectBoatDataSource;
 
 /*
 THis form allows the user to add and edit rows of data in the boats table.
@@ -59,7 +60,6 @@ public class BoatAddForm extends Form {
 
 
         //load up text and spinner instances with their corresponding widgets
-//        boatClassSpn = (Spinner) findViewById(R.id.spn_BoatClass);
         boatName = (EditText) findViewById(R.id.txt_inpt_BoatName);
         boatSailNum = (EditText) findViewById(R.id.txt_inpt_SailNum);
         boatPHRF = (EditText) findViewById(R.id.txt_inpt_PHRF);
@@ -186,8 +186,19 @@ public class BoatAddForm extends Form {
             newBoat.setBoatSailNum(strBoatSailNum);
             newBoat.setBoatPHRF(Integer.parseInt(strBoatPHRF));
             newBoat.setBoatVisible(1); // visible should always be 1 initially
+
             boatDataSource.create(newBoat); // push the loaded boat instance to the SQL table
             Log.i(LOG, "Validated add entry");
+
+            // check if the select boat list is in use.
+            if (GlobalContent.selectBoatListIsAlive) {
+                // create a connection to the sb datasource
+                SelectBoatDataSource sbds = new SelectBoatDataSource(this);
+                sbds.open();
+                // insert the newly added boat to the sb list
+                sbds.addSingleBoat(newBoat);
+                sbds.close();
+            }
             endBoatActivity(); // Exit the activity
         }
     }

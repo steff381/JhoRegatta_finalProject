@@ -20,6 +20,10 @@ public class DatabaseWriter extends MainActivity {
     public static File exportDir = Environment.getExternalStoragePublicDirectory(Environment
             .DIRECTORY_DOWNLOADS);
 
+    public static String fixedLengthString(String string, int length) {
+        return String.format("%1$" + length + "s", string);
+    }
+
 
     public static boolean exportDatabase(String fileName, ResultDataSource resultDataSource,
                                          boolean getAllRaces) {
@@ -112,11 +116,6 @@ public class DatabaseWriter extends MainActivity {
 
                 printWriter.println(RESULTS_FIELDS_CSV_HEADER);
 
-
-                Log.i(LOGTAG, "HEADERS: " + RESULTS_FIELDS_CSV_HEADER);
-
-
-                int rowCounter = 2;
                 for (Result r : results) {
 
                     //results
@@ -124,7 +123,7 @@ public class DatabaseWriter extends MainActivity {
                     String BoatFinishTime =  r.getResultsBoatFinishTime();
                     String ResultsDuration = r.getResultsDuration();
                     String ResultsAdjDuration =  r.getResultsAdjDuration();
-                    Double ResultsPenalty =  r.getResultsPenalty();
+                    double ResultsPenalty = ((double)r.getResultsPenalty() / 100);
                     String ResultsNote =  r.getResultsNote();
                     Integer ResultsPlace =  r.getResultsPlace();
                     Integer ResultsNotFinished =  r.getResultsNotFinished();
@@ -170,8 +169,6 @@ public class DatabaseWriter extends MainActivity {
 
 
                     printWriter.println(record); //write the record in the .csv file
-                    Log.i(LOGTAG, "Entering >>> " + record);
-                    rowCounter++;
                 }
 
                 resultDataSource.close(); // close data soruce to conserve resources
@@ -188,6 +185,131 @@ public class DatabaseWriter extends MainActivity {
             //If there are no errors, return true.
             return true;
         }
+    }
+
+
+    public static boolean print( ResultDataSource resultDataSource,boolean getAllRaces) {
+
+
+        if (!getAllRaces) {
+            where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
+                    + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+        } else {
+            where = DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
+        }
+
+            String c = "| "; //short way to make a comma
+
+            try {
+
+
+
+                /**This is our database connector class that reads the data from the database.
+                 * The code of this class is omitted for brevity.
+                 */
+
+                /**Let's read the first table of the database.
+                 * getFirstTable() is a method in our DBCOurDatabaseConnector class which retrieves a Cursor
+                 * containing all records of the table (all fields).
+                 * The code of this class is omitted for brevity.
+                 */
+
+                //create the order by clause for the sql statement
+                String orderBy = DBAdapter.KEY_RACE_ID + ", " + DBAdapter.KEY_BOAT_CLASS + ", "
+                        + DBAdapter.KEY_RESULTS_ADJ_DURATION;
+
+                List<Result> results = resultDataSource.getAllResults(where, orderBy, null);
+
+                //Write the name of the table and the name of the columns (comma separated values) in the .csv file.
+                String RESULTS_FIELDS_CSV_HEADER = DBAdapter.KEY_RACE_NAME+"           " + c +
+                        DBAdapter.KEY_RACE_DATE+"                " + c +
+                        DBAdapter.KEY_RACE_DISTANCE+"            " + c +
+
+                        DBAdapter.KEY_BOAT_NAME+"           " + c +
+                        DBAdapter.KEY_BOAT_SAIL_NUM+"            " + c +
+                        DBAdapter.KEY_BOAT_CLASS+"           " + c +
+                        DBAdapter.KEY_BOAT_PHRF+"                " + c +
+                        DBAdapter.KEY_RESULTS_MANUAL_ENTRY+"    " + c +
+
+                        DBAdapter.KEY_RESULTS_CLASS_START+"    " + c +
+                        DBAdapter.KEY_RESULTS_FINISH_TIME+"    " + c +
+                        DBAdapter.KEY_RESULTS_DURATION+"        " + c +
+                        DBAdapter.KEY_RESULTS_ADJ_DURATION+"        " + c +
+                        DBAdapter.KEY_RESULTS_PENALTY+"     " + c +
+                        DBAdapter.KEY_RESULTS_NOTE+"                " + c +
+                        DBAdapter.KEY_RESULTS_PLACE+"               " + c +
+                        DBAdapter.KEY_RESULTS_NOT_FINISHED+"         " + c +
+                        DBAdapter.KEY_CREATED_AT+"          ";
+
+                Log.i(LOGTAG, RESULTS_FIELDS_CSV_HEADER);
+
+
+                for (Result r : results) {
+
+                    //results
+                    String ClassStartTime =  r.getResultsClassStartTime()+"                    ";
+                    String BoatFinishTime =  r.getResultsBoatFinishTime()+"                    ";
+                    String ResultsDuration = r.getResultsDuration()+"                    ";
+                    String ResultsAdjDuration =  r.getResultsAdjDuration()+"                    ";
+                    String ResultsPenalty = ((double)r.getResultsPenalty() / 100)+"                    ";
+                    String ResultsNote =  r.getResultsNote()+"                    ";
+                    String ResultsPlace =  r.getResultsPlace()+"                    ";
+                    String ResultsNotFinished =  r.getResultsNotFinished()+"                    ";
+                    String ResultsManualEntry =  r.getResultsManualEntry()+"                    ";
+                    //boats
+                    String BoatName =  r.getBoatName()+"                    ";
+                    String BoatSailNum = r.getBoatSailNum()+"                    ";
+                    String BoatClass = r.getBoatClass()+"                    ";
+                    String BoatPHRF = r.getBoatPHRF()+"                    ";
+                    //races
+                    String RaceDistance = r.getRaceDistance()+"                    ";
+                    String RaceName = r.getRaceName()+"                    ";
+                    String RaceDate = r.getRaceDate()+"                    ";
+
+                    String Created = r.getResultsCreateDate()+"                    ";
+
+                    /**Create the line to write in the .csv file.
+                     * We need a String where values are comma separated.
+                     * The field date (Long) is formatted in a readable text. The amount field
+                     * is converted into String.
+                     */
+                    String record =
+
+                                    RaceName.substring(0,20) + c +              // Column A
+                                    RaceDate.substring(0,20) + c +              // Column B
+                                    RaceDistance.substring(0,20) + c +          // Column C
+
+                                    BoatName.substring(0,20) + c +              // Column D
+                                    BoatSailNum.substring(0,20) + c +           // Column E
+                                    BoatClass.substring(0,20) + c +             // Column F
+                                    BoatPHRF.substring(0,20) + c +              // Column G
+                                    ResultsManualEntry.substring(0,20) + c +    // Column H
+
+                                    ClassStartTime.substring(0,20) + c +        // Column I
+                                    BoatFinishTime.substring(0,20) + c +        // Column J
+                                    ResultsDuration.substring(0,20) + c +       // Column K
+                                    ResultsAdjDuration.substring(0,20) + c +    // Column L
+                                    ResultsPenalty.substring(0,20) + c +        // Column M
+                                    ResultsNote.substring(0,20) + c +           // Column N
+                                    ResultsPlace.substring(0,20) + c +          // Column O
+                                    ResultsNotFinished.substring(0,20) + c +    // Column P
+                                    Created.substring(0,20);                    // Column S
+
+                    Log.i(LOGTAG, record);
+                }
+
+//                resultDataSource.close(); // close data soruce to conserve resources
+            } catch (Exception exc) {
+                //catch any possible exceptions
+                Log.i(LOGTAG, "EXCEPTION THROWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                return false;
+            } finally {
+                Log.i(LOGTAG, "Finally Closing writer");
+            }
+
+            //If there are no errors, return true.
+            return true;
+
     }
 
 }

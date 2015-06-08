@@ -6,9 +6,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class SelectBoats extends MainActivity {
 
     public static final String SOURCE_BUNDLE_KEY = "SOURCE";
 
-    private String source;
+    private String source; //variable holding the activity that was used to access this activity
 
     CheckBox selectBoatCkBox; // create an accessible instance of the checkbox widget
     private Button btnRegTimer;
@@ -55,7 +57,9 @@ public class SelectBoats extends MainActivity {
         dimmer = new Dimmer(getWindow(), GlobalContent.dimmerDelay);
         dimmer.start();
 
-        source = getIntent().getExtras().getString(SOURCE_BUNDLE_KEY);
+        source = getIntent().getExtras().getString(SOURCE_BUNDLE_KEY); // get bundle data
+
+        GlobalContent.selectBoatListIsAlive = true; // let the program know that the rm version of the sbl is alive
 
         //Build database
         boatDataSource = new BoatDataSource(this);
@@ -73,12 +77,40 @@ public class SelectBoats extends MainActivity {
         myList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         selectBoatCkBox = (CheckBox) findViewById(R.id.ckboxSelectBoatCheck);
 
+
+        myList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // wire a text view from the current view
+                TextView idTextView = (TextView) view.findViewById(R.id.txt_hd_sb_ID);
+                // pull the Id number from the text view and store it
+                long currentBoatId = Long.parseLong(idTextView.getText().toString());
+                // set the access mode for the boat editor to "edit"
+                GlobalContent.setBoatFormAccessMode(true);
+                // set the boat to be edited to the boat the user selected from the list view
+                GlobalContent.setBoatRowID(currentBoatId);
+                // start the boat editor activity
+                Intent intent = new Intent(view.getContext(), BoatAddForm.class);
+                startActivity(intent);
+                return true;
+            }
+        });
+
         populateListView();
     }
 
     private void populateListView() {
         String where = null;
-        ArrayList<Boat> selectedBoatsList = new ArrayList<>();
+
+        //Where statement for selectedBoatsList
+        String selectedBoatsListWhere = GlobalContent.globalWhere + " AND "
+                + DBAdapter.KEY_BOAT_SELECTED + " = 1";
+
+        //get a list of boats marked as "Selected = 1"
+        ArrayList<Boat> selectedBoatsList = selectBoatDataSource.getAllSelectBoatsArrayList(
+                selectedBoatsListWhere, null, null);
+        Log.i(LOG, " SCD > GlobalWhere = " + GlobalContent.globalWhere + " || Where = " + where);
+
 
         switch (source) {
             case "RM":
@@ -88,44 +120,39 @@ public class SelectBoats extends MainActivity {
 
                 Log.i(LOG, " RM > GlobalWhere = " + GlobalContent.globalWhere + " || Where = " + where);
 
-                selectedBoatsList.clear(); // make sure list is empty
+
                 break;
             case "SCD":
+
                 //Clear the current race from the results table.
-                resultDataSource.deleteRace(GlobalContent.activeRace.getId());
+                resultDataSource.deleteRace(GlobalContent.getRaceRowID());
                 Log.i(LOG, "Source is SCD. Removing any existing race from Results Table");
 
                 where = GlobalContent.globalWhere; //set to standard where clause
 
-                //Where statement for selectedBoatsList
-                String selectedBoatsListWhere = GlobalContent.globalWhere + " AND "
-                        + DBAdapter.KEY_BOAT_SELECTED + " = 1";
-
-                //get a list of boats marked as "Selected = 1"
-                selectedBoatsList = selectBoatDataSource.getAllSelectBoatsArrayList(
-                        selectedBoatsListWhere, null, null);
-                Log.i(LOG, " SCD > GlobalWhere = " + GlobalContent.globalWhere + " || Where = " + where);
 
                 //clear the current select boats table
                 selectBoatDataSource.rebuildTable();
 
                 //populate select boats table from the boat table
-                selectBoatDataSource.buildBoatList(boatDataSource.getAllBoatsArrayList(
-                        GlobalContent.globalWhere, DBAdapter.KEY_BOAT_NAME, null));
+                selectBoatDataSource.buildBoatList(
+                        boatDataSource.getAllBoatsArrayList(where, DBAdapter.KEY_BOAT_NAME, null)
+                );
+
+                //// make sure the selected boats from the previous list
+                //// match the selections in the new list (when applicable)
+                // edit the selected status to true for the boats in the new selected boat list that
+                // were selected in the previous version of the list
+                for (Boat b : selectedBoatsList) {
+                    selectBoatDataSource.setSelectedByBoatId(b.getBoatId(), true);
+                    resultDataSource.insertResult(b); // insert the selected boat into results table
+                    Log.i(LOG, "Sync SELECTED:  Boat " + b.getBoatName() + " Selected" );
+                }
+
                 break;
             default:
                 Log.i(LOG, "ERROR WITH WHERE CLAUSE");
                 break;
-        }
-
-        //// make sure the selected boats from the previous list
-        //// match the selections in the new list (when applicable)
-        // edit the selected status to true for the boats in the new selected boat list that
-        // were selected in the previous version of the list
-        for (Boat b : selectedBoatsList) {
-            selectBoatDataSource.setSelectedByBoatId(b.getBoatId(), true);
-            resultDataSource.insertResult(b); // insert the selected boat into results table
-            Log.i(LOG, "Sync SELECTED:  Boat " + b.getBoatName() + " Selected" );
         }
 
         // get all the boats that are in the selected boats table
@@ -156,10 +183,11 @@ public class SelectBoats extends MainActivity {
         int id = item.getItemId();
 
         switch (item.getItemId()) {
-//            case R.id.action_merge_classes:
-//                Intent intent = new Intent(this, MergeBoatClasses.class);
-//                startActivity(intent);
-//                return true;
+            case R.id.action_add_new_boat:
+                Intent intent = new Intent(this, BoatAddForm.class);
+                GlobalContent.setBoatFormAccessMode(false);
+                startActivity(intent);
+                return true;
 //            case R.id.action_ddms:
 //                GlobalContent.DDMS(this);
 //                return true;
@@ -224,6 +252,8 @@ public class SelectBoats extends MainActivity {
         finish(); // close out the current view
     }
 
+
+
     @Override
     public void onUserInteraction() {
         dimmer.resetDelay(); // reschedule dimmer task
@@ -251,24 +281,9 @@ public class SelectBoats extends MainActivity {
         resultDataSource.close(); // close datasource to prevent leakage
     }
 
-    // create a where clause without boats that have been selected
-    private String showOnlyUnselectedBoats(List<Result> resultsList) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(GlobalContent.globalWhere); // grab current where clause
-        sb.append(" AND " + DBAdapter.KEY_BOAT_NAME + " NOT IN("); // add new exclusion language
-        boolean firstResult = true; // set the first statement bool to true
-        for (Result r : resultsList) {
-            if (firstResult) {
-                sb.append("\"" + r.getBoatName() + "\""); // add first record to the list
-                firstResult = false; // no longer first statement so false
-            } else {
-                sb.append(",\"" + r.getBoatName() + "\""); // add subsequent records to the list
-            }
-        }
-        sb.append(")"); // end list with paren.
-        String newWhere = sb.toString(); // send whare to string
-        Log.i(LOG, "New where is " + newWhere);
-
-        return newWhere;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        GlobalContent.selectBoatListIsAlive = false; // set living status to false
     }
 }

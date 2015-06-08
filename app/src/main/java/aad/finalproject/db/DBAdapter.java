@@ -83,7 +83,9 @@ public class DBAdapter extends SQLiteOpenHelper{
     // SERIES TABLE TODO build DS and class
     public static final String KEY_SERIES_NAME = "series_name"; // NEW IN V 2
     public static final String KEY_SERIES_SCOREKEEPER = "scorekeeper";// NEW IN V 2
+    public static final String KEY_SERIES_SCOREKEEPER_EMAIL = "scorekpr_email";// NEW IN V 2
     public static final String KEY_SERIES_PR_RACE_OFF = "pr_race_ofcr";// NEW IN V 2
+    public static final String KEY_SERIES_PR_RACE_OFF_EMAIL = "pr_race_ofcr_email";// NEW IN V 2
     public static final String KEY_SERIES_VISIBLE = "visible";// NEW IN V 2
 
     // SCORES TABLE TODO build DS and class
@@ -175,7 +177,9 @@ public class DBAdapter extends SQLiteOpenHelper{
             + KEY_ID +  " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_SERIES_NAME +  " TEXT NOT NULL,"
             + KEY_SERIES_SCOREKEEPER +  " TEXT NOT NULL,"
+            + KEY_SERIES_SCOREKEEPER_EMAIL +  " TEXT NOT NULL,"
             + KEY_SERIES_PR_RACE_OFF +  " TEXT NOT NULL,"
+            + KEY_SERIES_PR_RACE_OFF_EMAIL +  " TEXT NOT NULL,"
             + KEY_SERIES_VISIBLE +  " INTEGER NOT NULL,"
             + KEY_CREATED_AT +  " TEXT"
             + ")";
@@ -259,7 +263,9 @@ public class DBAdapter extends SQLiteOpenHelper{
             KEY_ID,
             KEY_SERIES_NAME,
             KEY_SERIES_SCOREKEEPER,
+            KEY_SERIES_SCOREKEEPER_EMAIL,
             KEY_SERIES_PR_RACE_OFF,
+            KEY_SERIES_PR_RACE_OFF_EMAIL,
             KEY_SERIES_VISIBLE,
             KEY_CREATED_AT
 
