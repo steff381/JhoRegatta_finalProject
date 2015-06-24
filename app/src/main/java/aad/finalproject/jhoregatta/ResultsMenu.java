@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,11 +37,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
     private String LOGTAG = GlobalContent.logTag(this);
 
-    // sql elements for selecting boats
-    private String where = DBAdapter.KEY_RACE_ID + " = " + GlobalContent.getRaceRowID()
-            + " AND " + DBAdapter.KEY_RESULTS_VISIBLE + " = 1";
-    private String orderBy = DBAdapter.KEY_BOAT_NAME;
-
     //Message telling user what is wrong with the form.
     private String validatorMessage;
 
@@ -51,7 +47,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     //bundle
     private Bundle b;
 
-    //wake lock variable
+    // variable for the dimmer
     private Dimmer dimmer;
 
     //instance of data source
@@ -63,8 +59,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     //Listview widgets and objects
     public static ListView myList;
 
-    //make a package accessible race button that can be modified by other activities.
-    protected static Button exitRace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +66,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         setContentView(R.layout.activity_results_menu);
 
         // screen dimmer allows the screen to dim but never turn off
-        dimmer = new Dimmer(getWindow(), GlobalContent.dimmerDelay);
+        dimmer = new Dimmer(getWindow(),this);
         dimmer.start();
 
         //set up bundle
@@ -89,16 +83,16 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         if (GlobalContent.activeRace == null) {
             Log.i(LOGTAG, "active Race is null");
             //repopulate start times using data from results table.
-            int i = 0;
-            for (String s : resultDataSource.getAllClasses()) {
-                Result r = resultDataSource.getStartTimesByBoatClass(s);
-                BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(new BoatClass(s));
-                BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(i).setStartTime(r
-                        .getResultsClassStartTime());
-                BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(i).setClassDistance(r
-                        .getRaceDistance());
-                i++;
-                Log.i(LOGTAG, s + "'s start = " + r.getResultsClassStartTime());
+            for (Result r: resultDataSource.getAllClassStartTimes()) {
+                BoatClass bc = new BoatClass(r.getBoatClass());
+                bc.setStartTime(r.getResultsClassStartTime());
+                bc.setClassDistance(r.getRaceDistance());
+//                Log.i(LOGTAG, BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(i).getBoatColor()
+//                        + "'s start = " + r.getResultsClassStartTime());
+                BoatStartingListClass.BOAT_CLASS_START_ARRAY.add(bc);
+                Log.i(LOGTAG, "Build BoatClassStartArray Class: " + r.getBoatClass() + " start:" + r.getResultsClassStartTime() +
+                        " distance: " + r.getRaceDistance());
+
             }
         } else {
             Log.i(LOGTAG, "activeRace is NOT null");
@@ -117,9 +111,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         Button returnToTimeTracker = (Button) findViewById(R.id.btn_nav_TimeTracker);
         Button captureTime = (Button) findViewById(R.id.btn_rm_annon_finish);
 
-
-        // close finish line and navigate to back to time tracker
-
         // create a placeholder with the current time
         captureTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,18 +123,16 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                 // create a result to insert
                 Result r = new Result();
 
-                r.setResultsBoatId(000);
+                r.setResultsBoatId(ResultsEditor.PLACEHOLDER_BOAT_ID);
                 r.setResultsBoatFinishTime(nowString);
-                r.setBoatName(ResultsEditor.PLACEHOLDER);
-                r.setBoatSailNum("{[NONE]}");
+                r.setBoatName(ResultsEditor.PLACEHOLDER_BOAT_NAME);
+                r.setBoatSailNum(ResultsEditor.PLACEHOLDER_SAIL_NUM);
                 // grab the first boat class in the array.
                 r.setBoatClass(BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(0).getBoatColor());
-                r.setBoatPHRF(000);
+                r.setBoatPHRF(0);
 
                 resultDataSource.insertResultPlaceholder(r);
                 GlobalContent.activeResultsAdapter.syncArrayListWithSql();
-//                myList.invalidate(); // force a refresh of the list view
-//                populateListView(); // refresh listview
             }
         });
         returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
@@ -194,7 +183,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         //tally up the distance
         double distance = 0;
         for (Result r : results) {
-            Log.i(LOGTAG, " class: " + r.getBoatClass() + " boat: " + r.getBoatName() + " distance: " + r.getRaceDistance());
             distance += r.getRaceDistance();
         }
         return distance;
@@ -205,7 +193,7 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         GlobalContent.finalDataClear(); //clear all the data
         //goto main menu
         Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // exit don to everything
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // close all activities
         startActivity(intent);
     }
 
@@ -224,7 +212,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
             // check to see if the result has been psudo deleted (made invisible)
             if (r.getResultsVisible() == 1) {
-                Log.i(LOGTAG, boatName + "is visible ");
                 // check if class start time is empty
                 if (r.getResultsClassStartTime() == null) {
                     Log.i(LOGTAG, boatName + " Missing Class Start Time");
@@ -238,7 +225,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                 // check to see if did not finish was selected for the boat
                 if (r.getResultsNotFinished() == 0) { //boat is not DNF
 
-                    Log.i(LOGTAG, boatName + " is NOT DNF");
                     //check for a finish time.
                     if (r.getResultsBoatFinishTime() == null) {
                         Log.i(LOGTAG, boatName + " Result Finished is NULL ");
@@ -246,8 +232,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                                 "the boat did not finish click \"DNF\" in the boat editor";
                         return false;
                     }
-
-                    Log.i(LOGTAG, boatName + " Finish Time is GOOD! ");
 
                     ///THIS SHOULD NOT EVER HAPPEN
                     // if the elapsed time is empty then tell user
@@ -258,8 +242,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                         return false;
                     }
 
-                    Log.i(LOGTAG, boatName + " Elapsed Time is GOOD! ");
-
                     // if the adjusted duration is empty then tell user
                     if (r.getResultsAdjDuration() == null) {
                         validatorMessage = errorMessage + " The adjusted duration has not been " +
@@ -267,7 +249,14 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                         Log.i(LOGTAG, boatName + "Adjusted Duration is null");
                         return false;
                     }
-                    Log.i(LOGTAG, boatName + " Adjusted Duration is GOOD! ");
+
+                    // check for any placeholders in the list
+                    if (r.getBoatName().equals(ResultsEditor.PLACEHOLDER_BOAT_NAME)) {
+                        Log.i(LOGTAG, boatName +  " is a placeholder");
+                        validatorMessage = errorMessage + " This boat is a placeholder, " +
+                                "you must replace it with a real boat or delete it";
+                        return false;
+                    }
 
                 } else {
 
@@ -283,12 +272,20 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     }
 
 
+    private String whiteSpacer(int spaces) {
+        String spaceString = "&nbsp;";
+        for (int i = 1; i < spaces; i++) {
+            spaceString += "&nbsp;";
+        }
+        return spaceString;
+    }
     private void sendResultTableByEmail() {
 
         Cursor c = raceDataSource.getRow(GlobalContent.getRaceRowID());
 
         //create a file name for the csv file
         String fileName = c.getString(c.getColumnIndex(DBAdapter.KEY_RACE_NAME)) + ".csv";
+        String fileNameNoFormat = c.getString(c.getColumnIndex(DBAdapter.KEY_RACE_NAME));
 
         //write the database to a csv file.
         DatabaseWriter.exportDatabase(fileName, resultDataSource, false);
@@ -299,12 +296,34 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
 
         Log.i(LOGTAG, " URI: " + uri.toString());
 
+
         //Create a new email and
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("plain/text");
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Regatta Results for " + fileName);
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "These are the results for " + fileName);
+        emailIntent.setType("text/html");
+//        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Regatta Results for " + fileNameNoFormat);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(new StringBuilder()
+                .append("<html><body>")
+                .append("<div><font face=\"monospace\",\"monospace\">These are the results for: ").append(fileNameNoFormat).append("<br/>")
+                .append("<br/>")
+                .append("<strong>Column Name</strong>").append(whiteSpacer(20)).append("<strong>Description</strong><br/>")
+                .append("-----------------------------------<br/>")
+                .append("<strong>Race Name</strong>").append(whiteSpacer(22)).append("The name given to the race by the time keeper<br/>")
+                .append("<strong>Date</strong>").append(whiteSpacer(27)).append("Date when the race took place<br/>")
+                .append("<strong>Distance</strong>").append(whiteSpacer(23)).append("Total Distnace (nm) of the course for this class<br/>")
+                .append("<strong>Fleet Color</strong>").append(whiteSpacer(20)).append("The color assigned to the fleet <br/>")
+                .append("<strong>Boat Name</strong>").append(whiteSpacer(22)).append("The name of the boat as it appears in the DYC race registration<br/>")
+                .append("<strong>Elapsed Time</strong>").append(whiteSpacer(19)).append("The time duration between the boat fleet's start time and the time it took for the boat to cross the finish line.<br/>")
+                .append("<strong>Adj Elapsed Time</strong>").append(whiteSpacer(15)).append("The time duration adjusted for PHRF, Distance (nm), and any penalties incurred.<br/>")
+                .append("<strong>Penalty Percent</strong>").append(whiteSpacer(16)).append("The percentage of time that will be added as a penalty for boats. E.g. a 1 hour of Elapsed Time with a 10% penalty will be 1 hour and 6 mins.<br/>")
+                .append("<strong>Notes</strong>").append(whiteSpacer(26)).append("Any notes made by the time keeper<br/>")
+                .append("<strong>DNF (1/0)</strong>").append(whiteSpacer(22)).append("Did Not Finish indicator. (1) True. (0) False <br/>")
+                .append("<strong>PHRF rating</strong>").append(whiteSpacer(20)).append("The Performance Handicap Racing Fleet rating assigned to a boat<br/>")
+                .append("<strong>Sail Number</strong>").append(whiteSpacer(20)).append("The number registered as the sail number <br/>")
+                .append("<strong>Elapsed Time Set Manually(1/0)</strong>").append(whiteSpacer(1)).append("Indicates if the Elapsed Time was overridden by the Time Keeper. (1) True. (0) False <br/>")
+                .append("<strong>Class Flag Up At:</strong>").append(whiteSpacer(14)).append("The exact time at which the race began for this boat's fleet color<br/>")
+                .append("<strong>Boat Finished At:</strong>").append(whiteSpacer(14)).append("The exact time at which the boat crossed the finish line.")
+                .append("</font face></div></body></html>").toString()));
         emailIntent.putExtra(Intent.EXTRA_STREAM, uri);//send file by email
 
         //dialog that asks the user to choose their mailing program preference
@@ -338,7 +357,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                 cfd.show(fm, "Finish Deadlines");
                 return true;
             case R.id.action_email_results:
-                DatabaseWriter.print(resultDataSource, false);
                 if (validateResultsTable()) {
 
                     //if no distance was set by the user show the warning dialog
@@ -406,9 +424,6 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                     exitResultsMenu();
                 }
                 return true;
-//            case R.id.action_ddms:
-//                GlobalContent.DDMS(this);
-//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -445,6 +460,8 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
         raceDataSource.open(); // reopen the db
         resultDataSource.open(); // reopen the db
         dimmer.start(); // start/resume dimmer timer
+
+        GlobalContent.activeResultsAdapter.updateFirstFinishers();
 
         GlobalContent.activeResultsAdapter.syncArrayListWithSql(); // sync up
 

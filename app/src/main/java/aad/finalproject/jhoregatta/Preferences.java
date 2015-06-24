@@ -14,7 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 
-public class Preferences extends MainActivity implements TimePickerDialog.Communicator{
+public class Preferences extends MainActivity implements TimePickerDialog.Communicator {
 
     //array lists that handle the duration textviews and the time they hold
     private ArrayList<TextView> durationTextViews;
@@ -23,19 +23,90 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
     //Create a single string to call the preferences
     public static final String PREFS = "TimePrefs";
 
-    //this is the item in the milliseconds and durationTextViews arrays that will be changed.
+    //this is the item in the seconds and durationTextViews arrays that will be changed.
     private int arrayPositionToModify = 0; // declare and set initially to 0
 
     //button wigets
-    Button setAll;
-    Button cancelChanges;
+    private Button setAll;
+    private Button cancelChanges;
+
 
     //create shared preferences and an editor
-    SharedPreferences timePreferences;
-    SharedPreferences.Editor editor;
+    private SharedPreferences timePreferences;
+    private SharedPreferences.Editor editor;
+
+    // Load the pref Keys into array list
+    public static final String INITIAL_DELAY = "initialDelay";
+    public static final String CLASS_UP = "classUp";
+    public static final String CLASS_UP_PREP_UP = "classUpPrepUp";
+    public static final String CLASS_UP_PREP_DOWN = "classUpPrepDown";
+    public static final String POST_RECALL_DELAY = "postRecallDelay";
+    public static final String RACE_TIME_LIMIT = "raceTimeLimit";
+    public static final String FINISH_TIME_LIMIT = "finishTimeLimit";
+    public static final String DIMMER_DELAY = "dimmerDelay";
+
+    // Load the pref Keys into array list
+    public static final String NAME_INITIAL_DELAY = "Initial Delay";
+    public static final String NAME_CLASS_UP = "Class Flag Up";
+    public static final String NAME_CLASS_UP_PREP_UP = "Class and Prep Up";
+    public static final String NAME_CLASS_UP_PREP_DOWN = "Class Up Prep Down";
+    public static final String NAME_POST_RECALL_DELAY = "Post-recall Delay";
+    public static final String NAME_RACE_TIME_LIMIT = "Race Time Limit";
+    public static final String NAME_FINISH_TIME_LIMIT = "Post First Finish Limit";
+    public static final String NAME_DIMMER_DELAY = "Dimmer Delay";
+
+    class Preference {
+        public int min, max, seconds;
+        long milliseconds;
+        TextView textView;
+        String prefKey, prefName;
+
+        public Preference(TextView textView, String prefKey, String prefName, int defaultTimeSeconds, int max, int min) {
+            this.min = min;
+            this.max = max;
+            this.seconds = defaultTimeSeconds;
+            this.textView = textView;
+            this.prefKey = prefKey;
+            this.prefName = prefName;
+        }
+    }
+
+    class PreferenceRestrictions {
+        public int min, max;
+
+        public PreferenceRestrictions(int max, int min) {
+            this.min = min;
+            this.max = max;
+
+        }
+    }
+
+//    private ArrayList<Preference> setPrefList() {
+//
+//        int flagMinSeconds = 1;
+//        int maxTimeSeconds = 356400;
+//        ArrayList<Preference> preferences = new ArrayList<>();
+//
+//        preferences.add(new Preference((TextView) findViewById(R.id.txt_prefs_initial_startDelay),
+//                INITIAL_DELAY, NAME_INITIAL_DELAY, 0, maxTimeSeconds, 0));
+//        preferences.add(new Preference((TextView) findViewById(R.id.txt_prefs_ClassUp),
+//                CLASS_UP, NAME_CLASS_UP, 60, maxTimeSeconds, flagMinSeconds));
+//        preferences.add(new Preference((TextView) findViewById(R.id.txt_prefs_ClassAndPrepUp),
+//                CLASS_UP_PREP_UP, NAME_CLASS_UP_PREP_UP, 180, maxTimeSeconds, flagMinSeconds));
+//        preferences.add(new Preference((TextView) findViewById(R.id.txt_prefs_classUpPrepDown),
+//                CLASS_UP_PREP_DOWN, NAME_CLASS_UP_PREP_DOWN, 60, maxTimeSeconds, flagMinSeconds));
+//        preferences.add(new Preference((TextView) findViewById(R.id.txt_prefs_postRecallDelay),
+//                POST_RECALL_DELAY, NAME_POST_RECALL_DELAY, 0, maxTimeSeconds, 0));
+//        preferences.add(new Preference((TextView) findViewById(R.id.txt_prefs_race_time_limit),
+//                RACE_TIME_LIMIT, NAME_RACE_TIME_LIMIT, 7200, maxTimeSeconds, 1800));
+//        preferences.add(new Preference((TextView) findViewById(R.id.txt_prefs_finish_time_limit),
+//                FINISH_TIME_LIMIT, NAME_FINISH_TIME_LIMIT,1800,);
+//        preferences.add(new Preference((TextView) findViewById(R.id.txt_prefs_dimmer_delay));
+//    }
 
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
@@ -47,28 +118,50 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         timePreferences = getSharedPreferences(PREFS, 0);
         editor = timePreferences.edit();
 
+
         // wire up the arrays
         ArrayList<Button> setButtons = new ArrayList<>();
         durationTextViews = new ArrayList<>();
         milliseconds = new ArrayList<>();
         final ArrayList<String> prefKey = new ArrayList<>();
         ArrayList<Integer> defaultPrefSeconds = new ArrayList<>();
+        final ArrayList<PreferenceRestrictions> preferenceRestrictionsArrayList = new ArrayList<>();
+
 
         // Load up the arrays
 
-        // Load the pref Keys
-        prefKey.add("initialDelay");
-        prefKey.add("classUp");
-        prefKey.add("classUpPrepUp");
-        prefKey.add("classUpPrepDown");
-        prefKey.add("postRecallDelay");
+        // Load the pref Keys into array list
+        prefKey.add(INITIAL_DELAY);
+        prefKey.add(CLASS_UP);
+        prefKey.add(CLASS_UP_PREP_UP);
+        prefKey.add(CLASS_UP_PREP_DOWN);
+        prefKey.add(POST_RECALL_DELAY);
+        prefKey.add(RACE_TIME_LIMIT);
+        prefKey.add(FINISH_TIME_LIMIT);
+        prefKey.add(DIMMER_DELAY);
 
-        //Load default seconds
+        //Load default times in seconds
         defaultPrefSeconds.add(0);
         defaultPrefSeconds.add(60);
         defaultPrefSeconds.add(180);
         defaultPrefSeconds.add(60);
         defaultPrefSeconds.add(0);
+        defaultPrefSeconds.add(7200); // 2 hours
+        defaultPrefSeconds.add(1800); // 30 mins
+        defaultPrefSeconds.add(90); // 1.5 mins
+
+        int flagMinSeconds = 1;
+        int maxTimeSeconds = 356400;
+        preferenceRestrictionsArrayList.add(new PreferenceRestrictions(maxTimeSeconds, 0));
+        preferenceRestrictionsArrayList.add(new PreferenceRestrictions(maxTimeSeconds, flagMinSeconds));
+        preferenceRestrictionsArrayList.add(new PreferenceRestrictions(maxTimeSeconds, flagMinSeconds));
+        preferenceRestrictionsArrayList.add(new PreferenceRestrictions(maxTimeSeconds, flagMinSeconds));
+        preferenceRestrictionsArrayList.add(new PreferenceRestrictions(maxTimeSeconds, 0));
+        preferenceRestrictionsArrayList.add(new PreferenceRestrictions(maxTimeSeconds, timePreferences
+                .getInt(FINISH_TIME_LIMIT, defaultPrefSeconds.get(6))));
+        preferenceRestrictionsArrayList.add(new PreferenceRestrictions(timePreferences
+                .getInt(RACE_TIME_LIMIT, defaultPrefSeconds.get(5)), 1));
+        preferenceRestrictionsArrayList.add(new PreferenceRestrictions(300, 30));
 
         //wire up textviews
         durationTextViews.add((TextView) findViewById(R.id.txt_prefs_initial_startDelay));
@@ -76,27 +169,15 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         durationTextViews.add((TextView) findViewById(R.id.txt_prefs_ClassAndPrepUp));
         durationTextViews.add((TextView) findViewById(R.id.txt_prefs_classUpPrepDown));
         durationTextViews.add((TextView) findViewById(R.id.txt_prefs_postRecallDelay));
+        durationTextViews.add((TextView) findViewById(R.id.txt_prefs_race_time_limit));
+        durationTextViews.add((TextView) findViewById(R.id.txt_prefs_finish_time_limit));
+        durationTextViews.add((TextView) findViewById(R.id.txt_prefs_dimmer_delay));
 
-        //wire the set buttons
-        setButtons.add((Button) findViewById(R.id.btn_prefs_set_pos0));
-        setButtons.add((Button) findViewById(R.id.btn_prefs_set_pos1));
-        setButtons.add((Button) findViewById(R.id.btn_prefs_set_pos2));
-        setButtons.add((Button) findViewById(R.id.btn_prefs_set_pos3));
-        setButtons.add((Button) findViewById(R.id.btn_prefs_set_pos4));
-
-
-        //set teh milliseconds to the time preference
-        milliseconds.add((long) (1000 * timePreferences.getInt(prefKey.get(0),
-                defaultPrefSeconds.get(0))));
-        milliseconds.add((long) (1000 * timePreferences.getInt(prefKey.get(1),
-                defaultPrefSeconds.get(1))));
-        milliseconds.add((long) (1000 * timePreferences.getInt(prefKey.get(2),
-                defaultPrefSeconds.get(2))));
-        milliseconds.add((long) (1000 * timePreferences.getInt(prefKey.get(3),
-                defaultPrefSeconds.get(3))));
-        milliseconds.add((long) (1000 * timePreferences.getInt(prefKey.get(4),
-                defaultPrefSeconds.get(4))));
-
+        //set teh seconds to the time preference
+        for (int i = 0; i < defaultPrefSeconds.size(); i++) {
+            milliseconds.add((long) (1000 * timePreferences.getInt(prefKey.get(i),
+                    defaultPrefSeconds.get(i))));
+        }
 
         //assign values to the textviews
         for (int i = 0; i < durationTextViews.size(); i++) {
@@ -105,23 +186,26 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
                     milliseconds.get(i), 1));
         }
 
-        //set the onclick event for each button
-        for (int i = 0; i < setButtons.size(); i++) {
+        //set the onclick event for each text view
+        for (int i = 0; i < durationTextViews.size(); i++) {
             final int innerI = i; // set the increment to a number the inner class can see.
-            setButtons.get(i).setOnClickListener(new View.OnClickListener() {
+            durationTextViews.get(i).setClickable(true);
+            durationTextViews.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     arrayPositionToModify = innerI; // set the modify position to that of the button
                     Bundle bundle = new Bundle();  // make a new bundle
                     // check if the millisecond arry is  0
                     if (milliseconds.get(innerI) != 0) {
-                        // set the bundle to the milliseconds used in elapsed time format
+                        // set the bundle to the seconds used in elapsed time format
                         bundle.putString("Value1", GlobalContent
                                 .convertMillisToFormattedTime(milliseconds.get(innerI), 0));
                     } else { // handle if is 0
                         bundle.putString("Value1", "00:00:00");
                     }
-
+                    bundle.putString("prefKey", prefKey.get(innerI));
+                    bundle.putInt("min", preferenceRestrictionsArrayList.get(innerI).min);
+                    bundle.putInt("max", preferenceRestrictionsArrayList.get(innerI).max);
                     //set up the time picker fragment and set the bundle
                     FragmentManager manager = getFragmentManager();
                     TimePickerDialog picker = new TimePickerDialog();
@@ -141,7 +225,7 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         setAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validateForm()) {
+                if (true) {
                     // grab each milli value and assign it to the appropriate preference
                     for (int i = 0; i < prefKey.size(); i++) {
 
@@ -169,30 +253,6 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         });
     }
 
-    //form validator
-    private boolean validateForm() {
-        // let the user know the cannot choose 0 time for this field
-        if (milliseconds.get(1)  < 10999) {
-            Toast.makeText(this, "Class Flag up duration" +
-                    " cannot be less than 11 seconds", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        // let the user know the cannot choose 0 time for this field
-        if (milliseconds.get(2) < 10999) {
-            Toast.makeText(this, "Class and Prep Flag up duration" +
-                    " cannot be less than 11 seconds", Toast.LENGTH_LONG).show();
-            return false;
-
-        }
-        // let the user know the cannot choose 0 time for this field
-        if (milliseconds.get(3) < 10999) {
-            Toast.makeText(this, "Class up Prep down duration" +
-                    " cannot be less than 11 seconds", Toast.LENGTH_LONG).show();
-            return false;
-
-        }
-        return true;
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -211,6 +271,9 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_ddms) {
+            GlobalContent.DDMS(this);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -218,14 +281,18 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
 
     @Override
     public void onDialogMessage(long message) {
-        //set the new milliseconds for the chosen preference
+        //set the new seconds for the chosen preference
         milliseconds.set(arrayPositionToModify, message);
-        //format the milliseconds to a duration.
+        //format the seconds to a duration.
         String duration = GlobalContent.convertMillisToFormattedTime(message, 1);
         // set the text box to the duration specified
         durationTextViews.get(arrayPositionToModify).setText(duration);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
 
 }

@@ -23,8 +23,7 @@ public class BoatMenu extends MainActivity {
 
     // parameters for methods using sql quiery parameters
     private String whereClauseIsVisible = DBAdapter.KEY_BOAT_VISIBLE + " = 1";
-    private String orderByClause = DBAdapter.KEY_BOAT_CLASS + ", "
-            + DBAdapter.KEY_BOAT_NAME ;
+    private String orderByClause = DBAdapter.KEY_BOAT_NAME;
     private String havingClause = null;
 
     private ListView myList; // initialize the listview
@@ -123,8 +122,8 @@ public class BoatMenu extends MainActivity {
     public void createData() {
         String[][] boatString =
                 {
-                        {	"Yellow"	,	"151"	            ,	"151"	    ,	"168"	},
                         {	"Yellow"	,	"2"	                ,	"None"	    ,	"168"	},
+                        {	"Yellow"	,	"151"	            ,	"151"	    ,	"168"	},
                         {	"Green"	    ,	"Arbitrage"	        ,	"18550"	    ,	"63"	},
                         {	"Yellow"	,	"Assassin"	        ,	"None"	    ,	"168"	},
                         {	"Purple"	,	"Big Bird"	        ,	"__"	    ,	"183"	},
@@ -133,8 +132,6 @@ public class BoatMenu extends MainActivity {
                         {	"Blue"	    ,	"Captain Cool"	    ,	"12174"	    ,	"114"	},
                         {	"Yellow"	,	"Danger Zone"	    ,	"None"	    ,	"168"	},
                         {	"Blue"	    ,	"Death Whoosh"	    ,	"None"	    ,	"126"	},
-                        {	"Blue"	    ,	"Falcon"	        ,	"6019"	    ,	"0"	    },
-                        {	"Blue"	    ,	"Flight Risk"	    ,	"2209"	    ,	"114"	},
                         {	"Yellow"	,	"Golden Draft"	    ,	"32419"	    ,	"171"	},
                         {	"Green"	    ,	"Hobbs"	            ,	"USA 52"	,	"51"	},
                         {	"Purple"	,	"Impetuous"	        ,	"527"	    ,	"192"	},
@@ -143,35 +140,35 @@ public class BoatMenu extends MainActivity {
                         {	"Blue"	    ,	"Jack-A-Roe"	    ,	"None"	    ,	"102"	},
                         {	"Purple"	,	"Key of Sea"	    ,	"539"	    ,	"180"	},
                         {	"Green"	    ,	"Kicks"	            ,	"50296"	    ,	"81"	},
+                        {	"Yellow"    ,	"Kraken"	        ,	"None"	    ,	"168"	},
                         {	"Yellow"	,	"Loki"	            ,	"2578"	    ,	"183"	},
+                        {	"Blue"	    ,	"Loki II"	        ,	"None"	    ,	"114"	},
                         {	"Purple"	,	"Lunasa"	        ,	"56358"	    ,	"201"	},
                         {	"Purple"	,	"Makena"	        ,	"None"	    ,	"138"	},
                         {	"Blue"	    ,	"Mayhem"	        ,	"None"	    ,	"102"	},
                         {	"Green"	    ,	"Moon River"	    ,	"32635"	    ,	"69"	},
-                        {	"Green"	    ,	"Mustang Sally Two"	,	"36000"	    ,	"81"	},
                         {	"Purple"	,	"Neverland"	        ,	"None"	    ,	"195"	},
+                        {	"Yellow"	,	"Nimrod"	        ,	"None"	    ,	"168"	},
                         {	"Purple"	,	"Northern Lights"	,	"111"	    ,	"108"	},
                         {	"Green"	    ,	"Papa Gaucho"	    ,	"40205"	    ,	"69"	},
                         {	"Blue"	    ,	"Polar Bear"	    ,	"50868"	    ,	"102"	},
                         {	"Green"	    ,	"Radio Flyer"	    ,	"40410"	    ,	"87"	},
-                        {	"Blue"	    ,	"Ragnarok"	        ,	"31506"	    ,	"123"	},
                         {	"Purple"	,	"Ramble On"	        ,	"None"	    ,	"192"	},
                         {	"Blue"	    ,	"Raptor"	        ,	"220*"	    ,	"102"	},
                         {	"Purple"	,	"Satori"	        ,	"None"	    ,	"174"	},
                         {	"Green"	    ,	"Sixx"	            ,	"6"	        ,	"54"	},
                         {	"Purple"	,	"Skeptikatt"	    ,	"None"	    ,	"189"	},
-                        {	"Yellow"	,	"Srange Crew"	    ,	"None"	    ,	"168"	},
+                        {	"Blue"	    ,	"Jole Blon"	        ,	"None"	    ,	"102"	},
+                        {	"Yellow"	,	"Strange Crew"	    ,	"None"	    ,	"168"	},
                         {	"Yellow"	,	"Stellar Jay"	    ,	"None"	    ,	"180"	},
                         {	"Blue"	    ,	"Straw Man"	        ,	"81"	    ,	"105"	},
-                        {	"Yellow"	,	"Striptease"	    ,	"4808*"	    ,	"0"	    },
                         {	"Blue"	    ,	"Swedish Magic"	    ,	"50955"	    ,	"135"	},
                         {	"Purple"	,	"Taku"	            ,	"2432"	    ,	"249"	},
                         {	"Blue"	    ,	"Tweety"	        ,	"30714"	    ,	"102"	},
                         {	"Yellow"	,	"Wai"	            ,	"None"	    ,	"168"	},
                         {	"Yellow"	,	"Whirlwind"	        ,	"None"	    ,	"219"	},
-                        {	"Yellow"	,	"Whisky Jack"	    ,	"None"	    ,	"180"	},
-                        {	"Yellow"	,	"Wind Walker"	    ,	"53"	    ,	"0"	    },
-                        {	"Blue"      ,	"Loki II"           , 	"None"      ,	"114"	}
+                        {	"Yellow"	,	"Whisky Jack"	    ,	"None"	    ,	"180"	}
+
 
                 };
 

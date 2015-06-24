@@ -20,13 +20,13 @@ public class MainActivity extends ActionBarActivity {
 
     private String LOGTAG = GlobalContent.logTag(this);
 
-    Button btn;
-    EditText et1, et2;
-    ToneGenerator tg;
-    ArrayList<Integer> tones;
-    Handler handler;
-    Runnable r;
-    AudioVoiceManager am;
+    private Button btn;
+    private EditText et1, et2;
+    private ToneGenerator tg;
+    private ArrayList<Integer> tones;
+    private Handler handler;
+    private Runnable r;
+    private AudioVoiceManager am;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +36,6 @@ public class MainActivity extends ActionBarActivity {
         Button calculator = (Button) findViewById(R.id.btn_nav_Calculator);
 
         am = new AudioVoiceManager(this);
-
-
-
 
         Log.i(LOGTAG, "testing Logtag");
         // assign click listeners
@@ -63,6 +60,7 @@ public class MainActivity extends ActionBarActivity {
         mergeTest(false);
         audioTest(false);
     }
+
 
     private void mergeTest(boolean b) {
         if (b) {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,10 +41,18 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
     private Spinner boatNameSpn, boatClassSpn;
     private EditText penalty, notes, sailNum, phrf;
     private TextView distance, elapsedTime, adjDuration,
-            finishTime, classStart, notesCharRemaining;
+            finishTime, classStart, notesCharRemaining, boatId;
     private Dimmer dimmer;
 
-    public static final String PLACEHOLDER = "[Select Boat]"; // text for placeholder
+    private LinearLayout linLayBoatName, linLaySailNum, linLayClassColor, linLayPhrf;
+
+    public static final String PLACEHOLDER_BOAT_NAME = "[Select Boat]"; // text for placeholder
+    public static final int PLACEHOLDER_BOAT_ID = -1; // text for placeholder
+    public static final String PLACEHOLDER_SAIL_NUM = "{[NONE]}"; // text for placeholder
+    public static final String PLACEHOLDER_CLASS = BoatStartingListClass.BOAT_CLASS_START_ARRAY
+            .get(0).getBoatColor(); // text for placeholder. use first class in array.
+    public static final int PLACEHOLDER_PHRF = 0; // text for placeholder
+
 
     // create a result that captures the current result's information
     private Result originalResult;
@@ -51,12 +60,12 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
     // list of all the boat results that have no recorded finish time.
     private List<Result> currentlyRacingResults;
-    private ArrayList<String> currentlyRacingClasses;
 
     // array adapters
 
     private ArrayAdapter<String> boatNameArrayAdapter;
     private ArrayAdapter<String> boatClassArrayAdapter;
+
     // get the current race id
     private long resultId;
 
@@ -77,6 +86,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
 
     private int totalChars = 256; //set max char width of notes EditText box
+    private boolean hasFinished = false;
 
 
     @Override
@@ -85,7 +95,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         setContentView(R.layout.activity_results_editor);
 
         //Keep awake during activity
-        dimmer = new Dimmer(getWindow(), GlobalContent.dimmerDelay);
+        dimmer = new Dimmer(getWindow(),this);
         dimmer.start();
 
         Log.i(LOGTAG, " Result row is " + GlobalContent.getResultsRowID());
@@ -98,27 +108,43 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         //get the current race id
         resultId = GlobalContent.getResultsRowID();
 
-
-
         originalResult = resultDataSource.getResultById(resultId); // store current result data
 
-
-        preUpdateResult = originalResult; // start the initial pre update result to the original.
+        // start the initial pre update result to the original.
+        preUpdateResult = resultDataSource.getResultById(resultId);
 
         //initialize the list of racers still racing
         currentlyRacingResults = new ArrayList<>();
 
         // unfinished results "Where" clause
-        String whereResults = DBAdapter.KEY_RACE_ID + "=" + GlobalContent.getRaceRowID() +
-                " AND " + DBAdapter.KEY_RESULTS_FINISH_TIME + " is null AND " +
-                DBAdapter.KEY_RESULTS_VISIBLE + " = 1 AND " + DBAdapter.KEY_RESULTS_CLASS_START +
-                " is NOT NULL";
+        String whereResults = DBAdapter.KEY_RACE_ID + "=" + GlobalContent.getRaceRowID() + " AND " +
+                DBAdapter.KEY_RESULTS_FINISH_TIME + " is null AND " + // boat must not have finished yet
+                DBAdapter.KEY_RESULTS_VISIBLE + " = 1 AND " + // boat must be visible (not pseudo deleted)
+                DBAdapter.KEY_RESULTS_CLASS_START + " is NOT NULL AND " + // Boat class must have started
+                DBAdapter.KEY_RESULTS_NOT_FINISHED + " = 0"; // boat cannot be DNFed
 
         //order by name
         String orderByResults = DBAdapter.KEY_BOAT_NAME;
 
         //add the current result to the list first so it stays at position 0
         currentlyRacingResults.add(originalResult);
+
+        if(!originalResult.getBoatName().equals(PLACEHOLDER_BOAT_NAME)) {
+            //if the original result was not a placeholder, create a placeholder based on the original result
+            Result placeHolderResult = resultDataSource.getResultById(resultId);
+            // change result details to match placeholder details.
+            placeHolderResult.setBoatName(PLACEHOLDER_BOAT_NAME);
+            placeHolderResult.setResultsBoatId(PLACEHOLDER_BOAT_ID);
+            placeHolderResult.setBoatSailNum(PLACEHOLDER_SAIL_NUM);
+            placeHolderResult.setBoatClass(PLACEHOLDER_CLASS);
+            placeHolderResult.setBoatPHRF(PLACEHOLDER_PHRF);
+            placeHolderResult.setResultsNote(null);
+            placeHolderResult.setResultsPenalty(0);
+            placeHolderResult.setResultsManualEntry(0);
+            placeHolderResult.setResultsNotFinished(0);
+            // add placeholder into position 1 in the array.
+            currentlyRacingResults.add(placeHolderResult);
+        }
 
         // get list of all racers still racing from results table
         currentlyRacingResults.addAll(resultDataSource.getAllResults(whereResults, orderByResults, null));
@@ -132,6 +158,11 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
         wireWidgets(); //assign layout elements to variables
 
+        // make sure the elapsed time is posted in it's field
+        if (updateFieldsFromCursor.getString(updateFieldsFromCursor
+                .getColumnIndex(DBAdapter.KEY_RESULTS_FINISH_TIME)) != null) {
+            hasFinished = true;
+        }
 
        //assign Listeners
         wireListeners();
@@ -140,12 +171,8 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         ///////////////initial widget states//////////////////////////////////////////
         setupSpinners();
 
-        // if the boat is a place holder then allow editing by default
-        if (boatNameSpn.getSelectedItem().toString().equals(PLACEHOLDER)) {
-            editBoatDetails.setChecked(true);
-            // enable drop down
-            boatNameSpn.setClickable(true);
-        }
+        // get list of all racers still racing from results table
+        currentlyRacingResults.addAll(resultDataSource.getAllResults(whereResults, orderByResults, null));
 
         //set elapsed time button to disabled until manual entry checkbox is clicked
         if (!manualEntryMode.isChecked()) {
@@ -153,15 +180,11 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
             Log.i(LOGTAG, "CHECKBOX -------!!!--------- DISABLED @@");
         }
 
+        boatId.setVisibility(View.GONE); // hide the boat id.
+
         notesCharRemaining.setText(String.valueOf(totalChars)); // initial count of characters
 
-//        // check if the original result has a manually assigned duration
-//        if (originalResult.getResultsManualEntry() == 1) {
-//            // set the elapsed time and adjusted time to that in the original entry
-//            manualEntryMode.setChecked(true);
-//            elapsedTime.setText(originalResult.getResultsClassStartTime());
-//            adjDuration.setText(originalResult.getResultsAdjDuration());
-//        }
+        Log.i(LOGTAG, "Original Result is " + originalResult.getBoatName() + " Result ID: " + originalResult.getResultsId());
     }
 
     private void syncViewsToPreUpdate() {
@@ -169,59 +192,34 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         //KEY_ID,
         preUpdateResult.setResultsId(resultId);
         //KEY_RACE_ID,
-//        preUpdateResult.setResultsRaceId(originalResult.getResultsRaceId());
         //KEY_RESULTS_VISIBLE,
-//        preUpdateResult.setResultsVisible(1);
         //KEY_RACE_NAME,
-//        preUpdateResult.setRaceName(originalResult.getRaceName());
         //KEY_RACE_DATE,
-//        preUpdateResult.setRaceDate(originalResult.getRaceDate());
         //KEY_RESULTS_FINISH_TIME,
-//        preUpdateResult.setResultsBoatFinishTime(originalResult.getResultsBoatFinishTime());
 
-        //KEY_BOAT_ID, IS SET IN SPINNER onselect
-
-//        preUpdateResult.setResultsBoatId(r.getResultsBoatId());
+        //KEY_BOAT_ID,
+        preUpdateResult.setResultsBoatId(Integer.parseInt(boatId.getText().toString()));
         //KEY_RESULTS_CLASS_START,
         preUpdateResult.setResultsClassStartTime(classStart.getText().toString());
-//        classStart.setText(r.getResultsClassStartTime());
         //KEY_RESULTS_PENALTY,
         preUpdateResult.setResultsPenalty(Integer.parseInt(penalty.getText().toString()));
-//        penalty.setText(r.getResultsPenalty());
         //KEY_RESULTS_NOTE,
         preUpdateResult.setResultsNote(notes.getText().toString());
-//        notes.setText(r.getResultsNote());
         //KEY_RESULTS_NOT_FINISHED,
-//        preUpdateResult.setResultsNotFinished((didNotFinish.isChecked()) ? 1 : 0);
-//        if (r.getResultsNotFinished() == 1) {
-//            didNotFinish.setChecked(false);
-//        } else {
-//            didNotFinish.setChecked(true);
-//        }
+        preUpdateResult.setResultsNotFinished((didNotFinish.isChecked()) ? 1 : 0);
         //KEY_RESULTS_MANUAL_ENTRY,
         preUpdateResult.setResultsManualEntry((manualEntryMode.isChecked()) ? 1 : 0);
-//        if (r.getResultsNotFinished() == 1) {
-//            manualEntryMode.setChecked(true);
-//        } else {
-//            manualEntryMode.setChecked(false);
-//        }
         //KEY_BOAT_NAME,
         preUpdateResult.setBoatName(boatNameSpn.getSelectedItem().toString());
-//        boatNameSpn.setSelection(boatNameArrayAdapter.getPosition(r.getBoatName()));
         //KEY_BOAT_SAIL_NUM,
         preUpdateResult.setBoatSailNum(sailNum.getText().toString());
-//        sailNum.setText(r.getBoatSailNum());
         //KEY_BOAT_CLASS,
         preUpdateResult.setBoatClass(boatClassSpn.getSelectedItem().toString());
-//        boatClassSpn.setSelection(boatClassArrayAdapter.getPosition(r.getBoatClass()));
         //KEY_BOAT_PHRF,
         preUpdateResult.setBoatPHRF(Integer.parseInt(phrf.getText().toString()));
-//        phrf.setText(r.getBoatPHRF());
         //KEY_RACE_DISTANCE
         preUpdateResult.setRaceDistance(Double.parseDouble(distance.getText().toString()));
-//        distance.setText(r.getRaceDistance() + "");
         //KEY_RESULTS_PLACE,
-//        preUpdateResult.setResultsPlace(r.getResultsPlace());
         //Todo, add text view to hold race place
         //KEY_RESULTS_DURATION,
         preUpdateResult.setResultsDuration(elapsedTime.getText().toString());
@@ -235,13 +233,15 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 penalty.clearFocus();
+                colorBoatDetailRows(isChecked);
                 if (isChecked) {
                     // allow user to edit boat details
                     boatClassSpn.setClickable(true);
                     phrf.setEnabled(true);
                     sailNum.setEnabled(true);
+                    Log.i(LOGTAG, "EditBoatDetails Listener = elapsed Time length is " + elapsedTime.getText().length());
                     // check if an elapsed time has been recorded
-                    if (elapsedTime.getText().length() > 4) {
+                    if (hasFinished) {
                         // if elapsed time has been recorded then allow user to swap boats
                         boatNameSpn.setClickable(true);
                     }
@@ -252,28 +252,8 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                     boatNameSpn.setClickable(false);
                     phrf.setEnabled(false);
                     sailNum.setEnabled(false);
-
-                    // return activity's values back to pre edited defaults.
-                    boatClassSpn.setSelection(boatClassArrayAdapter.getPosition(
-                            originalResult.getBoatClass()));
-                    boatNameSpn.setSelection(boatNameArrayAdapter.getPosition(
-                            originalResult.getBoatName()));
-                    phrf.setText(originalResult.getBoatPHRF() + "");
-                    sailNum.setText(originalResult.getBoatSailNum());
-                    penalty.setText(originalResult.getResultsPenalty() + "");
-                    notes.setText(originalResult.getResultsNote());
-                    classStart.setText(originalResult.getResultsClassStartTime());
-                    if (originalResult.getResultsNotFinished() == 1) {
-                        didNotFinish.setSelected(true);
-                    } else {
-                        didNotFinish.setSelected(false);
-                    }
-                    if (originalResult.getResultsManualEntry() == 1) {
-                        manualEntryMode.setSelected(true);
-                    } else {
-                        manualEntryMode.setSelected(false);
-                    }
                 }
+                myLayout.requestFocus();
             }
         });
 
@@ -298,7 +278,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                         //set selected status Not Selected in the select boats table
                         // so the user may re-add the boat later
                         selectBoatDataSource.setSelectedByBoatId(preUpdateResult.getResultsBoatId(), false);
-                        finishResultEditor(); // close out of the activity
+                        ResultsEditor.this.finish();
                     }
                 });
 
@@ -412,7 +392,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.i(LOGTAG, "UPDATE: ORIGINAL RESULT IS NOW: " + originalResult.getBoatName());
                 //clear the focus from the penalty edit text
                 penalty.clearFocus();
                 //make sure there are no commas! bad for SQL table
@@ -424,10 +404,19 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                                 Toast.LENGTH_LONG).show();
                     } else {
                         syncViewsToPreUpdate();// make a result with all the visible data
+
                         if (boatHasChanged) {
-                            // delete the unfinished boat that this result is now representing
-                            resultDataSource.pseudoDeleteResult(preUpdateResult.getResultsRaceId()
-                                    , preUpdateResult.getResultsBoatId());
+                            if (!preUpdateResult.getBoatName().equals(PLACEHOLDER_BOAT_NAME)) {
+                                // delete the unfinished boat that this result is now representing
+                                Log.i(LOGTAG, "Update: Deleting: " + preUpdateResult.getBoatName()
+                                        + " ID: " + preUpdateResult.getResultsBoatId());
+                                resultDataSource.pseudoDeleteResult(preUpdateResult.getResultsRaceId()
+                                        , preUpdateResult.getResultsBoatId());
+                            }
+                            if (!originalResult.getBoatName().equals(PLACEHOLDER_BOAT_NAME)) {
+                                Log.i(LOGTAG, "Update: Inserting " + originalResult.getBoatName());
+                                resultDataSource.insertUnfinishedResult(originalResult);
+                            }
                         }
                         // commit the changes in the activity to the results table
                         resultDataSource.update(preUpdateResult);
@@ -468,10 +457,6 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         });
     }
 
-    private void finishResultEditor() {
-        //close out of the activity.
-        finish();
-    }
 
     private void setupSpinners() {
 
@@ -523,6 +508,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                         for (Result r : currentlyRacingResults) {
                             //check if selected boat name matches result boat name
                             if (r.getBoatName().equals(spinnerSelection)) {
+                                boatId.setText(r.getResultsBoatId() + "");
                                 //set all boat details to match new selection
                                 sailNum.setText(r.getBoatSailNum());
                                 boatClassSpn.setSelection(boatClassArrayAdapter.getPosition(
@@ -591,48 +577,17 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                     for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
                         Log.i(LOGTAG, "BoatSpinner - BoatStartingListClass.BOAT_CLASS_START_ARRAY " + bc.getBoatColor());
                         if (bc.getBoatColor().equals(spinnerSelection)) {
-                            // if the class colors match, change the start time to that of the color in
+                            // if the class colors match, change the start startTime to that of the color in
                             // the starting class array list
-                            final String time = bc.getStartTime();
-                            if (time != null) {
+                            if (bc.getStartTime() != null) {
                                 Log.i(LOGTAG, "BoatSpinner - Time not null [] BoatClass " + bc.getBoatColor()
-                                        + " start Time is " + time);
+                                        + " start Time is " + bc.getStartTime());
                                 // put the values into the text fields
-                                classStart.setText(time);
+                                classStart.setText(bc.getStartTime());
                                 distance.setText(bc.getClassDistance() + "");
 
                                 // run preliminary calculations
-                                String finish = finishTime.getText().toString();
-                                int thisPhrf = Integer.parseInt(phrf.getText().toString());
-                                double pen = Double.parseDouble(penalty.getText().toString());
-                                double dist = Double.parseDouble(distance.getText().toString());
-                                // check if a finish time has been recorded and if activity is loading
-                                if (finish.length() > 4) {
-                                    // check if manual entry button was selected
-                                    if (manualEntryMode.isChecked()) {
-                                        // turn off manual entry mode
-                                        manualEntryMode.setChecked(false);
-                                    }
-                                    long durationLong = GlobalContent.getDurationInMillis(time, finish);
-                                    String durStr = GlobalContent.convertMillisToFormattedTime(
-                                            durationLong, 0);
-                                    preUpdateResult.setResultsBoatFinishTime(durStr);
-                                    elapsedTime.setText(durStr);
-                                    //KEY_RESULTS_ADJ_DURATION,
-                                    String adjDur = GlobalContent.calculateAdjDuration(
-                                            thisPhrf,
-                                            durationLong,
-                                            pen,
-                                            dist,
-                                            1.0
-                                    );
-                                    adjDuration.setText(adjDur);
-
-                                } else {
-                                    // blank out the elapsed and adjusted durations
-                                    elapsedTime.setText(null);
-                                    adjDuration.setText(null);
-                                }
+                                calculateAdjustedDuration();
 
                             }
                         }
@@ -641,6 +596,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
 
                     Log.i(LOGTAG, "BoatSpinner: editBoatDetails == FALSE");
                 }
+
             }
 
             @Override
@@ -660,6 +616,9 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                     Integer.parseInt(penalty.getText().toString()),
                     Double.parseDouble(distance.getText().toString()),
                     1));
+        } else {
+            elapsedTime.setText(null);
+            adjDuration.setText(null);
         }
     }
 
@@ -686,6 +645,8 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
                 .getColumnIndex(DBAdapter.KEY_RESULTS_DURATION)));
         adjDuration.setText(updateFieldsFromCursor.getString(updateFieldsFromCursor
                 .getColumnIndex(DBAdapter.KEY_RESULTS_ADJ_DURATION)));
+        boatId.setText(updateFieldsFromCursor.getString(updateFieldsFromCursor
+                .getColumnIndex(DBAdapter.KEY_BOAT_ID)));
 
         //assign EditTexts from cursor
         penalty.setText(updateFieldsFromCursor.getString(updateFieldsFromCursor
@@ -727,6 +688,7 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         finishTime = (TextView) findViewById(R.id.txt_rf_boatFinishTime); // boat detail
         elapsedTime = (TextView) findViewById(R.id.txt_rf_ElapsedTime); // Calculated / Manual enter
         adjDuration = (TextView) findViewById(R.id.txt_rf_AdjDuration); // Calculated
+        boatId = (TextView) findViewById(R.id.txt_rf_boatID); // Calculated
 
         //special textview for calculating remaining characters
         notesCharRemaining = (TextView) findViewById(R.id.txt_rf_sub_notesRemainingChars);
@@ -736,8 +698,30 @@ public class ResultsEditor extends MainActivity  implements TimePickerDialog.Com
         notes = (EditText) findViewById(R.id.txt_rf_notes);
         sailNum = (EditText) findViewById(R.id.txt_rf_sailNum); // boat detail
         phrf = (EditText) findViewById(R.id.txt_rf_PHRF); // boat detail
+
+        linLayBoatName = (LinearLayout) findViewById(R.id.linLay_re_row_boatName);
+        linLayClassColor = (LinearLayout) findViewById(R.id.linLay_re_row_classColor);
+        linLaySailNum = (LinearLayout) findViewById(R.id.linLay_re_row_sailNum);
+        linLayPhrf = (LinearLayout) findViewById(R.id.linLay_re_row_phrf);
     }
 
+    //change the color of the rows that can be changed after "edit boat details" is checked
+    private void colorBoatDetailRows(boolean editDetailsOn) {
+
+        int color = Color.parseColor("#00000000"); // default color
+        if (editDetailsOn) {
+            color = getResources().getColor(R.color.blue12); // color when checked
+        }
+        // only highlight the boat name spinner if the boat has finished the race.
+        if (hasFinished) {
+            // if elapsed time has been recorded then highlight boat name
+            linLayBoatName.setBackgroundColor(color);
+        }
+        //update the color
+        linLayPhrf.setBackgroundColor(color);
+        linLaySailNum.setBackgroundColor(color);
+        linLayClassColor.setBackgroundColor(color);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

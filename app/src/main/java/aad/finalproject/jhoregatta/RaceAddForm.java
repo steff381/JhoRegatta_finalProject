@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -278,17 +279,22 @@ public class RaceAddForm extends Form {
         List<Result> results = resultDataSource.getAllResults(DBAdapter.KEY_RACE_ID + "= "
                 + GlobalContent.getRaceRowID(), null, null);
 
-        //tally up the distance
-        double distance = 0;
+        //check if any result is missing a distance
+        boolean hasDistance = true;
         for (Result r : results) {
-            distance += r.getRaceDistance();
+            if (r.getRaceDistance() <= 0) {
+                hasDistance = false;
+            }
+
         }
         //if the distance is 0 then the distance wasn't set.
         //show or hide the "set distance" button depending on the situation.
-        if (distance == 0) {
-            setDistance.setVisibility(View.VISIBLE);
+        if (!hasDistance) {
+            setDistance.setBackgroundColor(getResources().getColor(R.color.red01));
+            setDistance.setTextColor(getResources().getColor(R.color.white));
         } else {
-            setDistance.setVisibility(View.GONE);
+            setDistance.setBackgroundColor(Color.parseColor("#FFC5C5C5"));
+            setDistance.setTextColor(getResources().getColor(R.color.black));
         }
     }
 
@@ -539,7 +545,7 @@ public class RaceAddForm extends Form {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("WARNING!!!! CANNOT UNDO A DELETION!");
             builder.setMessage("Warning:\n" +
-                    "You are about to delete this boat. You cannot undo this event");
+                    "You are about to delete this race. You cannot undo this event");
             builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     raceDataSource.psudoDelete(GlobalContent.getRaceRowID());

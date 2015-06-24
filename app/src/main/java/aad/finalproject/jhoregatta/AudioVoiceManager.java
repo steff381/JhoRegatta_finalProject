@@ -19,6 +19,7 @@ public class AudioVoiceManager extends MainActivity {
     //media player used by all tracks
     private MediaPlayer voicePlayer;
 
+
     private ArrayList<String> audioFiles;
 
     //current context
@@ -33,16 +34,16 @@ public class AudioVoiceManager extends MainActivity {
     // handler for scheduling runnable tasks
     private Handler handlerFlagAlarm;
     private Handler handlerCountdownAlarm;
+    private Handler handlerThirtySecondAlarm;
     private Handler handlerFortySecondAlarm;
     private Handler handlerMillisStartDelay;
 
-    //runnables to be scheduled or played
+    // runnables to be scheduled or played
     private Runnable runnableVoice;
     private Runnable runnableAudioFileAssignment;
     private Runnable runnableToneFortySecondWarning;
-
-
     private Runnable runnableSwitchToCountdown;
+    private Runnable runnableSwitchToThirty;
 
     public AudioVoiceManager(Context context) {
         voicePlayer = new MediaPlayer();
@@ -55,9 +56,10 @@ public class AudioVoiceManager extends MainActivity {
         // create an array list with the file names for the audio tracks to play
         audioFiles = new ArrayList<>();
         audioFiles.add("fem_perf_20_class_up.wav");
-        audioFiles.add("fem_perf_20_prep_up.wav");
-        audioFiles.add("fem_perf_20_prep_down.wav");
-        audioFiles.add("fem_perf_20_class_down.wav");
+        audioFiles.add("fem_perf_20_prep_up_v2.wav");
+        audioFiles.add("fem_perf_20_prep_down_v2.wav");
+        audioFiles.add("fem_perf_20_class_down_v2.wav");
+//        audioFiles.add("fem_30_sec_warning_on_mark_v2.wav");
 
         // create a tone generator with full volume that plays music
         toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
@@ -65,6 +67,7 @@ public class AudioVoiceManager extends MainActivity {
         // instances of the used handlers
         handlerFlagAlarm = new Handler();
         handlerCountdownAlarm = new Handler();
+        handlerThirtySecondAlarm = new Handler();
         handlerFortySecondAlarm = new Handler();
         handlerMillisStartDelay = new Handler();
 
@@ -74,7 +77,7 @@ public class AudioVoiceManager extends MainActivity {
             @Override
             public void run() {
                 // switch the audio file to that of the count down voice
-                mediaAssignmentHandler("fem_ten_sec_countdown_horn.wav");
+                mediaAssignmentHandler("fem_ten_sec_countdown_horn_v2.wav");
                 voicePlayer.start();
             }
         };
@@ -99,7 +102,17 @@ public class AudioVoiceManager extends MainActivity {
             @Override
             public void run() {
                 // 40 second warning tone
-                toneGenerator.startTone(ToneGenerator.TONE_CDMA_MED_S_X4, 5000);
+                toneGenerator.startTone(ToneGenerator.TONE_CDMA_MED_S_X4, 2000);
+            }
+        };
+
+        runnableSwitchToThirty = new Runnable() {
+            @Override
+            public void run() {
+                // switch the audio file the 30 second warning
+                mediaAssignmentHandler("fem_30_sec_warning_on_mark_v7.wav");
+                voicePlayer.start();
+                handlerMillisStartDelay.postDelayed(runnableAudioFileAssignment, 6000);
             }
         };
     }
@@ -117,13 +130,13 @@ public class AudioVoiceManager extends MainActivity {
         handlerMillisStartDelay.postDelayed(runnableAudioFileAssignment, delay);
 
         // overriding any audio already playing.
-        scheduleTasks(timerLengthInMillis, caseNum, delay);
-
+        scheduleTasks(timerLengthInMillis, caseNum);
 
     }
 
-    private void scheduleTasks(long timerLengthInMillis, int caseNum, long delay) {
+    private void scheduleTasks(long timerLengthInMillis, int caseNum) {
         long audioForty = 40000;
+        long audioThirtyFour = 35000;
         long audioTwenty = 20000;
         long audioTen = 10000;
         //check if there is enough time for a 20 second warning
@@ -133,6 +146,8 @@ public class AudioVoiceManager extends MainActivity {
             //schedule the 40 second warning
             handlerFortySecondAlarm.postDelayed(runnableToneFortySecondWarning,
                     (timerLengthInMillis - audioForty));
+            handlerThirtySecondAlarm.postDelayed(runnableSwitchToThirty,
+                    (timerLengthInMillis - audioThirtyFour));
             //schedule the timer task for the 20 second warning voice
             handlerFlagAlarm.postDelayed(runnableVoice, (timerLengthInMillis - audioTwenty));
             //schedule the 10 second count down voice
@@ -189,6 +204,7 @@ public class AudioVoiceManager extends MainActivity {
         try {
             handlerFlagAlarm.removeCallbacks(runnableVoice);
             handlerCountdownAlarm.removeCallbacks(runnableSwitchToCountdown);
+            handlerThirtySecondAlarm.removeCallbacks(runnableSwitchToThirty);
             handlerFortySecondAlarm.removeCallbacks(runnableToneFortySecondWarning);
             handlerMillisStartDelay.removeCallbacks(runnableAudioFileAssignment);
         } catch (NullPointerException e) {

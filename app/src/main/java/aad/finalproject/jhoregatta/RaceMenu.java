@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -91,13 +92,21 @@ public class RaceMenu extends MainActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendAllRaces() {
-        Cursor c = raceDataSource.getRow(GlobalContent.getRaceRowID());
+    private String whiteSpacer(int spaces) {
+        String spaceString = "&nbsp;";
+        for (int i = 1; i < spaces; i++) {
+            spaceString += "&nbsp;";
+        }
+        return spaceString;
+    }
 
+    private void sendAllRaces() {
         DateTime dtNow = DateTime.now();
         //create a file name for the csv file
         String fileName = "All Races as of " + dtNow.getMonthOfYear() + "." + dtNow.getDayOfMonth()
                 + "." + dtNow.getYear() + ".csv";
+        String fileNameNoFormat = "All Races as of " + dtNow.getMonthOfYear() + "." + dtNow.getDayOfMonth()
+                + "." + dtNow.getYear();
 
         //write the database to a csv file.
         DatabaseWriter.exportDatabase(fileName, resultDataSource, true);
@@ -114,6 +123,28 @@ public class RaceMenu extends MainActivity {
         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{""});
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Regatta Results for " + fileName);
         emailIntent.putExtra(Intent.EXTRA_TEXT, "These are the results for " + fileName);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(new StringBuilder()
+                .append("<html><body>")
+                .append("<div><font face=\"monospace\",\"monospace\">These are the results for: ").append(fileNameNoFormat).append("<br/>")
+                .append("<br/>")
+                .append("<strong>Column Name</strong>").append(whiteSpacer(20)).append("<strong>Description</strong><br/>")
+                .append("-----------------------------------<br/>")
+                .append("<strong>Race Name</strong>").append(whiteSpacer(22)).append("The name given to the race by the time keeper<br/>")
+                .append("<strong>Date</strong>").append(whiteSpacer(27)).append("Date when the race took place<br/>")
+                .append("<strong>Distance</strong>").append(whiteSpacer(23)).append("Total Distnace (nm) of the course for this class<br/>")
+                .append("<strong>Fleet Color</strong>").append(whiteSpacer(20)).append("The color assigned to the fleet <br/>")
+                .append("<strong>Boat Name</strong>").append(whiteSpacer(22)).append("The name of the boat as it appears in the DYC race registration<br/>")
+                .append("<strong>Elapsed Time</strong>").append(whiteSpacer(19)).append("The time duration between the boat fleet's start time and the time it took for the boat to cross the finish line.<br/>")
+                .append("<strong>Adj Elapsed Time</strong>").append(whiteSpacer(15)).append("The time duration adjusted for PHRF, Distance (nm), and any penalties incurred.<br/>")
+                .append("<strong>Penalty Percent</strong>").append(whiteSpacer(16)).append("The percentage of time that will be added as a penalty for boats. E.g. a 1 hour of Elapsed Time with a 10% penalty will be 1 hour and 6 mins.<br/>")
+                .append("<strong>Notes</strong>").append(whiteSpacer(26)).append("Any notes made by the time keeper<br/>")
+                .append("<strong>DNF (1/0)</strong>").append(whiteSpacer(22)).append("Did Not Finish indicator. (1) True. (0) False <br/>")
+                .append("<strong>PHRF rating</strong>").append(whiteSpacer(20)).append("The Performance Handicap Racing Fleet rating assigned to a boat<br/>")
+                .append("<strong>Sail Number</strong>").append(whiteSpacer(20)).append("The number registered as the sail number <br/>")
+                .append("<strong>Elapsed Time Set Manually(1/0)</strong>").append(whiteSpacer(1)).append("Indicates if the Elapsed Time was overridden by the Time Keeper. (1) True. (0) False <br/>")
+                .append("<strong>Class Flag Up At:</strong>").append(whiteSpacer(14)).append("The exact time at which the race began for this boat's fleet color<br/>")
+                .append("<strong>Boat Finished At:</strong>").append(whiteSpacer(14)).append("The exact time at which the boat crossed the finish line.")
+                .append("</font face></div></body></html>").toString()));
         emailIntent.putExtra(Intent.EXTRA_STREAM, uri);//send file by email
 
         //dialog that asks the user to choose their mailing program preference

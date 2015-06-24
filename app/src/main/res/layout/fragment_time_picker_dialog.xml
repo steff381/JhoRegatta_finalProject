@@ -11,9 +11,53 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp">
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Min:  "
+                android:id="@+id/lbl_ftpd_min_time"
+                android:layout_gravity="top" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/txt_ftpd_min_time"
+                android:hint="0h 0m 0s"
+                android:layout_gravity="top" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Max: "
+                android:id="@+id/lbl_ftpd_max_time"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/txt_ftpd_max_time"
+                android:hint="0h 0m 0s"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -57,6 +101,7 @@
                 android:id="@+id/btn_tpd_cancel"
                 android:layout_weight="1" />
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -18,12 +18,9 @@
     </string-array>
     <string name="title_activity_race_menu">Races</string>
     <string name="title_activity_race_add_form">Add/Edit Race</string>
-    <string name="title_activity_select_boats">Select Your Boats</string>
+    <string name="title_activity_select_boats">Select Boats</string>
     <string name="title_activity_list_template_races">List Template Races</string>
     <string name="title_activity_regatta_timer">Time Tracker</string>
-
-    
-
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
@@ -36,16 +33,16 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_distance_calculator">Distance Calculator</string>
-    <string name="title_activity_list_template_distance_calculator">listTemplateDistanceCalculator
-    </string>
+    <string name="title_activity_list_template_distance_calculator">listTemplateDistanceCalculator</string>
     <string name="title_activity_preferences">Preferences</string>
     <string name="title_activity_results_editor">Result Editor</string>
     <string name="title_activity_select_class_distance">Class Distance</string>
-    <string name="action_results_menu_add_boats">Add Boat</string>
+    <string name="action_results_menu_add_boats">List</string>
     <string name="title_activity_merge_boat_classes">Merge Boat Classes</string>
     <string name="title_activity_list_template_merge_classes">ListTemplateMergeClasses</string>
     <string name="action_results_menu_class_finishes">Class Finishes</string>
     <string name="email_all_races">Email All Races</string>
     <string name="emailResults">E-mail</string>
     <string name="action_exit_result_menu">Exit</string>
+    <string name="action_results_menu_race_stats">Stats</string>
 </resources>

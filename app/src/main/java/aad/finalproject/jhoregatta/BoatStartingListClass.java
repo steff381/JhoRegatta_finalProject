@@ -1,5 +1,7 @@
 package aad.finalproject.jhoregatta;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 
 /*
@@ -19,5 +21,18 @@ public class BoatStartingListClass {
     public static void addToBoatClassStartArray(String boatColor) {
         BoatClass bc = new BoatClass(boatColor);
         BOAT_CLASS_START_ARRAY.add(bc);
+    }
+
+    // get the first finish time for the class color
+    public static DateTime getClassFinishTime(String classColor) {
+        // run through the array for the start time.
+        for (BoatClass bc : BOAT_CLASS_START_ARRAY) {
+            //compare color to boat class's color
+            if (bc.getBoatColor().equals(classColor)) {
+                // return the class's start time
+                return bc.getFirstFinishAsDateTime();
+            }
+        }
+        return null;
     }
 }

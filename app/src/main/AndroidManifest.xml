@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity android:name="aad.finalproject.db.AndroidDatabaseManager" />
         <activity
             android:name=".MainActivity"
@@ -26,76 +26,91 @@
             </intent-filter>
         </activity>
         <activity
+
             android:name=".BoatMenu"
             android:label="@string/title_activity_boat_menu"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ListTemplateBoats"
             android:label="@string/title_activity_list_template_boats"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".BoatAddForm"
             android:label="@string/title_activity_boat_add_form"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name=".RaceMenu"
             android:label="@string/title_activity_race_menu"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".RaceAddForm"
             android:label="@string/title_activity_race_add_form"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name=".SelectBoats"
             android:label="@string/title_activity_select_boats"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ListTemplateRaces"
-            android:label="@string/title_activity_list_template_races" >
+            android:label="@string/title_activity_list_template_races"
+            android:excludeFromRecents="true" >
         </activity>
         <activity
             android:name=".RegattaTimer"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_regatta_timer"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ListTemplateSelectBoats"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_list_template_select_boats" >
         </activity>
         <activity
             android:name=".ListTemplateResults"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_list_template_results" >
         </activity>
         <activity
             android:name=".ResultsMenu"
             android:label="@string/title_activity_results_menu"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".DistanceCalculator"
             android:label="@string/title_activity_distance_calculator"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name=".listTemplateDistanceCalculator"
             android:label="@string/title_activity_list_template_distance_calculator"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".Preferences"
             android:label="@string/title_activity_preferences"
+            android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize" >
+            android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="aad.finalproject.jhoregatta.MainActivity" />
@@ -103,21 +118,26 @@
         <activity
             android:name=".ResultsEditor"
             android:label="@string/title_activity_results_editor"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".SelectClassDistance"
             android:label="@string/title_activity_select_class_distance"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MergeBoatClasses"
             android:label="@string/title_activity_merge_boat_classes"
+            android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="aad.finalproject.jhoregatta.MainActivity" />
         </activity>
+        <activity android:name="aad.finalproject.jhoregatta.AndroidDatabaseManager"
+            android:theme="@style/Theme.AppCompat.Light"/>
     </application>
 
 </manifest>

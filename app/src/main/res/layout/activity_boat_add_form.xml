@@ -168,7 +168,8 @@
                 android:ems="10"
                 android:id="@+id/txt_inpt_PHRF"
                 android:gravity="bottom"
-                android:inputType="numberSigned"/>
+                android:inputType="numberSigned"
+                android:layout_marginBottom="20dp" />
 
             <TableRow
                 android:layout_width="match_parent"

@@ -70,7 +70,8 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:id="@+id/linLay_re_row_boatName">
 
                 <TextView
                     android:layout_width="125dp"
@@ -88,7 +89,15 @@
                     android:layout_gravity="center_horizontal"
                     android:spinnerMode="dropdown"
                     android:clickable="false"
-                    android:theme="@style/TextAppearance.AppCompat.Large" />
+                    android:theme="@style/TextAppearance.AppCompat.Large"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Large Text"
+                    android:id="@+id/txt_rf_boatID" />
 
             </LinearLayout>
 
@@ -111,7 +120,8 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:id="@+id/linLay_re_row_sailNum">
 
                 <TextView
                     android:layout_width="125dp"
@@ -136,7 +146,8 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:id="@+id/linLay_re_row_classColor">
 
                 <TextView
                     android:layout_width="125dp"
@@ -171,7 +182,8 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:id="@+id/linLay_re_row_phrf">
 
                 <TextView
                     android:layout_width="125dp"
@@ -385,7 +397,8 @@
                 android:layout_marginBottom="10dp"
                 android:id="@+id/txt_rf_notes"
                 android:inputType="textCapSentences|textImeMultiLine|textMultiLine"
-                android:maxLength="256" />
+                android:maxLength="256"
+                android:singleLine="true" />
 
 
             <CheckBox

@@ -82,7 +82,7 @@ public class RegattaTimer extends MainActivity {
         sharedPreferences = getSharedPreferences(Preferences.PREFS, 0);// grab the shared prefs
 
         //create instance of the dimmer class
-        dimmer = new Dimmer(getWindow(), GlobalContent.dimmerDelay);
+        dimmer = new Dimmer(getWindow(),this);
         dimmer.start(); // start the dimmer task scheduler
 
         //get teh size of the window
@@ -585,7 +585,7 @@ public class RegattaTimer extends MainActivity {
     }
 
     private void myCountdownMethod(int hours, int minutes, double seconds, final String caller) {
-        //convert hours mins and seconds to milliseconds
+        //convert hours mins and seconds to seconds
         long milliHours = hours * 3600000;
         long milliMinutes = minutes * 60000;
         final long milliSeconds = (long) (seconds * 1000);
@@ -594,7 +594,7 @@ public class RegattaTimer extends MainActivity {
         // this will keep the window screen bright and awake
         dimmer.suspend();
 
-        // add all milliseconds up
+        // add all seconds up
         long totalTime = milliHours + milliMinutes + milliSeconds;
 //        final String timeString = bestTickTockTime(totalTime+1000);
         GlobalContent.avm.playAudioByCase(flagToDisplay, seconds); // call audio changer based on time given

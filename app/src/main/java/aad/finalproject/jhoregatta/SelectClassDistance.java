@@ -29,12 +29,18 @@ public class SelectClassDistance extends MainActivity {
     private ArrayList<LinearLayout> classLinearLayouts;
     private Bundle b; // new bundle instance
 
+    private ResultDataSource resultDataSource;
+
     public static boolean isActiveSCD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_class_distance);
+
+        // open the results database
+        resultDataSource = new ResultDataSource(getApplicationContext());
+        resultDataSource.open();
 
         //get bundled info from race add form.
         final boolean setDistanceOnly = getIntent().getExtras().getBoolean(RaceAddForm.DISTANCE_KEY);
@@ -72,7 +78,21 @@ public class SelectClassDistance extends MainActivity {
             btnDistanceUnknown.setVisibility(View.GONE);
         }
 
-
+        //display distances if available
+        for (int i = 0; i < classLinearLayouts.size(); i++) {
+            // check if the linear layout is visible
+            if (classLinearLayouts.get(i).getVisibility() == View.VISIBLE) {
+                // get the class color
+                String boatClass = classColor.get(i).getText().toString();
+                // get the distance if already set
+                double distance = resultDataSource.getClassDistance(GlobalContent.getRaceRowID(), boatClass);
+                // assign distance to edit text field
+                if (distance > 0) {
+                    // if distance is greater than 0 then assign distance to edit text field.
+                    classDistance.get(i).setText(distance + "");
+                }
+            }
+        }
 
         //set the button function
         btnSetDistance.setOnClickListener(new View.OnClickListener() {
@@ -99,16 +119,12 @@ public class SelectClassDistance extends MainActivity {
                     startActivity(intent);
                     //if the intent is to set the distance for an existing race.
                 } else {
-                    // open the results database
-                    ResultDataSource rds = new ResultDataSource(getApplicationContext());
-                    rds.open();
-
                     //set the distance for each class in the correct race.
                     for (BoatClass b : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
-                        rds.updateClassDistances(GlobalContent.getRaceRowID(), b.getBoatColor(),
+                        resultDataSource.updateClassDistances(GlobalContent.getRaceRowID(), b.getBoatColor(),
                                 b.getClassDistance());
                     }
-                    rds.runCalculations(); // calculate and enter adjusted duration.
+                    resultDataSource.runCalculations(); // calculate and enter adjusted duration.
                     //return to the previous activity.
                     finish();
                 }
@@ -145,11 +161,13 @@ public class SelectClassDistance extends MainActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        resultDataSource.open();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        resultDataSource.close();
     }
 
     // check to see if the entries are valid.
@@ -207,7 +225,7 @@ public class SelectClassDistance extends MainActivity {
 
     private void createWidgetArrays() {
 
-//        //add linear layouts
+        //add linear layouts
         classLinearLayouts.add((LinearLayout)findViewById(R.id.linlay_class1));
         classLinearLayouts.add((LinearLayout)findViewById(R.id.linlay_class2));
         classLinearLayouts.add((LinearLayout)findViewById(R.id.linlay_class3));

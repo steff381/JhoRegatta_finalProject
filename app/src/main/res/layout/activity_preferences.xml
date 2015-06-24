@@ -4,7 +4,10 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="aad.finalproject.jhoregatta.Preferences">
+    tools:context="aad.finalproject.jhoregatta.Preferences"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:id="@+id/relLay_prefs">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -46,55 +49,41 @@
             android:layout_below="@+id/linearLayout6"
             android:layout_alignParentStart="true">
 
+
+
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Initial Start Delay:"
-                    android:id="@+id/lbl_initialStartDelay"
+                    android:text="Flag Timers"
+                    android:id="@+id/lbl_prefs_hder_flag_timers"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
                     android:gravity="center_vertical" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:id="@+id/txt_prefs_initial_startDelay"
-                    android:hint="0h 0m 00s"
-                    android:gravity="center_vertical|center"
-                    android:layout_margin="5dp"
-                    android:textSize="30sp"
-                    android:layout_weight="1" />
-
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:text="set"
-                    android:id="@+id/btn_prefs_set_pos0"
-                    android:layout_weight=".5" />
 
             </LinearLayout>
 
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp" >
+                android:layout_margin="2dp" >
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Class Up:"
+                    android:layout_marginLeft="5dp"
                     android:id="@+id/lbl_prefs_classUp"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
@@ -110,28 +99,26 @@
                     android:gravity="center_vertical|center"
                     android:layout_margin="5dp"
                     android:textSize="30sp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:clickable="false"
+                    android:editable="false"
+                    android:focusableInTouchMode="false"
+                    android:background="#4a15c0ff" />
 
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:text="set"
-                    android:id="@+id/btn_prefs_set_pos1"
-                    android:layout_weight=".5" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp" >
+                android:layout_margin="2dp" >
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Class and Prep:"
+                    android:text="Class &amp; Prep Up:"
                     android:id="@+id/lbl_prefs_classAndPrep"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
@@ -147,29 +134,24 @@
                     android:gravity="center_vertical|center"
                     android:layout_margin="5dp"
                     android:textSize="30sp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:background="#4a15c0ff" />
 
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:text="set"
-                    android:id="@+id/btn_prefs_set_pos2"
-                    android:layout_weight=".5" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp" >
+                android:layout_margin="2dp" >
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Class Up Prep Down:"
-                    android:id="@+id/textView15"
+                    android:id="@+id/lbl_prefs_classUpPrepDown"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_vertical" />
@@ -184,29 +166,74 @@
                     android:gravity="center_vertical|center"
                     android:layout_margin="5dp"
                     android:textSize="30sp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:background="#4a15c0ff" />
 
-                <Button
-                    style="?android:attr/buttonStyleSmall"
+            </LinearLayout><LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="25sp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Delay Timers"
+                android:id="@+id/lbl_prefs_hder_delay_timers"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical" />
+
+        </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp">
+
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="set"
-                    android:id="@+id/btn_prefs_set_pos3"
-                    android:layout_weight=".5" />
+                    android:layout_marginLeft="5dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Start Delay:"
+                    android:id="@+id/lbl_initialStartDelay"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/txt_prefs_initial_startDelay"
+                    android:hint="0h 0m 00s"
+                    android:gravity="center_vertical|center"
+                    android:layout_margin="5dp"
+                    android:textSize="30sp"
+                    android:layout_weight="1"
+                    android:background="#4a15c0ff" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp" >
+                android:layout_margin="2dp" >
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Post Recall Delay:"
-                    android:id="@+id/textView17"
+                    android:id="@+id/lbl_prefs_postRecallDelay"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_vertical" />
@@ -221,92 +248,148 @@
                     android:gravity="center_vertical|center"
                     android:layout_margin="5dp"
                     android:textSize="30sp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:clickable="false"
+                    android:background="#4a15c0ff" />
 
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:text="set"
-                    android:id="@+id/btn_prefs_set_pos4"
-                    android:layout_weight=".5" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Time Limits"
+                    android:id="@+id/lbl_prefs_hder_time_limits"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:layout_margin="2dp" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Race Time:"
+                    android:id="@+id/lbl_prefs_race_time_limit"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/txt_prefs_race_time_limit"
+                    android:hint="0h 0m 00s"
+                    android:gravity="center_vertical|center"
+                    android:layout_margin="5dp"
+                    android:textSize="30sp"
+                    android:layout_weight="1"
+                    android:clickable="false"
+                    android:background="#4a15c0ff" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Post First Finish:"
+                    android:id="@+id/lbl_prefs_finish_time_limit"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/txt_prefs_finish_time_limit"
+                    android:hint="0h 0m 00s"
+                    android:gravity="center_vertical|center"
+                    android:layout_margin="5dp"
+                    android:textSize="30sp"
+                    android:layout_weight="1"
+                    android:clickable="false"
+                    android:background="#4a15c0ff" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Initial Delay"
-                    android:id="@+id/textView10" />
+                    android:text="Other"
+                    android:id="@+id/lbl_prefs_hder_otherSettings"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical" />
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:id="@+id/txt_prefs_INT_initialDelay" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp" >
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Class Up "
-                    android:id="@+id/textView11" />
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:id="@+id/txt_prefs_INT_classUp" />
+                    android:text="Dimmer Delay:"
+                    android:id="@+id/lbl_prefs_dimmer_delay"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Class Up Prep Up"
-                    android:id="@+id/textView12" />
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:inputType="number"
                     android:ems="10"
-                    android:id="@+id/txt_prefs_INT_classUpPrepUp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Class up Prep Down"
-                    android:id="@+id/textView13" />
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:id="@+id/txt_prefs_INT_classUpPrepDown" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Post Recall Delay"
-                    android:id="@+id/textView14" />
-
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:id="@+id/txt_prefs_INT_afterRecall" />
+                    android:id="@+id/txt_prefs_dimmer_delay"
+                    android:hint="0h 0m 00s"
+                    android:gravity="center_vertical|center"
+                    android:layout_margin="5dp"
+                    android:textSize="30sp"
+                    android:layout_weight="1"
+                    android:clickable="false"
+                    android:background="#4a15c0ff" />
 
             </LinearLayout>
 

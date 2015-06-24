@@ -35,7 +35,7 @@ public class GlobalContent {
 
     public static AudioVoiceManager avm; // globally accessible audio manager
 
-    public static long dimmerDelay = 20000; // how long should screen remain bright before dimming
+//    public static long dimmerDelay = ; // how long should screen remain bright before dimming
 
     //result list that can be accessed globally.
     public static List<Result> resultList;
@@ -59,6 +59,7 @@ public class GlobalContent {
     public static String modeAdd = "ADD";
     public static String modeEdit = "EDIT";
 
+
     // public alive statement
     public static boolean selectBoatListIsAlive = false;
 
@@ -73,8 +74,12 @@ public class GlobalContent {
         ResultsFormAccessMode = null;
         BoatStartingListClass.BOAT_CLASS_START_ARRAY.clear();
         globalWhere = null;
-        avm.audioFullStop();
-        unmergedBoats.clear();
+        try {
+            avm.audioFullStop();
+        } catch (Exception e) {
+            Log.i(LOGTAG, "AVM ERROR. No instance recorded.");
+        }
+        unmergedBoats = null;
         activeRace = null;
 
     }
@@ -178,7 +183,7 @@ public class GlobalContent {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
     }
 
-    // get elapsed time in milliseconds using DateTimes
+    // get elapsed time in seconds using DateTimes
     public static long getElapsedTime(DateTime startTimeString, DateTime finishTimeString) {
 
         return finishTimeString.getMillis() - startTimeString.getMillis();
@@ -191,18 +196,14 @@ public class GlobalContent {
         penalty = penalty / 100;
         //calculate Time Allowance in Milliseconds
         long taInMillis = (long) ((distance * PHRF * correctionFactor) * 1000);
-        Log.i(LOGTAG, "TA in Millis " + taInMillis);
         // Calculate the duration less the time allowance
         long tmpAdjDuration = durationInMillis - taInMillis;
-        Log.i(LOGTAG, "AdjDuration pre penalty " + tmpAdjDuration);
         //apply any penalty
         long adjDurationWPenalty = (long) (tmpAdjDuration + (tmpAdjDuration * penalty));
-        Log.i(LOGTAG, "AdjDuration with penalty " + tmpAdjDuration);
 
         //convert result to formatted duration
 
         result = convertMillisToFormattedTime(adjDurationWPenalty, 0);
-        Log.i(LOGTAG, "AdjDuration with penalty formatted " + result);
 
         return result;
     }

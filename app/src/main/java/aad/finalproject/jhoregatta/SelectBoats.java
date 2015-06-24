@@ -54,7 +54,7 @@ public class SelectBoats extends MainActivity {
         setContentView(R.layout.activity_select_boats);
 
         //create a dimmer class object that will schedule dimming after a period of time
-        dimmer = new Dimmer(getWindow(), GlobalContent.dimmerDelay);
+        dimmer = new Dimmer(getWindow(),this);
         dimmer.start();
 
         source = getIntent().getExtras().getString(SOURCE_BUNDLE_KEY); // get bundle data

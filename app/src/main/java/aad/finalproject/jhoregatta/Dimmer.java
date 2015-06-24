@@ -1,5 +1,7 @@
 package aad.finalproject.jhoregatta;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
@@ -8,19 +10,20 @@ import android.view.WindowManager;
 public class Dimmer extends MainActivity {
     private static final String LOGTAG = "Dimmer";
 
-    private long dimDel;
+
     private Window w;
     private Handler h;
     private Runnable r;
     private WindowManager.LayoutParams lp;
 
-    private float dimmedValue = 0.01f;
+    private float dimmedValue = 0.05f;
     private boolean isStarted = false;
 
+    private SharedPreferences timerPrefs;
 
     //Instance constructor method
-    public Dimmer(Window window, long dimmerDelayMillis) {
-        this.dimDel = dimmerDelayMillis;
+    public Dimmer(Window window, Context context) {
+        this.timerPrefs = context.getSharedPreferences(Preferences.PREFS, 0);// grab the shared prefs
         this.lp = window.getAttributes();
         this.w = window;
     }
@@ -41,7 +44,7 @@ public class Dimmer extends MainActivity {
                     setBrightness(true); // reduce brightness
                 }
             };
-            h.postDelayed(r, dimDel); //schedule the dimmer to run after a delay
+            h.postDelayed(r, (timerPrefs.getInt("dimmerDelay", 90)*1000)); //schedule the dimmer to run after a delay
             Log.i(LOGTAG, "Starting Dimmer");
         }
     }
@@ -87,7 +90,7 @@ public class Dimmer extends MainActivity {
         if (isStarted) {
             setBrightness(false); // set the screen brightness to max
             h.removeCallbacks(r); // clear the scheduled run task
-            h.postDelayed(r, dimDel); // re-assign the scheduled run task
+            h.postDelayed(r, (timerPrefs.getInt("dimmerDelay", 90)*1000)); // re-assign the scheduled run task
         }
     }
 

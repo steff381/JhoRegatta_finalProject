@@ -11,7 +11,57 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_margin="7dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Total:  "
+                android:id="@+id/lbl_fcfd_total" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="00"
+                android:id="@+id/txt_fcfd_totalCt" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Sailing:  "
+                android:id="@+id/lbl_fcfd_sailing" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="00"
+                android:id="@+id/txt_fcfd_sailingCt" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Finished:  "
+                android:id="@+id/lbl_fcfd_finished"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="00"
+                android:id="@+id/txt_fcfd_finishedCt" />
+        </TableRow>
 
         <TableRow
             android:layout_width="wrap_content"
@@ -23,10 +73,12 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Class"
                 android:id="@+id/lbl_cfd_class"
-                android:layout_weight="1"
+                android:layout_weight=".6"
                 android:textColor="#000000"
                 android:textStyle="bold"
-                android:background="#ff00d5ff" />
+                android:background="#ff00d5ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -37,18 +89,38 @@
                 android:layout_weight="1"
                 android:textColor="#000000"
                 android:textStyle="bold"
-                android:background="#ff00d5ff" />
+                android:background="#ff00d5ff"
+                android:gravity="center_horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"  />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Call At:"
-                android:id="@+id/textView"
+                android:id="@+id/lbl_cfd_callAt"
                 android:layout_weight="1"
                 android:textColor="#000000"
                 android:textStyle="bold"
-                android:background="#ff00d5ff" />
+                android:background="#ff00d5ff"
+                android:gravity="center_horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"  />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Sail/Fin"
+                android:id="@+id/lbl_cfd_sailFin"
+                android:layout_weight="1"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:background="#ff00d5ff"
+                android:gravity="right"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
         </TableRow>
 
         <TableRow
@@ -59,28 +131,46 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+
                 android:id="@+id/txt_cfd_class1"
-                android:layout_weight="1"
-                android:visibility="invisible" />
+                android:layout_weight=".6"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+                android:gravity="center_horizontal"
                 android:id="@+id/txt_cfd_firstFin1"
                 android:layout_weight="1"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="none" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+                android:gravity="center_horizontal"
                 android:id="@+id/txt_cfd_callAt1"
                 android:layout_weight="1"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="right"
+                android:id="@+id/txt_cfd_sailFin1"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"  />
         </TableRow>
 
         <TableRow
@@ -91,174 +181,264 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+
                 android:id="@+id/txt_cfd_class2"
-                android:layout_weight="1"
+                android:layout_weight=".6"
                 android:visibility="invisible"
-                android:background="#4c00e2ff" />
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"  />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+                android:gravity="center_horizontal"
                 android:id="@+id/txt_cfd_firstFin2"
                 android:layout_weight="1"
                 android:visibility="invisible"
-                android:background="#4c00e2ff" />
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="none" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+                android:gravity="center_horizontal"
                 android:id="@+id/txt_cfd_callAt2"
                 android:layout_weight="1"
                 android:visibility="invisible"
-                android:background="#4c00e2ff" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"  />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
-                android:id="@+id/txt_cfd_class3"
-                android:layout_weight="1"
-                android:visibility="invisible" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
-                android:id="@+id/txt_cfd_firstFin3"
-                android:layout_weight="1"
-                android:visibility="invisible" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
-                android:id="@+id/txt_cfd_callAt3"
-                android:layout_weight="1"
-                android:visibility="invisible"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
-                android:id="@+id/txt_cfd_class4"
+                android:gravity="right"
+                android:id="@+id/txt_cfd_sailFin2"
                 android:layout_weight="1"
                 android:visibility="invisible"
-                android:background="#4c00e2ff" />
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"  />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+
+                android:id="@+id/txt_cfd_class3"
+                android:layout_weight=".6"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:id="@+id/txt_cfd_firstFin3"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="none" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:id="@+id/txt_cfd_callAt3"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="right"
+                android:id="@+id/txt_cfd_sailFin3"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+
+                android:id="@+id/txt_cfd_class4"
+                android:layout_weight=".6"
+                android:visibility="invisible"
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
                 android:id="@+id/txt_cfd_firstFin4"
                 android:layout_weight="1"
                 android:visibility="invisible"
-                android:background="#4c00e2ff" />
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="none" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+                android:gravity="center_horizontal"
                 android:id="@+id/txt_cfd_callAt4"
                 android:layout_weight="1"
                 android:visibility="invisible"
-                android:background="#4c00e2ff" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
-                android:id="@+id/txt_cfd_class5"
-                android:layout_weight="1"
-                android:visibility="invisible"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
-                android:id="@+id/txt_cfd_firstFin5"
-                android:layout_weight="1"
-                android:visibility="invisible" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
-                android:id="@+id/txt_cfd_callAt5"
-                android:layout_weight="1"
-                android:visibility="invisible" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
-                android:id="@+id/txt_cfd_class6"
+                android:gravity="right"
+                android:id="@+id/txt_cfd_sailFin4"
                 android:layout_weight="1"
                 android:visibility="invisible"
-                android:background="#4c00e2ff" />
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+
+                android:id="@+id/txt_cfd_class5"
+                android:layout_weight=".6"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:id="@+id/txt_cfd_firstFin5"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="none" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:id="@+id/txt_cfd_callAt5"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"  />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="right"
+                android:id="@+id/txt_cfd_sailFin5"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+
+                android:id="@+id/txt_cfd_class6"
+                android:layout_weight=".6"
+                android:visibility="invisible"
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"  />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
                 android:id="@+id/txt_cfd_callAt6"
                 android:layout_weight="1"
                 android:visibility="invisible"
-                android:background="#4c00e2ff" />
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="none" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="d"
+                android:gravity="center_horizontal"
                 android:id="@+id/txt_cfd_firstFin6"
                 android:layout_weight="1"
                 android:visibility="invisible"
-                android:layout_column="14"
-                android:background="#4c00e2ff" />
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="right"
+                android:id="@+id/txt_cfd_sailFin6"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:background="#4c00e2ff"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" />
         </TableRow>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="false"
-            android:layout_alignParentEnd="false"
             android:measureWithLargestChild="false">
 
             <Button
@@ -270,7 +450,8 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp" />
         </LinearLayout>
     </TableLayout>
 

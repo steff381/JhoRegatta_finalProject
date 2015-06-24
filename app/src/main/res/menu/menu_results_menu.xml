@@ -7,7 +7,7 @@
         android:orderInCategory="100"
         app:showAsAction="never" />
     <item android:id="@+id/action_rm_class_finishes"
-        android:title="@string/action_results_menu_class_finishes"
+        android:title="@string/action_results_menu_race_stats"
         android:orderInCategory="200"
         app:showAsAction="always"/>
     <item android:id="@+id/action_select_more_boats"
