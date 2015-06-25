@@ -176,13 +176,13 @@ public class ResultsAdapter extends BaseAdapter {
             }
 
         } else {
-
+            Log.i(LOGTAG, "checkAgainstTimeLimit = " + !checkAgainstTimeLimit(r));
             if (!checkAgainstTimeLimit(r)) {
                 // change the row color blank
                 view.setBackgroundColor(Color.parseColor("#00000000"));
             } else {
                 //set the row color to light blue
-                view.setBackgroundColor(view.getResources().getColor(R.color.blue14));
+                view.setBackgroundColor(view.getResources().getColor(R.color.blue11));
                 Log.i(LOGTAG, "COLOR IF: All Else " + r.getBoatName());
             }
             //show the finish button and hide the reset button instead.
@@ -202,7 +202,6 @@ public class ResultsAdapter extends BaseAdapter {
                 //check if the class start time contains either a string or a null
                 if (result.getResultsClassStartTime() != null) {
                     DateTime capturedTime = DateTime.now();// capture the current time
-                    String color = result.getBoatClass(); // get the class's color
                     long resultId = result.getResultsId();
 
                     //format time as string for SQL
@@ -231,7 +230,6 @@ public class ResultsAdapter extends BaseAdapter {
 
                     //get the finish time ""
                     GlobalContent.getElapsedTime(startTime, timeFormatted);
-                    updateFirstFinishers();
 
 
                     //run table calculations to derive duration and adjusted duration
@@ -241,6 +239,7 @@ public class ResultsAdapter extends BaseAdapter {
 
                     //refresh the viewed data
                     notifyDataSetChanged();
+                    updateFirstFinishers();
                 } else {
                     Toast.makeText(v.getContext(), "This boat's Class hasn't started yet. \n" +
                                     "Wait for Time Tracker to finish starting the Class.",
@@ -271,6 +270,20 @@ public class ResultsAdapter extends BaseAdapter {
                     btnFinish.setVisibility(View.VISIBLE);
                     counter = 3; // reset counter
 
+                    // check each boat class for a first finisher.
+                    for (BoatClass bc : BoatStartingListClass.BOAT_CLASS_START_ARRAY) {
+                        Log.i(LOGTAG, bc.getBoatColor() + " classes first finish id: " +
+                                bc.getFirstFinishBoatId() + " current Result: " +
+                                result.getBoatName() + " id: " + result.getResultsBoatId());
+                        // If the current boat is first finisher
+                        if (bc.getFirstFinishBoatId() == result.getResultsBoatId()) {
+                            Log.i(LOGTAG, "Boat ID " + result.getBoatName() + " is first finisher. " +
+                                    "Resetting " + result.getBoatClass() + " first finish time " +
+                                    "from " + result.getResultsBoatFinishTime() + " to NULL");
+                            bc.resetFirstFinish(); // reset first finisher for given class.
+                            Log.i(LOGTAG, "firstFinisherTime for class " + bc.getBoatColor() + " is now " + bc.getFirstFinishAsDateTime());
+                        }
+                    }
                     //output message
                     message = result.getBoatName() + "'s finish time is now RESET";
 
@@ -297,35 +310,31 @@ public class ResultsAdapter extends BaseAdapter {
         return view;
     }
 
+    // check to see if the boat has not exceeded any time limitations
     private boolean checkAgainstTimeLimit(Result result) {
         DateTime classFinishTime = BoatStartingListClass.getClassFinishTime(result.getBoatClass());
+        Log.i(LOGTAG, "checkAgainstTimeLimit: ClassFinishTime =  " + classFinishTime);
         String now = GlobalContent.dateTimeToString(DateTime.now());// convert to string to remove date portion
         String boatFinishTimeStr = result.getResultsBoatFinishTime();
 
         DateTime nowDT = GlobalContent.toDateTime(now);
 
-//        Log.i(LOGTAG, "checkAgainstTimeLimit> classFinishTime = " + classFinishTime);
-
-
         // check if first finish time was recorded
         if (classFinishTime != null) {
+//            Log.i(LOGTAG, "checkAgainstTimeLimit> ClassFinishTime not null");
             DateTime callAtThisTime = classFinishTime.plusSeconds(sp.getInt("finishTimeLimit", 1800));
-//            Log.i(LOGTAG, "checkAgainstTimeLimit> callAtThisTime = " + callAtThisTime);
             // check if finish time was recorded
             if (boatFinishTimeStr != null) {
-//                Log.i(LOGTAG, "checkAgainstTimeLimit> boatFinishTimeStr = " + boatFinishTimeStr);
+//                Log.i(LOGTAG, "checkAgainstTimeLimit> boatFinishTimeStr not null");
                 DateTime boatFinishTime = GlobalContent.toDateTime(boatFinishTimeStr);
                 //check the boats finish time against the time limit
                 if (boatFinishTime.isAfter(callAtThisTime)) {
-//                    Log.i(LOGTAG, "checkAgainstTimeLimit> BOAT TIME check: " + result.getResultsBoatFinishTime());
+//                    Log.i(LOGTAG, "checkAgainstTimeLimit> boatFinishTime.isAfter(callAtThisTime)");
                     return true;
                 }
             } else {
                 // check current time against class' first finish time
                 if (nowDT.isAfter(callAtThisTime)) {
-
-//                    Log.i(LOGTAG, "checkAgainstTimeLimit> NOW check: " + nowDT);
-
                     return true;
                 }
             }
@@ -344,7 +353,7 @@ public class ResultsAdapter extends BaseAdapter {
                         bc.getBoatColor());
                 if (r != null) {
                     // see if there is any need to update the first finishers.
-                    if (bc.checkAndSetFirstFinish(r.getResultsBoatFinishTime())) {
+                    if (bc.checkAndSetFirstFinish(r.getResultsBoatFinishTime(), r.getResultsBoatId())) {
                         Log.i(LOGTAG, "updateFirstFinishers: Class: " + bc.getBoatColor());
                         long timeLimitMillis = sp.getInt("finishTimeLimit", 1800) * 1000;
                         long bufferMillis = 700;
@@ -353,7 +362,6 @@ public class ResultsAdapter extends BaseAdapter {
                             // if a runnable already exists, remove it
                             handler.removeCallbacks(bc.callAtRunnable);
                             Log.i(LOGTAG, "updateFirstFinishers > removing callback for Class: " + bc.getBoatColor());
-
                         }
                         final BoatClass fbc = bc;
                         // create new event to be scheduled
@@ -365,11 +373,13 @@ public class ResultsAdapter extends BaseAdapter {
                                     if (resultDataSource.isOpen()) {
                                         Log.i(LOGTAG, "callatrunnable called and resultDataSource is OPEN");
                                         syncArrayListWithSql();
+                                        ResultsMenu.myList.invalidateViews();
                                         notifyDataSetChanged();
                                     } else {
                                         Log.i(LOGTAG, "callatrunnable called and resultDataSource is CLOSED");
                                         resultDataSource.open();
                                         syncArrayListWithSql();
+                                        ResultsMenu.myList.invalidateViews();
                                         notifyDataSetChanged();
                                         resultDataSource.close();
                                     }
@@ -379,7 +389,7 @@ public class ResultsAdapter extends BaseAdapter {
                                 Log.i(LOGTAG, "Runnable Called: " + fbc.getBoatColor());
                             }
                         };
-                        Log.i(LOGTAG, "PostDealying Runnable " + bc.getBoatColor());
+                        Log.i(LOGTAG, "PostDealying Runnable " + bc.getBoatColor() + " seconds to refresh: " + ((timeLimitMillis + bufferMillis)/1000));
                         handler.postDelayed(bc.callAtRunnable, (timeLimitMillis + bufferMillis));
                     }
                 }

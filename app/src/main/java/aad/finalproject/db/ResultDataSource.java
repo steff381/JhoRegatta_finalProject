@@ -848,6 +848,7 @@ public class ResultDataSource {
 
         // fields to select and filter by
         String bClass = DBAdapter.KEY_BOAT_CLASS;
+        String bId = DBAdapter.KEY_BOAT_ID;
         String resultId = DBAdapter.KEY_ID;
         String bName = DBAdapter.KEY_BOAT_NAME;
         String bStart = DBAdapter.KEY_RESULTS_CLASS_START;
@@ -867,7 +868,7 @@ public class ResultDataSource {
         if (!boatClass.equals("Classless")) {
             //write a query that only looks at a specific class
             sqlQuery = "SELECT " + resultId + "," + bName + "," + bClass + "," + bStart + "," + bFinish +
-                        "," + bDuration
+                        "," + bDuration + "," + bId
                     + " FROM " + bTable
                     + " WHERE " + rId + " = " + raceId + " AND " + bDnf + " = 0 AND " + bVis +
                         " = 1 AND " + bClass + " = " + GlobalContent.singleQuotify(boatClass) +
@@ -879,7 +880,7 @@ public class ResultDataSource {
         } else {
             //write a query that doesn't exclude boats by class
             sqlQuery = "SELECT " + resultId + "," + bName + "," + bClass + "," + bStart + "," + bFinish +
-                    "," + bDuration
+                    "," + bDuration + "," + bId
                     + " FROM " + bTable
                     + " WHERE " + rId + " = " + raceId + " AND " + bDnf + " = 0 AND " + bVis +
                         " = 1 AND " + bDuration + " IS NOT NULL AND " + bName + " <> " +
@@ -900,6 +901,7 @@ public class ResultDataSource {
         if (cursor.getCount() > 0) {
             // add the requested fields to the result
             result.setResultsId(cursor.getLong(cursor.getColumnIndex(resultId)));
+            result.setResultsBoatId(cursor.getLong(cursor.getColumnIndex(bId)));
             result.setResultsClassStartTime(cursor.getString(cursor.getColumnIndex(bStart)));
             result.setResultsBoatFinishTime(cursor.getString(cursor.getColumnIndex(bFinish)));
             result.setResultsDuration(cursor.getString(cursor.getColumnIndex(bDuration)));

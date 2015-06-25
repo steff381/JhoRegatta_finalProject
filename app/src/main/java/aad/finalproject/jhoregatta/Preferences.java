@@ -271,9 +271,9 @@ public class Preferences extends MainActivity implements TimePickerDialog.Commun
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == R.id.action_ddms) {
-            GlobalContent.DDMS(this);
-            return true;
+//        } else if (id == R.id.action_ddms) {
+//            GlobalContent.DDMS(this);
+//            return true;
         }
 
         return super.onOptionsItemSelected(item);

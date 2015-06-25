@@ -32,6 +32,7 @@ public class SelectBoats extends MainActivity {
 
     // List stuff
     private ListView myList; // initialize the listview
+    public static TextView boatCount;
     private SelectBoatsAdapter objAdapter;
 
     private Dimmer dimmer;
@@ -70,6 +71,7 @@ public class SelectBoats extends MainActivity {
         selectBoatDataSource.open(); // open a writable version of the db
 
         btnRegTimer = (Button) findViewById(R.id.btn_sb_toTimer);
+        boatCount = (TextView) findViewById(R.id.txt_sb_countBoats);
 
         // set the lv to the current listview
         myList = (ListView) findViewById(R.id.lvSelectBoatList);
@@ -115,6 +117,7 @@ public class SelectBoats extends MainActivity {
         switch (source) {
             case "RM":
                 btnRegTimer.setVisibility(View.GONE); // hide the to timer button
+                boatCount.setVisibility(View.GONE); // hide the counter
                 //get only unselected boats
                 where = GlobalContent.globalWhere + " AND " + DBAdapter.KEY_BOAT_SELECTED + " = 0";
 

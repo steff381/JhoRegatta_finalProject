@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aad.finalproject.jhoregatta.R;
+import aad.finalproject.jhoregatta.SelectBoats;
 
 public class SelectBoatsAdapter extends ArrayAdapter<Boat> {
     private static String LOGTAG = "SelectBoatAdapter";
@@ -22,6 +23,7 @@ public class SelectBoatsAdapter extends ArrayAdapter<Boat> {
     private Context context; // make an accessible field for context
     private String where;
     private long currentRaceId;
+    private int boatCount = 0;
 
     public ArrayList<Boat> boatArrayList;// list of all boats in the selected classes
     // instance constructor
@@ -37,6 +39,7 @@ public class SelectBoatsAdapter extends ArrayAdapter<Boat> {
         this.selectBoatDataSource = sbd;
         this.resultDataSource = rds;
         this.currentRaceId = currentRaceId;
+        this.boatCount = Integer.parseInt(SelectBoats.boatCount.getText().toString());
     }
 
     @Override
@@ -78,17 +81,20 @@ public class SelectBoatsAdapter extends ArrayAdapter<Boat> {
                 final boolean isChecked = checkBox.isChecked();
                 //check for checkbox status
                 if (isChecked) {
+                    boatCount++;
                     boat.setIsSelected(1);
                     selectBoatDataSource.setSelected(boat.getId(), true); // if checked set to checked
                     resultDataSource.insertResult(boat); // add boat to results table
                     Log.i(LOGTAG, boat.getBoatName() + " was selected and selection is now " + boat.getIsSelected() + " boat id ");
                 } else {
+                    boatCount--;
                     boat.setIsSelected(0);
                     selectBoatDataSource.setSelected(boat.getId(), false); //if unchecked, set to unchecked
                     // remove from results table
                     resultDataSource.deleteResult(currentRaceId, boat.getBoatId());
                     Log.i(LOGTAG, boat.getBoatName() + " was DESELECTED and selection is now " + boat.getIsSelected());
                 }
+                SelectBoats.boatCount.setText(boatCount + "");
                 notifyDataSetChanged();
             }
         });

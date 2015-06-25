@@ -50,6 +50,9 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     // variable for the dimmer
     private Dimmer dimmer;
 
+    // audio for the time button
+
+
     //instance of data source
     private RaceDataSource raceDataSource;
     private ResultDataSource resultDataSource;
@@ -131,10 +134,17 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
                 r.setBoatClass(BoatStartingListClass.BOAT_CLASS_START_ARRAY.get(0).getBoatColor());
                 r.setBoatPHRF(0);
 
+                // show the user a message confirming that a time was recorded
+                Toast.makeText(getApplicationContext(), "Time Recorded: " +
+                        nowString, Toast.LENGTH_SHORT).show();
+
                 resultDataSource.insertResultPlaceholder(r);
                 GlobalContent.activeResultsAdapter.syncArrayListWithSql();
             }
         });
+
+
+
         returnToTimeTracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -482,6 +492,12 @@ public class ResultsMenu extends MainActivity implements ProofOfIntentDialog.Pro
     // populate the list using the adapter
     public void populateListView() {
         Log.i(LOGTAG, " Setting custom resultsAdapter to the listview");
+        myList.setAdapter(GlobalContent.activeResultsAdapter);
+    }
+
+    // populate the list using the adapter
+    public static void populateListViewStatic() {
+        Log.i("ResultsMenu Static", "Static popluate List View");
         myList.setAdapter(GlobalContent.activeResultsAdapter);
     }
 
